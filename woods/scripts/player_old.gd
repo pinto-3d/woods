@@ -1,0 +1,904 @@
+class_name PlayerOld
+extends Entity
+
+
+#
+#enum State {FREE=0, DISABLE_INPUT=1, SPAWNING=2, DYING=3, DISABLE_COMPLETELY=4, DISABLE_PHYSICS = 5}
+#
+#var state: State = State.DISABLE_COMPLETELY
+#
+#var col: CollisionShape2D
+#var visibleOnScreen: VisibleOnScreenNotifier2D
+#
+#var audio: Array[AudioStreamPlayer] = []
+#
+#var centerHead: Node2D
+#var centerBody: Node2D
+#var centerLegs: Node2D
+#
+#var leftWallRays: Array[RayCast2D] = []
+#var rightWallRays: Array[RayCast2D] = []
+#var leftDetect: Area2D
+#var rightDetect: Area2D
+#var wallOnLeft: bool = false
+#var wallOnRight: bool = false
+#var downRays: Array[RayCast2D]
+#const DOWN_RAY_LENGTH: float = 0.01
+#
+#const SCARF_POS_LEFT_X: float = -127
+#const SCARF_POS_RIGHT_X: float = 127
+#const SCARF_SPR_LEFT_X: float = -25
+#const SCARF_SPR_RIGHT_X: float = 25
+#var SCARF_CUR_BASE_ANGLE: float = 0
+#var scarfAngle: float = 0
+#
+#const SCARF_ROTAT_LERP: float = 200
+#const SCARF_ROTAT_MAX: float = 110
+#const SCARF_ROTAT_X_MAX: float = 50
+#const SCARF_ROTAT_MIN: float = 0
+#const SCARF_MIN_SPEED: float = 30
+#
+#const FACE_OFFSET_Y_MAX: float = -64
+#const FACE_OFFSET_Y_BASE: float = 0
+#const FACE_OFFSET_Y_MIN: float = 45
+#
+#const FACE_OFFSET_X_MAX: float = 10
+#const FACE_OFFSET_X_BASE: float = -50
+#const FACE_OFFSET_X_MIN: float = 64
+#
+#const FACE_BASE_IDLE_TIME: float = 2
+#var faceBaseTimer: float = 0
+#
+#const EARS_OFFSET_Y_MAX: float = 70
+#const EARS_OFFSET_Y_BASE: float = 0
+#const EARS_OFFSET_Y_MIN: float = -10
+#
+#const EARS_OFFSET_X_MAX: float = 25
+#const EARS_OFFSET_X_BASE: float = 0
+#const EARS_OFFSET_X_MIN: float = -45
+#
+#const GUN_OFFSET_X_MAX: float = -50
+#const GUN_OFFSET_X_BASE: float = 0
+#const GUN_OFFSET_X_MIN: float = 45
+#
+#const GUN_SHOOT_OFFSET_X_MAX: float = 100
+#
+#const GUN_OFFSET_Y_MAX: float = -50
+#const GUN_OFFSET_Y_BASE: float = 0
+#const GUN_OFFSET_Y_MIN: float = 45
+#
+#const GUN_RECOIL: Vector2 = Vector2(-10, 20)
+#const GUN_RECOIL_HEAVY: Vector2 = Vector2(-150, 200)
+#const GUN_HAND_RECOIL_X: float = 100
+#const GUN_EAR_RECOIL_X: float = 50
+#const GUN_CHARGE_TIME: float = 1
+#const GUN_CHARGE_SHAKE_Y: float = 7
+#const GUN_CHARGE_SHAKE_SPEED: float = 100
+#var gunChargeShakeDir: int = 1
+#var isChargingGun: bool = false
+#var gunChargeTimer: float = 0
+#
+#const HANDS_ANGLE_MAX: float = -90
+#const HANDS_ANGLE_MIN: float = 90
+#const HANDS_ANGLE_LERP: float = 10
+#const NO_GUN_HAND_X: float = -15
+#
+#const IMG_SPEED_MAX: float = 10
+#const IMG_SPEED_LERP: float = 5
+#const IMG_SPEED_MIN: float = 0.1
+#
+#const CROUCH_BODY_Y: float = 100
+#const CROUCH_BODY_ANGLE: float = -50
+#const CROUCH_HEAD_Y: float = 80
+#const CROUCH_LEGS_Y: float = 1
+#const SLIDE_SLANT_ACCEL: float = 250
+#const SLIDE_SLANT_DECCEL: float = 100
+#
+#const CROUCH_LAND_BOOST: float = 120
+#const CROUCH_SPEED: float = 300
+#const CROUCH_LERP: float = 30
+#const SLIDE_MIN_SPEED: float = 40
+#var crouchDetect: Area2D
+#const MIN_SLIDE_BOOST_SPEED = 200
+#
+#const COL_STAND_HEIGHT: float = 13.5
+#const COL_CROUCH_HEIGHT: float = 9
+#const COL_RADIUS: float = 8
+#
+#const INPUT_DEADZONE: float = 0.25
+#
+#var STEP_ANGLE = 10
+#var STEP_SPEED: float = 3
+#var curStepAngle: float = 0
+#var stepDirection: int = -1
+#const CROUCH_LEG_ANGLE: float = -70.0
+#const LEG_AIR_SWING: float = 60
+#
+#var groundDetect: Area2D
+#var groundRayR: RayCast2D
+#
+#const ACCELERATION = 160
+#const DECCELERATION = 80
+#const DECCELERATION_CROUCH = 40
+#const MAX_SPEED = 80.0
+#const MAX_CROUCH_SPEED = 20.0
+#const JUMP_VELOCITY = 160.0
+#const WALL_JUMP_VELOCITY: Vector2 = Vector2(120, 160)
+#const MAX_COLLISIONS = 6
+#
+#const SPEED_LIMIT: float = 300
+#
+#const STEP_EMITTER_GAP: float = 0.05
+#var stepEmitterTimer: float = 0
+#
+#const STEP_SOUND_GAP: float = 0.1
+#var stepSoundTimer: float = 0
+#
+#
+#signal plyr_spawning_anim_finished
+#var spawnTimer: float = 0
+#const SPAWN_SHOW_TIME: float = 0.8
+#
+#
+#var useRaycastWalljump: bool = true
+#
+#var spikeDestination: Vector2
+#
+#@export var publicVelocity: Vector3
+#
+#var inputVector: Vector2
+#var isOnGround: bool
+#var isOnGroundOld: bool
+#var isDucking: bool
+#var isDuckingSlide: bool
+#var isOnSlant: bool
+#var canUnDuck: bool
+#
+#var asSteps: Array[AudioStream] = [
+	#load("res://audio/ministep1.mp3"),
+	#load("res://audio/ministep2.mp3"),
+	#load("res://audio/ministep3.mp3"),
+	#load("res://audio/ministep4.mp3"),
+	#load("res://audio/ministep5.mp3"),
+#]
+#
+#var asWalljumps: Array[AudioStream] = [
+	#load("res://audio/walljump.mp3"),
+	#load("res://audio/walljump2.mp3"),
+	#load("res://audio/walljump3.mp3"),
+	#load("res://audio/walljump4.mp3"),
+#]
+#
+#var asRevive: AudioStream = load("res://audio/hawooosh4.mp3")
+#var asDie: AudioStream = load("res://audio/explode3 loud.mp3")
+#var asSlide: AudioStream = load("res://audio/slide.mp3")
+#
+#func _ready():
+	#groundDetect = $groundDetect
+	#audio = [
+		#$AudioStreamPlayer,
+		#$AudioStreamPlayer2,
+		#$AudioStreamPlayer3,
+	#]
+	#col = $collider
+	#
+	#spriteParent = $sprites
+	#imgBody = $sprites/body
+	#imgFace = $sprites/body/head/face
+	#imgEars = $sprites/body/head/ears
+	#imgHead = $sprites/body/head
+	#imgLegs = $sprites/legs
+	#imgScarf = $"sprites/body/scarf parent/scarf back"
+	#scarfParent = $"sprites/body/scarf parent"
+	##scarfParent.visible = false
+	#imgHand = $sprites/body/hands
+	#
+	#centerHead = $sprites/body/head/headCenter
+	#centerBody = $sprites/body/bodyCenter
+	#centerLegs = $sprites/legs/legsCenter
+	#
+	#leftWallRays = [
+		#$leftwallray1,
+		#$leftwallray2,
+		#$leftwallray3,
+	#]
+	#rightWallRays = [
+		#$rightwallray1,
+		#$rightwallray2,
+		#$rightwallray3,
+	#]
+	#
+	#leftDetect = $leftDetect
+	#rightDetect = $rightDetect
+	#
+	#downRays.append($downray)
+	#downRays[0].target_position.y = DOWN_RAY_LENGTH
+	#downRays.append($downray2)
+	#downRays[1].target_position.y = DOWN_RAY_LENGTH
+	#
+	#crouchDetect = $crouchDetect
+	#
+	#visibleOnScreen = $VisibleOnScreenNotifier2D
+	#
+	##spawn_gun()
+#
+#func play_sound(stream: AudioStream, index: int = -1):
+	#if index != -1:
+		#audio[index].stream = stream
+		#audio[index].play()
+		#return
+	#for i in range(0, audio.size()):
+		#if not audio[i].playing:
+			#audio[i].stream = stream
+			#audio[i].play()
+			#return
+	#audio[0].stream = stream
+	#audio[0].play()
+#
+#func play_random_sound(arr: Array[AudioStream]):
+	#play_sound(arr.pick_random())
+#
+#func _process(delta):
+	#match state:
+		#State.DISABLE_PHYSICS:
+			#return
+		#State.DISABLE_COMPLETELY:
+			#return
+	#
+	#if abs(inputVector.x) > INPUT_DEADZONE:
+		#@warning_ignore("unused_parameter", "narrowing_conversion")
+		#if inputVector.x > 0:
+			#set_direction(1)
+		#elif inputVector.x < 1:
+			#set_direction(-1)
+		#faceBaseTimer = FACE_BASE_IDLE_TIME
+	#else:
+		#pass
+	#
+	#if abs(inputVector.y) > INPUT_DEADZONE:
+		#pass
+	#else:
+		#imgHand.rotation_degrees = lerp(imgHand.rotation_degrees, 0.0, HANDS_ANGLE_LERP * delta)
+		#
+	#if faceBaseTimer > 0:
+		#faceBaseTimer -= delta
+		#
+	#if velocity.y > 0:
+		#scarfAngle = move_toward(scarfAngle, SCARF_ROTAT_MIN, delta * SCARF_ROTAT_LERP * 2)
+		#pass
+	#elif velocity.y < 0 or abs(velocity.x) > SCARF_MIN_SPEED:
+		#if velocity.y < 0:
+			#scarfAngle = move_toward(scarfAngle, SCARF_ROTAT_MAX, delta * SCARF_ROTAT_LERP)
+		#else:
+			#scarfAngle = move_toward(scarfAngle, SCARF_ROTAT_X_MAX, delta * SCARF_ROTAT_LERP)
+		#pass
+	#else:
+		#scarfAngle = move_toward(scarfAngle, 0, delta * SCARF_ROTAT_LERP)
+		#pass
+	#
+	#scarfParent.rotation_degrees = 0 + direction * scarfAngle
+	#
+	#if abs(velocity.x) > IMG_SPEED_MIN:
+		#imgEars.position.x = lerp(imgEars.position.x, (min(abs(velocity.x), IMG_SPEED_MAX)/IMG_SPEED_MAX) * EARS_OFFSET_X_MAX * -direction, IMG_SPEED_LERP * delta)
+		#imgFace.position.x = lerp(imgFace.position.x, (min(abs(velocity.x), IMG_SPEED_MAX)/IMG_SPEED_MAX) * FACE_OFFSET_X_MAX * -direction, IMG_SPEED_LERP * delta)
+		#if gun:
+			#imgHand.position.x = lerp(imgHand.position.x, (min(abs(velocity.x), IMG_SPEED_MAX)/IMG_SPEED_MAX) * GUN_OFFSET_X_MAX * -direction, IMG_SPEED_LERP * delta)
+		#
+		#if isOnGround:
+			#
+			##imgleg active stepping 
+			#if not isDucking:
+				#if abs(velocity.x) > SLIDE_MIN_SPEED:
+					#if stepSoundTimer > 0:
+						#stepSoundTimer -= delta
+					#else:
+						#stepSoundTimer = STEP_SOUND_GAP
+						#play_random_sound(asSteps)
+				#if abs(velocity.x) > IMG_SPEED_MIN:
+					#if abs(curStepAngle) < abs(stepDirection * STEP_ANGLE):
+						#curStepAngle += stepDirection * STEP_SPEED * abs(velocity.x) * delta
+						#pass
+					#else:
+						#curStepAngle = stepDirection * STEP_ANGLE + (stepDirection * -1)
+						#if stepDirection == 1:
+							#stepDirection = -1
+						#else:
+							#stepDirection = 1
+					#pass
+		#pass
+	#else:
+		#imgEars.position.x = lerp(imgEars.position.x, 0.0, IMG_SPEED_LERP * delta)
+		#if gun:
+			#imgHand.position.x = lerp(imgHand.position.x, 0.0, IMG_SPEED_LERP * delta)
+		#
+		#if isOnGround:
+			#if not isDucking:
+				##imgleg stepping back to origin
+				#if abs(curStepAngle) > 0.1:
+					#if curStepAngle > 0:
+						#curStepAngle -= STEP_SPEED * delta
+						#pass
+					#else:
+						#curStepAngle += STEP_SPEED * delta
+						#pass
+					#pass
+				#else:
+					#curStepAngle = 0
+					#pass
+				#pass
+		#else:
+			##imgleg stepping 
+			#pass
+		#pass
+	#
+	#if isOnGround:
+		#if isDucking:
+			#imgLegs.position.y = lerp(imgLegs.position.y, CROUCH_LEGS_Y, IMG_SPEED_LERP * delta)
+			#imgBody.position.y = lerp(imgBody.position.y, CROUCH_BODY_Y, IMG_SPEED_LERP * delta)
+			#imgHead.position.y = lerp(imgHead.position.y, CROUCH_HEAD_Y, IMG_SPEED_LERP * delta)
+			#imgHead.z_index = 0
+			##imgLegs.z_index = 0
+			#if isDuckingSlide:
+				#if round(imgBody.rotation_degrees) < direction * CROUCH_BODY_ANGLE:
+					#imgBody.rotation_degrees += -direction * STEP_SPEED * LEG_AIR_SWING * delta
+				#else:
+					#imgBody.rotation_degrees = direction * CROUCH_BODY_ANGLE
+					#pass
+				#if abs(curStepAngle) < abs(CROUCH_LEG_ANGLE):
+					#curStepAngle += -direction * STEP_SPEED * LEG_AIR_SWING * delta
+				#else:
+					#curStepAngle = direction * CROUCH_LEG_ANGLE
+			#else:
+				#if abs(imgBody.rotation_degrees) > 4:
+					#imgBody.rotation_degrees -= sign(imgBody.rotation_degrees) * CROUCH_SPEED * delta
+				#else:
+					#imgBody.rotation_degrees = 0
+					#pass
+				#pass
+				#if abs(curStepAngle) > 4:
+					#curStepAngle += -sign(curStepAngle) * STEP_SPEED * LEG_AIR_SWING * delta
+				#else:
+					#curStepAngle = 0
+			#pass
+			#var rect = col.shape as RectangleShape2D
+			#if rect.size.y > COL_CROUCH_HEIGHT:
+				#var newShape: RectangleShape2D = RectangleShape2D.new()
+				#newShape.size.y = lerp(rect.size.y, COL_CROUCH_HEIGHT, CROUCH_LERP * delta)
+				#newShape.size.x = COL_RADIUS
+				#col.shape = newShape
+				#col.position.y = -newShape.size.y/2
+				#pass
+			#else:
+				#if rect.size.y != COL_CROUCH_HEIGHT:
+					#var newShape: RectangleShape2D = RectangleShape2D.new()
+					#newShape.size.y = COL_CROUCH_HEIGHT
+					#newShape.size.x = COL_RADIUS
+					#col.shape = newShape
+					#col.position.y = -COL_CROUCH_HEIGHT/2
+					#pass
+	#else:
+		#imgBody.position.y = lerp(imgBody.position.y, 0.0, CROUCH_LERP * delta)
+		#
+		#stepDirection = direction * sign(velocity.y)
+		#if abs(curStepAngle) < abs(stepDirection * STEP_ANGLE):
+			#curStepAngle += stepDirection * STEP_SPEED * LEG_AIR_SWING * delta
+			#pass
+		#else:
+			#curStepAngle = stepDirection * STEP_ANGLE + (stepDirection * -1)
+	#imgLegs.rotation_degrees = curStepAngle
+	#
+	#if isDuckingSlide:
+		#if not audio[audio.size()-1].playing:
+			#audio[audio.size()-1].stream = asSlide
+			#audio[audio.size()-1].play()
+		#audio[audio.size()-1].volume_db = -20 + (1 * (min(abs(velocity.length()), 200)/200))
+		#audio[audio.size()-1].pitch_scale = 0.5 + min(abs(velocity.length()), 200)/200
+	#
+	#if not isDucking:
+		#imgHead.z_index = -1
+		#imgLegs.z_index = -1
+		#imgLegs.position.y = lerp(imgLegs.position.y, 0.0, IMG_SPEED_LERP * delta)
+		#imgBody.position.y = lerp(imgBody.position.y, 0.0, IMG_SPEED_LERP * delta)
+		#imgHead.position.y = lerp(imgHead.position.y, 0.0, IMG_SPEED_LERP * delta)
+		#if abs(imgBody.rotation_degrees) > 4:
+			#imgBody.rotation_degrees -= sign(imgBody.rotation_degrees) * CROUCH_SPEED * delta
+		#else:
+			#imgBody.rotation_degrees = 0
+			#pass
+		#pass
+		#
+		#var capsule = col.shape as RectangleShape2D
+		#if capsule.size.y < COL_STAND_HEIGHT:
+			#var newShape: RectangleShape2D = RectangleShape2D.new()
+			#newShape.size.y = lerp(capsule.size.y, COL_STAND_HEIGHT, IMG_SPEED_LERP * delta)
+			#newShape.size.x = COL_RADIUS
+			#col.shape = newShape
+			#col.position.y = -newShape.size.y/2
+			#pass
+		#else:
+			#if capsule.size.y != COL_STAND_HEIGHT:
+				#var newShape: RectangleShape2D = RectangleShape2D.new()
+				#newShape.size.y = COL_STAND_HEIGHT
+				#newShape.size.x = COL_RADIUS
+				#col.shape = newShape
+				#col.position.y = -COL_STAND_HEIGHT/2
+				#pass
+		#
+	#if abs(inputVector.y) > INPUT_DEADZONE:
+		#if inputVector.y < 0:
+			#imgHand.rotation_degrees = lerp(imgHand.rotation_degrees, HANDS_ANGLE_MAX * direction, HANDS_ANGLE_LERP * delta)
+			#imgFace.position.y = lerp(imgFace.position.y, (min(abs(velocity.y), IMG_SPEED_MAX)/IMG_SPEED_MAX) * FACE_OFFSET_Y_MAX, IMG_SPEED_LERP * delta)
+			#imgHand.position.y = lerp(imgHand.position.y, (min(abs(velocity.y), IMG_SPEED_MAX)/IMG_SPEED_MAX) * GUN_OFFSET_Y_MAX, IMG_SPEED_LERP * delta)
+			#imgEars.position.y = lerp(imgEars.position.y, (min(abs(velocity.y), IMG_SPEED_MAX)/IMG_SPEED_MAX) * EARS_OFFSET_Y_MAX, IMG_SPEED_LERP * delta)
+			#pass
+		#else:
+			#if not isOnGround:
+				#imgHand.rotation_degrees = lerp(imgHand.rotation_degrees, HANDS_ANGLE_MIN * direction, HANDS_ANGLE_LERP * delta)
+			#else:
+				#imgHand.rotation_degrees = lerp(imgHand.rotation_degrees, 0.0, HANDS_ANGLE_LERP * delta)
+			#imgFace.position.y = lerp(imgFace.position.y, (min(abs(velocity.y), IMG_SPEED_MAX)/IMG_SPEED_MAX) * FACE_OFFSET_Y_MIN, IMG_SPEED_LERP * delta)
+			#imgHand.position.y = lerp(imgHand.position.y, (min(abs(velocity.y), IMG_SPEED_MAX)/IMG_SPEED_MAX) * GUN_OFFSET_Y_MIN, IMG_SPEED_LERP * delta)
+			#imgEars.position.y = lerp(imgEars.position.y, (min(abs(velocity.y), IMG_SPEED_MAX)/IMG_SPEED_MAX) * EARS_OFFSET_Y_MIN, IMG_SPEED_LERP * delta)
+			#pass
+		#pass
+	#else:
+		#imgHand.rotation_degrees = lerp(imgHand.rotation_degrees, 0.0, HANDS_ANGLE_LERP * delta)
+		#imgHand.position.y = lerp(imgHand.position.y, 0.0, IMG_SPEED_LERP * delta)
+		#if isOnGround:
+			#imgFace.position.y = lerp(imgFace.position.y, 0.0, IMG_SPEED_LERP * delta)
+			#imgEars.position.y = lerp(imgEars.position.y, 0.0, IMG_SPEED_LERP * delta)
+			#if faceBaseTimer <= 0:
+				#if abs(velocity.x) < IMG_SPEED_MIN:
+					#imgFace.position.x = lerp(imgFace.position.x, FACE_OFFSET_X_BASE * direction, IMG_SPEED_LERP * delta)
+			#pass
+		#else:
+			#if velocity.y > 0:
+				#imgFace.position.y = lerp(imgFace.position.y, (min(abs(velocity.y), IMG_SPEED_MAX)/IMG_SPEED_MAX) * FACE_OFFSET_Y_MAX, IMG_SPEED_LERP * delta)
+				#imgHand.position.y = lerp(imgHand.position.y, (min(abs(velocity.y), IMG_SPEED_MAX)/IMG_SPEED_MAX) * GUN_OFFSET_Y_MAX, IMG_SPEED_LERP * delta)
+				#imgEars.position.y = lerp(imgEars.position.y, (min(abs(velocity.y), IMG_SPEED_MAX)/IMG_SPEED_MAX) * EARS_OFFSET_Y_MAX, IMG_SPEED_LERP * delta)
+				#pass
+			#else:
+				#imgFace.position.y = lerp(imgFace.position.y, (min(abs(velocity.y), IMG_SPEED_MAX)/IMG_SPEED_MAX) * FACE_OFFSET_Y_MIN, IMG_SPEED_LERP * delta)
+				#imgHand.position.y = lerp(imgHand.position.y, (min(abs(velocity.y), IMG_SPEED_MAX)/IMG_SPEED_MAX) * GUN_OFFSET_Y_MIN, IMG_SPEED_LERP * delta)
+				#imgEars.position.y = lerp(imgEars.position.y, (min(abs(velocity.y), IMG_SPEED_MAX)/IMG_SPEED_MAX) * EARS_OFFSET_Y_MIN, IMG_SPEED_LERP * delta)
+				#pass
+			#pass
+#
+	#if isChargingGun:
+		#if not gun:
+			#isChargingGun = false
+			#gunChargeTimer = 0
+		#if gunChargeTimer > GUN_CHARGE_TIME:
+			#imgFace.position.x = lerp(imgFace.position.x, FACE_OFFSET_X_MAX * -direction, IMG_SPEED_LERP * delta)
+			#gun.isCharging = true
+			#if(true):
+				#var pos: float = gun.position.y
+				#if abs(pos) < GUN_CHARGE_SHAKE_Y:
+					#pos += delta * GUN_CHARGE_SHAKE_SPEED * -gunChargeShakeDir
+					#pass
+				#else:
+					#gunChargeShakeDir = -gunChargeShakeDir
+					#pos = (GUN_CHARGE_SHAKE_Y * gunChargeShakeDir) - gunChargeShakeDir
+					#pass
+				#gun.position.y = pos
+			#
+	#else:
+		#if gun:
+			#gun.isCharging = false
+			#gun.position.y = 0
+		#pass
+	#pass
+#
+##func spawn_gun():
+	##gun = await G.spawn(gunScene)
+	##gun.reparent(imgHand)
+	##gun.position = Vector2.ZERO
+	##gun.scale = Vector2.ONE
+	##gun.set_direction(Vector2(direction, 0))
+	##gun.holder = self
+#
+##func despawn_gun():
+	##gun.queue_free()
+#
+#@warning_ignore("unused_parameter")
+#func _cast_ray(dir: Vector2, length: float):
+	#var space_state = get_world_2d().direct_space_state
+	## use global coordinates, not local to node
+	#var query = PhysicsRayQueryParameters2D.create(global_position, global_position + (dir * length))
+	#var result = space_state.intersect_ray(query)
+	#if result:
+		#if result["collider"] is Player:
+			#pass
+		#else:
+			#pass
+	#pass
+#
+#func _physics_process(delta):
+	#match state:
+		#State.FREE:
+			#get_inputVector()
+			#if velocity.length() > SPEED_LIMIT:
+				#velocity = velocity.normalized() * SPEED_LIMIT
+				#pass
+			#if velocity.x > SPEED_LIMIT:
+				#velocity.x = SPEED_LIMIT
+			#slide(delta)
+			#
+			#isOnGround = len(groundDetect.get_overlapping_bodies()) > 0
+			#
+			#if isOnGround:
+				#if Input.is_action_pressed("duck") or Input.is_action_pressed("down"):
+					#isDucking = true
+					#if abs(velocity.x) > SLIDE_MIN_SPEED:
+						#isDuckingSlide = true
+					#else:
+						#isDuckingSlide = false
+				#else:
+					#if canUnDuck:
+						#isDuckingSlide = false
+						#isDucking = false
+			#else:
+				#isDuckingSlide = false
+				#isDucking = false
+				#canUnDuck = true
+			#
+			#if isDucking:
+				#canUnDuck = len(crouchDetect.get_overlapping_bodies()) == 0
+			#
+			## Add the gravity.
+			#if not is_on_floor():
+				#velocity -= get_gravity() * delta
+#
+			## Handle jump.
+			#if isOnGround:
+				#wallOnLeft = false
+				#wallOnRight = false
+				#if Input.is_action_just_pressed("jump"):
+					#velocity.y = JUMP_VELOCITY
+			#else:
+				#if useRaycastWalljump:
+					#if rays_detect(leftWallRays):
+						#wallOnLeft = true
+					#else:
+						#wallOnLeft = false
+					#if rays_detect(rightWallRays):
+						#wallOnRight = true
+					#else:
+						#wallOnRight = false
+					#pass
+				#else:
+					#if leftDetect.has_overlapping_bodies():
+						#wallOnLeft = true
+					#else:
+						#wallOnLeft = false
+					#if rightDetect.has_overlapping_bodies():
+						#wallOnRight = true
+					#else:
+						#wallOnRight = false
+					#pass
+#
+			#if wallOnLeft:
+				#if leftWallRays[1].is_colliding():
+					##_walljump_emit(leftWallRays[1].get_collision_point(), delta)
+					#pass
+				#if Input.is_action_just_pressed("jump"):
+					#wall_jump(1)
+			#if wallOnRight:
+				#if rightWallRays[1].is_colliding():
+					##_walljump_emit(rightWallRays[1].get_collision_point(), delta)
+					#pass
+				#if Input.is_action_just_pressed("jump"):
+					#wall_jump(-1)
+			#if gun:
+				#pass
+			#if abs(inputVector.x) > INPUT_DEADZONE:
+				#if isDucking:
+					#if not isDuckingSlide:
+						#velocity.x = move_toward(velocity.x, MAX_CROUCH_SPEED * direction, ACCELERATION * delta)
+				#else:
+					#if isOnGround:
+						#velocity.x = move_toward(velocity.x, MAX_SPEED * direction, ACCELERATION * delta)
+					#else:
+						#if sign(velocity.x) != direction or abs(velocity.x) < abs(MAX_SPEED):
+							#velocity.x = move_toward(velocity.x, MAX_SPEED * direction, ACCELERATION * delta)
+			#else:
+				#if isOnGround:
+					#if isDuckingSlide:
+						#if isOnSlant:
+							#var downNormal = get_down_normal()
+							#if downNormal:
+								#velocity += downNormal * SLIDE_SLANT_ACCEL * delta
+							#else:
+								#velocity.x -= sign(velocity.x) * SLIDE_SLANT_DECCEL * delta
+						#else:
+							#velocity.x = move_toward(velocity.x, 0.0, DECCELERATION_CROUCH * delta)
+							#pass
+					#else:
+						#velocity.x = move_toward(velocity.x, 0.0, DECCELERATION * delta)
+			#
+			#
+			#publicVelocity = velocity
+		#State.DISABLE_INPUT:
+			#slide(delta)
+			#if not is_on_floor():
+				#velocity -= get_gravity() * delta
+			#pass
+		#State.SPAWNING:
+			#pass
+		#State.DISABLE_COMPLETELY:
+			#pass
+		#State.DYING:
+			#pass
+		#State.DISABLE_PHYSICS:
+			#pass
+#
+#func rays_detect(rays: Array[RayCast2D]):
+	#for ray in rays:
+		#if ray.is_colliding():
+			#var normal = ray.get_collision_normal()
+			#if normal.y == 0 and abs(normal.x) == 1:
+				#return true
+	#return false
+#
+#func check_tiles_in_area(area: Area2D):
+	#for body in area.get_overlapping_bodies():
+		#if body is TileMapLayer:
+			#var shape: CollisionShape2D = area.get_child(0)
+			#var arrPoints: Array[Vector2i] = [
+				#shape.global_position + Vector2(shape.shape.size.x, shape.shape.size.y),
+				#shape.global_position + Vector2(-shape.shape.size.x, shape.shape.size.y),
+				#shape.global_position + Vector2(shape.shape.size.x, -shape.shape.size.y),
+				#shape.global_position + Vector2(-shape.shape.size.x, -shape.shape.size.y)
+			#]
+			#var space_state = get_world_2d().direct_space_state
+			#for point in arrPoints:
+				#var collision = space_state.intersect_ray(PhysicsRayQueryParameters2D.create(Vector2(global_position.x, point.y), point, area.collision_mask))
+				#if collision.has("normal"):
+					#if collision["normal"].y == 0 && abs(collision["normal"].x) == 1:
+						#return true
+	#return false
+#
+#func wall_jump(dir: int):
+	#if velocity.y < -MIN_SLIDE_BOOST_SPEED:
+		#velocity.y = velocity.y
+	#else:
+		#velocity.y = WALL_JUMP_VELOCITY.y
+	#velocity.x = dir * WALL_JUMP_VELOCITY.x
+	#
+	#play_random_sound(asWalljumps)
+	##set_direction(dir)
+	#pass
+#
+#func freeze():
+	#set_state(Player.State.DISABLE_PHYSICS)
+#
+#func unfreeze():
+	#set_state(Player.State.FREE)
+#
+#func get_gun_aim_vector() -> Vector2:
+	#if abs(inputVector.y) > INPUT_DEADZONE:
+		#if isDucking:
+			#if inputVector.y > INPUT_DEADZONE:
+				#return Vector2(direction, 0)
+			#else:
+				#return Vector2(0, inputVector.y)
+		#return Vector2(0, inputVector.y)
+	#else:
+		#return Vector2(direction, 0)
+#
+#func collide(delta: float):
+	#var collision_count := 0
+	#var collision = move_and_collide(Vector2(velocity.x, -velocity.y) * delta)
+	#while collision and collision_count < MAX_COLLISIONS:
+		#var normal = collision.get_normal()
+		#var remainder = collision.get_remainder()
+		#velocity = Vector2(velocity.x + (-1 * abs(normal.x) * velocity.x), velocity.y + (-1 * abs(normal.y) * velocity.y))
+		#remainder = Vector2(remainder.x + (-1 * abs(normal.x) * remainder.x), remainder.y + (-1 * abs(normal.y) * remainder.y))
+		#
+		#collision_count += 1
+		#collision = move_and_collide(remainder)
+		#pass
+	#pass
+#
+#func disable_input():
+	#set_state(State.DISABLE_INPUT)
+#
+#func enable_input():
+	#set_state(State.FREE)
+	#
+#func set_state(newState: State):
+	#state = newState
+	#match state:
+		#State.FREE:
+			#spriteParent.visible = true
+			#pass
+		#State.DISABLE_INPUT:
+			#pass
+		#State.SPAWNING:
+			#@warning_ignore("unused_variable")
+			#play_sound(asRevive)
+			#var temp = 0
+			#spawnTimer = 0
+			#spriteParent.visible = false
+			#pass
+		#State.DYING:
+			#play_sound(asDie)
+			#spriteParent.visible = false
+			#pass
+		#State.DISABLE_COMPLETELY:
+			#spriteParent.visible = false
+		#State.DISABLE_PHYSICS:
+			#spriteParent.visible = true
+	#pass
+	#
+#signal dying_finished
+#func _dying_ended():
+	#dying_finished.emit()
+#
+#func _spawning_ended():
+	#plyr_spawning_anim_finished.emit()
+#
+#func slide(delta: float):
+	#var preCollisionVelocity: Vector2 = velocity
+	#velocity.y = -velocity.y
+	#var collided = move_and_slide()
+	#if collided:
+		#var collision = get_last_slide_collision()
+		#var normal = collision.get_normal()
+		#var pos = collision.get_position()
+		#var count = get_slide_collision_count()
+		#var travel = collision.get_travel()
+		#var entity = collision.get_collider()
+#
+		#
+		#
+		#if count > 1:
+			#for i in range(0, count):
+				##print(Time.get_ticks_msec())
+				##print("   ",get_slide_collision(i).get_normal())
+				##print("   ",get_slide_collision(i).get_position())
+				#
+				#if get_slide_collision(i).get_normal() == Vector2(0, -1):
+					#pass
+				#pass
+			#pass
+		#
+		#isOnGround = len(groundDetect.get_overlapping_bodies()) > 0
+		#
+		#if normal == Vector2(0.0, -1.0):
+			#var downNorm = get_down_normal()
+			#if downNorm:
+				#if downNorm != normal:
+					#normal = downNorm
+		#
+		#
+		#if normal.y < 0 and normal.y != -1:
+			#isOnSlant = true
+			#if abs(inputVector.y) > INPUT_DEADZONE or Input.is_action_pressed("duck"):
+				#if not isOnGroundOld:
+					#if preCollisionVelocity.y < -MIN_SLIDE_BOOST_SPEED:
+						#if abs(normal.x) > PI/6 and abs(normal.x) < PI/3:
+							#if normal.x > 0:
+								#velocity.y = 0
+								#velocity.x = preCollisionVelocity.length()
+								#velocity = velocity.rotated(PI/4)
+								#pass
+							#else:
+								#velocity.y = 0
+								#velocity.x = -preCollisionVelocity.length()
+								#velocity = velocity.rotated(-PI/4)
+								#pass
+							#pass
+	#else:
+		#if isOnGround:
+			#var downNormal = get_down_normal()
+			#if downNormal:
+				#if downNormal.y < 0 and downNormal.y != -1:
+					#isOnSlant = true
+				#else:
+					#isOnSlant = false
+			#else:
+				#if isOnSlant:
+					#pass
+				#isOnSlant = false
+				#
+				##slide_tick(delta, downNormals[chosen], preCollisionVelocity)
+		#else:
+			#isOnSlant = false
+		#
+	#velocity.y = -velocity.y
+	#
+	#if isOnGroundOld and not isOnGround:
+		#pass
+	#isOnGroundOld = isOnGround
+#
+#func get_down_normal() -> Variant:
+	#var downNormals: Array = [null, null]
+	#var chosen: int = -1
+	#if downRays[0].is_colliding():
+		#downNormals[0] = downRays[0].get_collision_normal()
+		#chosen = 0
+	#if downRays[1].is_colliding():
+		#downNormals[1] = downRays[1].get_collision_normal()
+		#chosen = 1
+	#if chosen != -1:
+		#return downNormals[chosen]
+	#else:
+		#return null
+#
+#var lastVelSlant: Vector2
+#
+#func get_inputVector():
+	#inputVector.x = Input.get_axis("left", "right")
+	#inputVector.y = Input.get_axis("up", "down")
+	#if isDucking and Input.is_action_pressed("up"):
+		#inputVector.y = -1
+	#return inputVector
+	#
+#func set_direction(dir: int):
+	#
+	#if dir == 0:
+		#pass
+	#direction = dir
+	#if dir == -1:
+		#imgBody.flip_h = true
+		#imgEars.flip_h = true
+		#imgFace.flip_h = true
+		#imgScarf.flip_h = true
+		#scarfParent.position.x = SCARF_POS_RIGHT_X
+		#imgScarf.position.x = SCARF_SPR_RIGHT_X
+		#imgHand.flip_h = true
+		#pass
+	#elif dir == 1:
+		#imgBody.flip_h = false
+		#imgEars.flip_h = false
+		#imgFace.flip_h = false
+		#imgScarf.flip_h = false
+		#scarfParent.position.x = SCARF_POS_LEFT_X
+		#imgScarf.position.x = SCARF_SPR_LEFT_X
+		#imgHand.flip_h = false
+		#pass
+	#else:
+		#return
+	#
+	#if gun:
+		#gun.set_direction(Vector2(direction, inputVector.y))
+#
+#func reset():
+	#velocity = Vector2.ZERO
+	#imgEars.position.x = 0.0
+	#imgEars.position.y = 0.0
+	#
+	#imgHead.position.y = 0.0
+	#imgHand.rotation_degrees = 0
+	#
+	#imgFace.position.x = FACE_OFFSET_X_BASE * direction
+	#imgFace.position.y = 0.0
+	#
+	#imgBody.position.y = 0.0
+	#imgBody.rotation_degrees = 0
+	#
+	#imgLegs.position.y = 0.0
+	#imgLegs.rotation_degrees = 0
+	#
+	#isDucking = false
+	#isDuckingSlide = false
+	#
+	#gunChargeTimer = 0
+	#
+	#if gun:
+		#gun.reset()
+	#pass
+#
+#func reset_and_spawn():
+	#reset()
+	#set_state(State.SPAWNING)
+	#
+#func die():
+	#super.die()
+	#set_state(State.DYING)
+	#
+#
+#func instantly_die():
+	#spriteParent.visible = false
+	#set_state(State.SPAWNING)

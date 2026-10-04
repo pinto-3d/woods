@@ -1,0 +1,28 @@
+[gd_scene format=3 uid="uid://bugyqet37rfxl"]
+
+[ext_resource type="Script" uid="uid://c3y54dwae1gnw" path="res://block.gd" id="1_pq8q7"]
+[ext_resource type="ArrayMesh" uid="uid://d0xs23dav188k" path="res://mesh/cube_mesh.tres" id="2_vvh5c"]
+[ext_resource type="Shader" uid="uid://2tbjwpy6i5t0" path="res://block_noise.gdshader" id="3_vvh5c"]
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_28aoi"]
+render_priority = 0
+shader = ExtResource("3_vvh5c")
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_ek46y"]
+
+[node name="root" type="Node3D" unique_id=227208465]
+
+[node name="Camera3D" type="Camera3D" parent="." unique_id=1056890238]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 2.3493586)
+
+[node name="Environment" type="Node3D" parent="." unique_id=171994457]
+
+[node name="Block" type="CharacterBody3D" parent="Environment" unique_id=1391725335]
+script = ExtResource("1_pq8q7")
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="Environment/Block" unique_id=247933005]
+mesh = ExtResource("2_vvh5c")
+surface_material_override/0 = SubResource("ShaderMaterial_28aoi")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Environment/Block" unique_id=1468923666]
+shape = SubResource("BoxShape3D_ek46y")
