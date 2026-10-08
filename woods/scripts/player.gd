@@ -3,6 +3,12 @@ class_name Player
 
 # Called when the node enters the scene tree for the first time.
 func _ready() -> void:
+	leftRay = $LeftRay
+	rightRay = $RightRay
+	groundRays = [
+		$GroundRay/Left,
+		$GroundRay/Right
+	]
 	pass # Replace with function body.
 
 
@@ -14,15 +20,9 @@ func _physics_process(delta):
 	super._physics_process(delta)
 	match state:
 		State.FREE:
-			get_inputVector()
-			if velocity.length() > SPEED_LIMIT:
-				velocity = velocity.normalized() * SPEED_LIMIT
-				pass
-			if velocity.x > SPEED_LIMIT:
-				velocity.x = SPEED_LIMIT
 			
 			if isOnGround:
-				if Input.is_action_pressed("duck") or Input.is_action_pressed("down"):
+				if Input.is_action_pressed("down"):
 					isDucking = true
 					if abs(velocity.x) > SLIDE_MIN_SPEED:
 						isDuckingSlide = true
@@ -38,37 +38,20 @@ func _physics_process(delta):
 				canUnDuck = true
 			
 			if isDucking:
-				canUnDuck = len(crouchDetect.get_overlapping_bodies()) == 0
-			
-			# Add the gravity.
-			if not is_on_floor():
-				velocity -= get_gravity() * delta
+				if crouchDetect:
+					canUnDuck = len(crouchDetect.get_overlapping_bodies()) == 0
 
 			# Handle jump.
 			if isOnGround:
 				if Input.is_action_just_pressed("jump"):
-					velocity.y = JUMP_VELOCITY
+					jump()
 			else:
 				if wallOnLeft:
 					if Input.is_action_just_pressed("jump"):
-						wall_jump(1)
+						_try_wall_jump(1)
 				if wallOnRight:
 					if Input.is_action_just_pressed("jump"):
-						wall_jump(-1)
-			if abs(inputVector.x) > INPUT_DEADZONE:
-				if isDucking:
-					if not isDuckingSlide:
-						velocity.x = move_toward(velocity.x, MAX_CROUCH_SPEED * direction, ACCELERATION * delta)
-				else:
-					if isOnGround:
-						velocity.x = move_toward(velocity.x, MAX_SPEED * direction, ACCELERATION * delta)
-					else:
-						if sign(velocity.x) != direction or abs(velocity.x) < abs(MAX_SPEED):
-							velocity.x = move_toward(velocity.x, MAX_SPEED * direction, ACCELERATION * delta)
-			else:
-				if isOnGround:
-					velocity.x = move_toward(velocity.x, 0.0, DECCELERATION * delta)
-			
+						_try_wall_jump(-1)
 			
 			publicVelocity = velocity
 		State.SPAWNING:
@@ -79,3 +62,11 @@ func _physics_process(delta):
 			pass
 		State.DISABLE_PHYSICS:
 			pass
+
+func jump():
+	velocity.y = JUMP_VELOCITY
+
+func get_inputVector():
+	inputVector.x = Input.get_axis("left", "right")
+	inputVector.y = Input.get_axis("up", "down")
+	return inputVector

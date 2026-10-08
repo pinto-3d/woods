@@ -1,0 +1,14 @@
+[gd_resource type="ShaderMaterial" format=3 uid="uid://cxf3007tlx6gv"]
+
+[ext_resource type="Shader" uid="uid://2tbjwpy6i5t0" path="res://entity/block/block_noise.gdshader" id="1_g4cay"]
+
+[resource]
+resource_local_to_scene = true
+render_priority = 0
+shader = ExtResource("1_g4cay")
+shader_parameter/pixel_size = 1.0
+shader_parameter/seed = 0.0
+shader_parameter/resolution = 8.0
+shader_parameter/tint = Vector3(0, 0, 0)
+shader_parameter/min_brightness = 0.0
+shader_parameter/max_brightness = 1.0

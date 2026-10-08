@@ -1,12 +1,12 @@
-extends Entity
-class_name Block
+extends Block
+class_name ImmovableBlock
 
 func _init() -> void:
 	super._init()
 
 func _ready() -> void:
-	mesh = $MeshInstance3D
-	col = $CollisionShape3D
+	isAffectedByGravity = false;
+	isMovable = false;
 	super._ready()
 
 func _process(delta: float) -> void:

@@ -1,14 +1,14 @@
-[gd_resource type="ArrayMesh" format=4 uid="uid://cegd70padikxe"]
+[gd_resource type="ArrayMesh" format=4 uid="uid://b65eeristdkxs"]
 
-[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_jba7r"]
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_xiw0t"]
 resource_name = "Material"
 cull_mode = 2
 albedo_color = Color(0.9063318, 0.9063318, 0.9063318, 1)
 roughness = 0.5
 
-[sub_resource type="ArrayMesh" id="ArrayMesh_sq2i2"]
+[sub_resource type="ArrayMesh" id="ArrayMesh_sr0n6"]
 _surfaces = [{
-"aabb": AABB(-0.5, -0.5, -0.5, 1, 1, 1),
+"aabb": AABB(-0.375, -0.5, -0.375, 0.75, 1, 0.75),
 "format": 34896613377,
 "index_count": 36,
 "index_data": PackedByteArray("AAABAAIAAwACAAEAAAAEAAEAAwAFAAIABQAAAAIABgAEAAAABQAGAAAABwABAAQABwADAAEABgAHAAQABQADAAcABQAHAAYA"),
@@ -21,14 +21,14 @@ _surfaces = [{
 blend_shape_mode = 0
 
 [resource]
-resource_name = "cube_Cube"
+resource_name = "player_skinny_cube_Cube"
 _surfaces = [{
-"aabb": AABB(-0.5, -0.5, -0.5, 1, 1, 1),
+"aabb": AABB(-0.375, -0.5, -0.375, 0.75, 1, 0.75),
 "attribute_data": PackedByteArray("//8AAAAA//8AAAAA//////////8AAAAA//8AAAAA//8AAP////8AAAAAAAD/////AAAAAP///////wAAAAD///////8AAAAA//8AAAAA//8AAP////8AAAAAAAD/////"),
 "format": 34896613399,
 "index_count": 36,
 "index_data": PackedByteArray("AAABAAIAAAADAAEABAAFAAYABAAHAAUACAAJAAoACAALAAkADAANAA4ADAAPAA0AEAARABIAEAATABEAFAAVABYAFAAXABUA"),
-"material": SubResource("StandardMaterial3D_jba7r"),
+"material": SubResource("StandardMaterial3D_xiw0t"),
 "name": "Material",
 "primitive": 3,
 "uv_scale": Vector4(0, 0, 0, 0),
@@ -36,4 +36,4 @@ _surfaces = [{
 "vertex_data": PackedByteArray("/////wAA/78AAP//////vwAA//8AAP+//////////7///wAA//8AgAAA/////wCA////////AIAAAAAA//8AgAAAAAD//wAAAAD//wAAAAAAAP////8AAAAAAAAAAAAAAAAAAAAA/z///wAA////P///AAAAAP8/AAAAAP///z///wAAAAD/v/////////+//////wAA/7///wAA////vwAAAAAAAAAA/////wAAAAAAAP//AAAAAP//AAAAAAAA////f////3////9/////f/9/////f////3////9/////P/9//z//f/8//3//P/9/AAD/fwAA/38AAP9/AAD/f/9/AAD/fwAA/38AAP9/AAD///9/////f////3////9/")
 }]
 blend_shape_mode = 0
-shadow_mesh = SubResource("ArrayMesh_sq2i2")
+shadow_mesh = SubResource("ArrayMesh_sr0n6")

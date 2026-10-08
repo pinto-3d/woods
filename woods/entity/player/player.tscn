@@ -1,0 +1,49 @@
+[gd_scene format=3 uid="uid://7leje722w1w6"]
+
+[ext_resource type="Script" uid="uid://c8lh3okxjdc5y" path="res://scripts/player.gd" id="1_4pl66"]
+[ext_resource type="Material" uid="uid://cxf3007tlx6gv" path="res://entity/block/block_noise_mat.tres" id="2_4pl66"]
+[ext_resource type="ArrayMesh" uid="uid://b65eeristdkxs" path="res://mesh/skinny_player_cube_mesh.tres" id="3_4pl66"]
+
+[sub_resource type="ProceduralSkyMaterial" id="ProceduralSkyMaterial_4pl66"]
+sky_horizon_color = Color(0.66224277, 0.6717428, 0.6867428, 1)
+ground_horizon_color = Color(0.66224277, 0.6717428, 0.6867428, 1)
+
+[sub_resource type="Sky" id="Sky_bgq54"]
+sky_material = SubResource("ProceduralSkyMaterial_4pl66")
+
+[sub_resource type="Environment" id="Environment_482rp"]
+background_mode = 2
+sky = SubResource("Sky_bgq54")
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_ek46y"]
+
+[node name="Player" type="CharacterBody3D" unique_id=898077056]
+script = ExtResource("1_4pl66")
+
+[node name="WorldEnvironment" type="WorldEnvironment" parent="." unique_id=1514212927]
+environment = SubResource("Environment_482rp")
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="." unique_id=97283055]
+material_override = ExtResource("2_4pl66")
+mesh = ExtResource("3_4pl66")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="." unique_id=1171922087]
+shape = SubResource("BoxShape3D_ek46y")
+
+[node name="LeftRay" type="RayCast3D" parent="." unique_id=1943862994]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.5, 0, 0)
+target_position = Vector3(-0.1, 0, 0)
+
+[node name="RightRay" type="RayCast3D" parent="." unique_id=1842883913]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.5, 0, 0)
+target_position = Vector3(0.1, 0, 0)
+
+[node name="GroundRay" type="Node3D" parent="." unique_id=1473771352]
+
+[node name="Right" type="RayCast3D" parent="GroundRay" unique_id=2091950162]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.5, -0.5, 0)
+target_position = Vector3(0, -0.1, 0)
+
+[node name="Left" type="RayCast3D" parent="GroundRay" unique_id=979170700]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.5, -0.5, 0)
+target_position = Vector3(0, -0.1, 0)

@@ -1,0 +1,17 @@
+[gd_scene format=3 uid="uid://c8uug5uucmxwd"]
+
+[ext_resource type="Script" uid="uid://curgqltw8hox" path="res://entity/block/immovable_block.gd" id="1_rsno4"]
+[ext_resource type="Material" uid="uid://cxf3007tlx6gv" path="res://entity/block/block_noise_mat.tres" id="2_rsno4"]
+[ext_resource type="ArrayMesh" uid="uid://cegd70padikxe" path="res://mesh/cube_mesh.tres" id="2_wq1pe"]
+[ext_resource type="Shape3D" uid="uid://bm7frr50xsne1" path="res://basic_box_collision_shape.tres" id="4_wq1pe"]
+
+[node name="ImmovableBlock" type="CharacterBody3D" unique_id=1221345012]
+script = ExtResource("1_rsno4")
+TINT = Color(0.25249317, 0.49192637, 0.560942, 1)
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="." unique_id=381538882]
+material_override = ExtResource("2_rsno4")
+mesh = ExtResource("2_wq1pe")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="." unique_id=1795142865]
+shape = ExtResource("4_wq1pe")

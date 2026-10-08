@@ -3,13 +3,13 @@
 importer="scene"
 importer_version=1
 type="PackedScene"
-uid="uid://dtu5s8le6lbcx"
-path="res://.godot/imported/cube.glb-ec927bc01951d93b2130ba52799eca7c.scn"
+uid="uid://dvmx6bhc2p6ir"
+path="res://.godot/imported/player_skinny_cube.glb-07dc0a966d8faa8d3e9b82d6762c1505.scn"
 
 [deps]
 
-source_file="res://cube.glb"
-dest_files=["res://.godot/imported/cube.glb-ec927bc01951d93b2130ba52799eca7c.scn"]
+source_file="res://player_skinny_cube.glb"
+dest_files=["res://.godot/imported/player_skinny_cube.glb-07dc0a966d8faa8d3e9b82d6762c1505.scn"]
 
 [params]
 
@@ -41,14 +41,14 @@ materials/extract_format=0
 materials/extract_path=""
 _subresources={
 "meshes": {
-"cube_Cube": {
+"player_skinny_cube_Cube": {
 "generate/lightmap_uv": 0,
 "generate/lods": 0,
 "generate/shadow_meshes": 0,
 "lods/normal_merge_angle": 20.0,
 "save_to_file/enabled": true,
-"save_to_file/fallback_path": "res://mesh/cube_mesh.tres",
-"save_to_file/path": "uid://d0xs23dav188k"
+"save_to_file/fallback_path": "res://mesh/skinny_player_cube_mesh.tres",
+"save_to_file/path": "uid://pdtuehuo3jgq"
 }
 }
 }
