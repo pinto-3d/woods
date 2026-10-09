@@ -5,10 +5,11 @@ enum State {FREE=0, DISABLE_INPUT=1, SPAWNING=2, DYING=3, DISABLE_COMPLETELY=4, 
 
 var state: State = State.FREE
 
+var MIN_SLIDE_BOOST_SPEED = 200
 var GRAVITY: float = 10.0;
 var GRAVITY_DIRECTION: Vector3 = Vector3.DOWN;
 var hasLinearGravity: bool = true
-var MIN_SLIDE_BOOST_SPEED = 200
+var LINEAR_GRAVITY_MAX: float = 3;
 
 var mesh: MeshInstance3D
 var col: CollisionShape3D
@@ -67,9 +68,13 @@ func _physics_process(delta: float) -> void:
 	if isAffectedByGravity:
 		if not is_on_floor():
 			velocity += GRAVITY_DIRECTION * GRAVITY * delta
-			pass
+			if hasLinearGravity:
+				if velocity.y < -LINEAR_GRAVITY_MAX:
+					velocity.y = -LINEAR_GRAVITY_MAX
+					pass
 
 	move(delta)
+	entityGridUpdate.emit(self, global_position)
 
 func _try_slant_boost(normal:Vector3, preCollisionVelocity: Vector3):
 	pass

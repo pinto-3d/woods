@@ -50,8 +50,11 @@ var health: int = 1
 
 @export var publicVelocity: Vector3
 
+var holdPoint: Node3D
+
 # Called when the node enters the scene tree for the first time.
 func _ready() -> void:
+	holdPoint = $HoldPoint
 	pass # Replace with function body.
 
 

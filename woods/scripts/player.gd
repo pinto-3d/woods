@@ -9,8 +9,14 @@ func _ready() -> void:
 		$GroundRay/Left,
 		$GroundRay/Right
 	]
+	hasLinearGravity = false
+	start()
 	pass # Replace with function body.
 
+
+func start():
+	GridManager.i.register_entity(self)
+	pass
 
 # Called every frame. 'delta' is the elapsed time since the previous frame.
 func _process(delta: float) -> void:
@@ -18,9 +24,9 @@ func _process(delta: float) -> void:
 
 func _physics_process(delta):
 	super._physics_process(delta)
+	
 	match state:
 		State.FREE:
-			
 			if isOnGround:
 				if Input.is_action_pressed("down"):
 					isDucking = true
@@ -52,6 +58,10 @@ func _physics_process(delta):
 				if wallOnRight:
 					if Input.is_action_just_pressed("jump"):
 						_try_wall_jump(-1)
+			
+			if Input.is_action_just_pressed("interact"):
+				GridManager.i.position_to_grid(global_position)
+				pass
 			
 			publicVelocity = velocity
 		State.SPAWNING:

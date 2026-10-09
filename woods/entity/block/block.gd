@@ -19,7 +19,6 @@ func _ready() -> void:
 	super._ready()
 	mesh = $MeshInstance3D
 	col = $CollisionShape3D
-	print("he")
 	TEX_SEED = global_position.x
 	
 	mesh.material_override.set("shader_parameter/seed", TEX_SEED);
@@ -27,6 +26,17 @@ func _ready() -> void:
 	mesh.material_override.set("shader_parameter/max_brightness", BRIGHTNESS_MIN_MAX.y);
 	mesh.material_override.set("shader_parameter/tint", TINT);
 	mesh.material_override.set("shader_parameter/resolution", RESOLUTION);
+
+func _enter_tree() -> void:
+	if Engine.is_editor_hint():
+		if not mesh:
+			mesh = $MeshInstance3D
+		mesh.material_override.set("shader_parameter/seed", TEX_SEED);
+		mesh.material_override.set("shader_parameter/min_brightness", BRIGHTNESS_MIN_MAX.x);
+		mesh.material_override.set("shader_parameter/max_brightness", BRIGHTNESS_MIN_MAX.y);
+		mesh.material_override.set("shader_parameter/tint", TINT);
+		mesh.material_override.set("shader_parameter/resolution", RESOLUTION);
+	pass
 
 func _process(delta: float) -> void:
 	if Engine.is_editor_hint():
@@ -45,7 +55,6 @@ func _process(delta: float) -> void:
 		if _resolution != RESOLUTION:
 			mesh.material_override.set("shader_parameter/resolution", RESOLUTION);
 			_resolution = RESOLUTION
-		pass
 		return
 	super._process(delta)
 

@@ -1,3 +1,4 @@
+@tool
 extends Block
 class_name ImmovableBlock
 
