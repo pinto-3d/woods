@@ -8,6 +8,7 @@ func _init() -> void:
 func _ready() -> void:
 	isAffectedByGravity = false;
 	isMovable = false;
+	isHoldable = false;
 	super._ready()
 
 func _process(delta: float) -> void:

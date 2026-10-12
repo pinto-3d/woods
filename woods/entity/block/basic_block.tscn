@@ -5,6 +5,15 @@
 [ext_resource type="ArrayMesh" uid="uid://cegd70padikxe" path="res://mesh/cube_mesh.tres" id="3_nwk8u"]
 [ext_resource type="Shape3D" uid="uid://bm7frr50xsne1" path="res://basic_box_collision_shape.tres" id="4_c2rph"]
 
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_lhcdp"]
+shading_mode = 0
+albedo_color = Color(1, 0, 0, 1)
+
+[sub_resource type="SphereMesh" id="SphereMesh_c2rph"]
+material = SubResource("StandardMaterial3D_lhcdp")
+radius = 0.1
+height = 0.2
+
 [node name="Block" type="CharacterBody3D" unique_id=1221345012]
 script = ExtResource("1_jnckp")
 TINT = Color(0.764511, 0.31714985, 0.90369445, 1)
@@ -15,3 +24,9 @@ mesh = ExtResource("3_nwk8u")
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="." unique_id=1795142865]
 shape = ExtResource("4_c2rph")
+
+[node name="HoldPoint" type="Node3D" parent="." unique_id=568538089]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1, 0)
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="HoldPoint" unique_id=209907234]
+mesh = SubResource("SphereMesh_c2rph")

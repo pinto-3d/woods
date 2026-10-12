@@ -154,7 +154,10 @@ offset_right = 321.0
 grow_vertical = 2
 script = ExtResource("6_l8v81")
 dictDebugValues = Dictionary[String, String]({
-"first block velocity": "GridManager.entityList.1.velocity"
+"first block normal": "GridManager.entityList.1.prevNormal",
+"first block velocity": "GridManager.entityList.1.velocity",
+"held velocity": "Player.holdPoint.get_child(0).velocity",
+"player direction": "Player.direction"
 })
 
 [node name="Label" type="Label" parent="ui/Control/Panel" unique_id=707459815]

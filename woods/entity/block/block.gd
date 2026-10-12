@@ -62,3 +62,7 @@ func _physics_process(delta: float) -> void:
 	if Engine.is_editor_hint():
 		return
 	super._physics_process(delta)
+
+func iteracted_with(entity: Entity):
+	super.iteracted_with(entity)
+	pass

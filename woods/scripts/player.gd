@@ -3,6 +3,7 @@ class_name Player
 
 # Called when the node enters the scene tree for the first time.
 func _ready() -> void:
+	super._ready()
 	leftRay = $LeftRay
 	rightRay = $RightRay
 	groundRays = [
@@ -20,6 +21,7 @@ func start():
 
 # Called every frame. 'delta' is the elapsed time since the previous frame.
 func _process(delta: float) -> void:
+	super._process(delta)
 	pass
 
 func _physics_process(delta):
@@ -60,7 +62,10 @@ func _physics_process(delta):
 						_try_wall_jump(-1)
 			
 			if Input.is_action_just_pressed("interact"):
-				GridManager.i.position_to_grid(global_position)
+				if inputVector == Vector2.ZERO:
+					inputVector.x = direction
+					pass
+				_try_interact(inputVector)
 				pass
 			
 			publicVelocity = velocity
@@ -79,4 +84,13 @@ func jump():
 func get_inputVector():
 	inputVector.x = Input.get_axis("left", "right")
 	inputVector.y = Input.get_axis("up", "down")
+	
+	if inputVector.x > MIN_VELOCITY * sign(inputVector.x):
+		direction = RelativeDirection.RIGHT
+	elif inputVector.x < MIN_VELOCITY * sign(inputVector.x):
+		direction = RelativeDirection.LEFT
 	return inputVector
+
+func iteracted_with(entity: Entity):
+	super.iteracted_with(entity)
+	pass

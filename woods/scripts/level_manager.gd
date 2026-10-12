@@ -92,7 +92,7 @@ func generate_level(dimensions: Vector2, pos:Vector2 = Vector2.ZERO):
 
 func get_player_start_position():
 	#Vector2()
-	#while get_grid_space()
+	#while get_grid_pos_entity()
 	pass
 
 func spawn_block_from_current_pool():

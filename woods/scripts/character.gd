@@ -43,18 +43,16 @@ var isDuckingSlide: bool
 var canUnDuck: bool
 var isLaunching: bool
 
+var canInteract: bool = true
 
-var direction: int = 1
 var invulnerable: bool = false
 var health: int = 1
 
 @export var publicVelocity: Vector3
 
-var holdPoint: Node3D
-
 # Called when the node enters the scene tree for the first time.
 func _ready() -> void:
-	holdPoint = $HoldPoint
+	super._ready()
 	pass # Replace with function body.
 
 
@@ -115,6 +113,11 @@ func _physics_process(delta: float) -> void:
 				pass
 			if velocity.x > SPEED_LIMIT:
 				velocity.x = SPEED_LIMIT
+				
+				
+			if Input.is_action_just_pressed("interact"):
+				GridManager.i.position_to_grid(global_position)
+				pass
 	pass
 
 @warning_ignore("unused_parameter")
@@ -164,10 +167,36 @@ func wall_jump(dir: int):
 	start_launch(WALL_JUMP_LAUNCH_TIME)
 	pass
 
+func _try_interact(dir: Vector2):
+	if not canInteract:
+		return
+	if isHolding:
+		throw(dir)
+		return
+	interact(dir)
+	pass
+
+func interact(dir: Vector2i):
+	var curPos: Vector2i = GridManager.i.get_entity_grid_pos(self)
+	curPos += dir
+	
+	var interactEntity: Entity = GridManager.i.get_grid_pos_entity(curPos)
+	if interactEntity:
+		interactEntity.iteracted_with(self)
+		if interactEntity is Block:
+			pickup(interactEntity)
+			pass
+		pass
+	pass
+
 func start_launch(time: float):
 	isLaunching = true
 	launchTimer = time
 	pass
 
 func die():
+	pass
+
+func iteracted_with(entity: Entity):
+	super.iteracted_with(entity)
 	pass
