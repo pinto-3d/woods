@@ -50,13 +50,20 @@ func _process(delta: float) -> void:
 			mesh.material_override.set("shader_parameter/max_brightness", BRIGHTNESS_MIN_MAX.y);
 			_brightness_min_max = BRIGHTNESS_MIN_MAX
 		if _tint != TINT:
-			mesh.material_override.set("shader_parameter/tint", TINT);
-			_tint = TINT
+			if TINT is Color:
+				set_color(TINT)
 		if _resolution != RESOLUTION:
 			mesh.material_override.set("shader_parameter/resolution", RESOLUTION);
 			_resolution = RESOLUTION
 		return
 	super._process(delta)
+
+func set_color(color: Color):
+	
+	_tint = color
+	TINT = color
+	mesh.material_override.set("shader_parameter/tint", TINT);
+	pass
 
 func _physics_process(delta: float) -> void:
 	if Engine.is_editor_hint():

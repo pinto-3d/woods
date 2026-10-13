@@ -4,7 +4,7 @@ class_name GridManager
 static var i: GridManager
 
 const BLOCK_SIZE: float = 1.0
-const OFFSET: Vector2 = Vector2(0.5, 0.5)
+const OFFSET: Vector2 = Vector2(0, 0)
 const Z_OFFSET: float = 0
 
 var dictGrid2Entity: Dictionary[Vector2i, Entity] = {}
@@ -40,9 +40,10 @@ func clear():
 func position_to_grid(pos) -> Vector2i:
 	pos /= BLOCK_SIZE
 	return Vector2(round(pos.x), round(pos.y)) + OFFSET
-func grid_to_position(grid:Vector2) -> Vector2:
+func grid_to_position(grid:Vector2) -> Vector3:
 	grid *= BLOCK_SIZE
-	return grid + OFFSET
+	grid += OFFSET
+	return Vector3(grid.x, grid.y, Z_OFFSET)
 
 func get_grid_pos_entity(pos: Vector2i):
 	if dictGrid2Entity.has(pos):
@@ -53,9 +54,17 @@ func get_entity_grid_pos(entity: Entity):
 		return dictEntity2Grid[entity]
 	return null
 
+func get_entity_round_global_pos(entity: Entity):
+	var v2: Vector2i = GridManager.i.get_entity_grid_pos(entity)
+	return GridManager.i.grid_to_position(v2)
+
+func snap_entity_to_grid(entity:Entity):
+	entity.global_position = get_entity_round_global_pos(entity)
+	_entity_update(entity, entity.global_position)
+	pass
+
 func register_entity(entity: Entity):
 	entity.entityGridUpdate.connect(_entity_update)
-	
 	entityList.append(entity)
 	pass
 

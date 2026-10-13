@@ -7,6 +7,31 @@ enum Mode {
 	SendingBlocks
 }
 
+enum BlockColor {
+	PINK,
+	BLUE,
+	RED,
+	YELLOW,
+	GREEN,
+	WHITE,
+	BORDER
+}
+
+var dictColors: Dictionary[BlockColor, Color] = {
+	BlockColor.PINK: Color(0.502, 0.0, 1.0, 1.0),
+	BlockColor.BLUE: Color(0.0, 0.502, 1.0, 1.0),
+	BlockColor.RED: Color(1.0, 0.0, 0.502, 1.0),
+	BlockColor.YELLOW: Color(1.0, 1.0, 0.502, 1.0),
+	BlockColor.GREEN: Color(0.0, 1.0, 0.502, 1.0),
+	BlockColor.WHITE: Color(0.502, 0.502, 0.502, 1.0),
+	BlockColor.BORDER: Color(0.502, 0.0, 0.502, 1.0),
+}
+
+var availableColors: Array[BlockColor] = [
+	BlockColor.RED,
+	BlockColor.BLUE
+]
+
 static var i: LevelManager
 
 var mode: Mode = Mode.Off
@@ -82,11 +107,11 @@ func generate_level(dimensions: Vector2, pos:Vector2 = Vector2.ZERO):
 	var yval: float = pos.y - GridManager.i.BLOCK_SIZE
 	print(xval)
 	for x in range(0, dimensions.x + 2):
-		spawn_block(immovableBlockScene, Vector2(xval + x, yval), true)
+		spawn_block(immovableBlockScene, BlockColor.BORDER, Vector2(xval + x, yval), true)
 		pass
 	for y in range(0, dimensions.y):
-		spawn_block(immovableBlockScene, Vector2(xval, y + yval + GridManager.i.BLOCK_SIZE), true)
-		spawn_block(immovableBlockScene, Vector2(xval + dimensions.x + 1, y + yval + GridManager.i.BLOCK_SIZE), true)
+		spawn_block(immovableBlockScene, BlockColor.BORDER, Vector2(xval, y + yval), true)
+		spawn_block(immovableBlockScene, BlockColor.BORDER, Vector2(xval + dimensions.x + 1, y + yval), true)
 		pass
 	pass
 
@@ -99,17 +124,22 @@ func spawn_block_from_current_pool():
 	var randx: int = randi_range(0, dimensions.x-1)
 	var pos: Vector2 = Vector2(randx, topLeft.y)
 	
-	
 	var chosenScene: PackedScene = basicBlockScene
-	var block: Block = await spawn_block(chosenScene, pos)
+	
+	var randc: int = randi_range(0, availableColors.size()-1)
+	var color: BlockColor = availableColors[randc]
+	
+	var block: Block = await spawn_block(chosenScene, color, pos)
 	
 	return block
 
-func spawn_block(blockScene: PackedScene, pos: Vector2, isBorder: bool = false):
+func spawn_block(blockScene: PackedScene, color:BlockColor, pos: Vector2i, isBorder: bool = false):
 	var block: Entity = await NodeSpawner.spawn(blockScene, get_tree())
-	var gridPos: Vector2 = GridManager.i.grid_to_position(pos)
+	if block is Block:
+		#block.set_color(dictColors[color])
+		pass
 	
-	block.global_position = Vector3(gridPos.x, gridPos.y, GridManager.i.Z_OFFSET)
+	block.global_position = GridManager.i.grid_to_position(pos)
 	
 	if not isBorder:
 		GridManager.i.register_entity(block)

@@ -67,6 +67,12 @@ func _physics_process(delta):
 					pass
 				_try_interact(inputVector)
 				pass
+			if Input.is_action_just_pressed("place"):
+				if inputVector == Vector2.ZERO:
+					inputVector.x = direction
+					pass
+				_try_place(inputVector)
+				pass
 			
 			publicVelocity = velocity
 		State.SPAWNING:
@@ -77,6 +83,42 @@ func _physics_process(delta):
 			pass
 		State.DISABLE_PHYSICS:
 			pass
+
+func _try_place(dir: Vector2i):
+	if not heldEntity:
+		return
+	
+	var playerV2: Vector2i = GridManager.i.get_entity_grid_pos(self)
+	var posList: Array[Vector2i] = [
+		Vector2i(1,0),
+		Vector2i(1,1)
+	]
+	var placable: bool = true
+	var i: int = 0
+	var pos = playerV2 + posList[i]
+	var posEntity = GridManager.i.get_grid_pos_entity(pos)
+	while posEntity:
+		i += 1
+		if i < posList.size():
+			pos = playerV2 + posList[i]
+			posEntity = GridManager.i.get_grid_pos_entity(pos)
+		else:
+			placable = false
+		pass
+	
+	if placable:
+		place(pos)
+		
+func place(pos: Vector2i):
+	if heldEntity:
+		heldEntity.was_thrown()
+		heldEntity.reparent(heldEntityPrevParent, true)
+		self.remove_collision_exception_with(heldEntity)
+		GridManager.i.grid_to_position(pos)
+		heldEntity.global_position = Vector3(pos.x, pos.y, 0)
+		heldEntity = null
+	pass
+
 
 func jump():
 	velocity.y = JUMP_VELOCITY

@@ -1,0 +1,10 @@
+[gd_scene format=3 uid="uid://cugbuh25wcr2y"]
+
+[ext_resource type="Material" uid="uid://b4bik2n35hcqu" path="res://materials/debug_mat.tres" id="1_41rmm"]
+
+[sub_resource type="BoxMesh" id="BoxMesh_bgq54"]
+material = ExtResource("1_41rmm")
+size = Vector3(1.1, 1.1, 1.1)
+
+[node name="DebugCube" type="MeshInstance3D" unique_id=50113870]
+mesh = SubResource("BoxMesh_bgq54")
