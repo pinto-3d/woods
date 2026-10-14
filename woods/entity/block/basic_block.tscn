@@ -15,6 +15,7 @@ radius = 0.1
 height = 0.2
 
 [node name="Block" type="CharacterBody3D" unique_id=1221345012]
+velocity = Vector3(0, -3, 0)
 script = ExtResource("1_jnckp")
 TINT = Color(0.764511, 0.31714985, 0.90369445, 1)
 
@@ -30,3 +31,12 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1, 0)
 
 [node name="MeshInstance3D" type="MeshInstance3D" parent="HoldPoint" unique_id=209907234]
 mesh = SubResource("SphereMesh_c2rph")
+
+[node name="DebugLabel3D" type="Label3D" parent="." unique_id=574608388]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0.5212679)
+text = "asdfasdf
+asdfasdf
+asdfasdf"
+font_size = 52
+outline_size = 8
+line_spacing = -20.0

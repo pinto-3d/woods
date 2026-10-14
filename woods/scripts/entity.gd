@@ -18,6 +18,8 @@ const MIN_VELOCITY: float = 0.01
 
 var THROW_VELOCITY: Vector2 = Vector2(10, 10)
 var THROW_Y_BOOST: float = 8
+var POST_THROW_PREVENT_PICKUP_TIME: float = 0.25
+var postThrowPreventPickupTimer: float = 0
 
 var mesh: MeshInstance3D
 var col: CollisionShape3D
@@ -41,7 +43,6 @@ var holder: Entity
 var holdPoint: Node3D
 var HOLD_POINT_Y_OFFSET: float = 1
 var heldEntity: Entity
-var heldEntityPrevParent: Node
 
 var debugCubeScene: PackedScene = load("res://debug_cube.tscn")
 var debugGridPosition: MeshInstance3D
@@ -80,6 +81,9 @@ func _set_is_on_ground():
 	pass
 
 func _physics_process(delta: float) -> void:
+	if postThrowPreventPickupTimer > 0:
+		postThrowPreventPickupTimer -= delta
+		
 	if isHeld:
 		pass
 	entityGridUpdate.emit(self, global_position)
@@ -150,6 +154,7 @@ func handle_collision(info: CollisionInfo):
 			if self is not Character:
 				if info.entity is Entity:
 					if not info.entity.isHolding:
+						
 						info.entity.pickup(self)
 					pass
 			pass
@@ -200,17 +205,40 @@ var prevNormal = Vector3.ZERO
 func set_as_held(entity: Entity):
 	holder = entity
 	isHeld = true
-func was_thrown():
+func set_as_not_held():
 	holder = null
 	isHeld = false
+	reparent(GridManager.i.root, true)
+	
+	var v2 = GridManager.i.get_entity_round_global_pos(self)
+	global_position = Vector3(v2.x, v2.y, 0)
 	pass
+
+func set_is_holding(entity: Entity):
+	if entity.isHeld:
+		entity.holder.set_is_not_holding()
+		entity.set_as_not_held()
+	
+	heldEntity = entity
+	heldEntity.reparent(holdPoint, false)
+	add_collision_exception_with(heldEntity)
+	
+	heldEntity.position = Vector3.ZERO
+	heldEntity.set_as_held(self)
+	isHolding = true
+	pass
+func set_is_not_holding():
+	remove_collision_exception_with(heldEntity)
+	heldEntity = null
+	isHolding = false
+	pass
+	
+	
 func throw(dir: Vector2):
 	isHolding = false
 	if heldEntity:
-		heldEntity.was_thrown()
-		heldEntity.reparent(heldEntityPrevParent, true)
-		var v2 = GridManager.i.get_entity_round_global_pos(heldEntity)
-		heldEntity.global_position = Vector3(v2.x, v2.y, 0)
+		heldEntity.set_as_not_held()
+		
 		dir.x *= THROW_VELOCITY.x
 		if dir.y != 0:
 			dir.y *= -THROW_VELOCITY.y
@@ -225,15 +253,14 @@ func throw(dir: Vector2):
 		else:
 			dir.y = THROW_VELOCITY.y
 		heldEntity.velocity = Vector3(dir.x, dir.y, 0);
-		self.remove_collision_exception_with(heldEntity)
-		heldEntity = null
-	pass
+		set_is_not_holding()
+		postThrowPreventPickupTimer = POST_THROW_PREVENT_PICKUP_TIME
 
 func place(dir: Vector2i):
 	isHolding = false
 	if heldEntity:
 		heldEntity.was_thrown()
-		heldEntity.reparent(heldEntityPrevParent, true)
+		heldEntity.reparent(GridManager.i.root, true)
 		var v2 = GridManager.i.get_entity_round_global_pos(heldEntity)
 		heldEntity.global_position = Vector3(v2.x + dir.x, v2.y, 0)
 		if dir.y != 0:
@@ -248,32 +275,13 @@ func place(dir: Vector2i):
 		heldEntity = null
 	pass
 
-func set_as_picked_up(entity:Entity):
-	isHeld = true
-	holder = entity
-	pass
-
 func pickup(entity: Entity):
 	if not holdPoint:
 		return
+	if postThrowPreventPickupTimer > 0:
+		return
 	
-	if entity.heldEntity:
-		entity.remove_collision_exception_with(entity.heldEntity)
-	var highestHolder:Entity = heldEntity
-	if highestHolder:
-		while highestHolder.heldEntity:
-			highestHolder = highestHolder.heldEntity
-	else:
-		heldEntity = entity
-		heldEntityPrevParent = heldEntity.get_parent()
-		highestHolder = self
-		
-	heldEntity.reparent(highestHolder.holdPoint, false)
-	highestHolder.add_collision_exception_with(heldEntity)
-	
-	heldEntity.position = Vector3.ZERO
-	heldEntity.set_as_picked_up(self)
-	isHolding = true
+	set_is_holding(entity)
 	
 	print("pickup")
 	pass

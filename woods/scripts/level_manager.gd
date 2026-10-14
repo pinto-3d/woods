@@ -41,7 +41,7 @@ var immovableBlockScene: PackedScene = load("res://entity/block/immovable_block.
 var basicBlockScene: PackedScene = load("res://entity/block/basic_block.tscn")
 
 var blockTimer: float = 0.0
-var TIME_BT_BLOCKS: float = 5.0
+var TIME_BT_BLOCKS: float = 4.0
 
 var topLeft: Vector2: 
 	get:

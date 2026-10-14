@@ -3,6 +3,9 @@ class_name GridManager
 
 static var i: GridManager
 
+
+var root: Node3D
+
 const BLOCK_SIZE: float = 1.0
 const OFFSET: Vector2 = Vector2(0, 0)
 const Z_OFFSET: float = 0
@@ -19,9 +22,9 @@ func _init() -> void:
 
 # Called when the node enters the scene tree for the first time.
 func _ready() -> void:
-	if GridManager.i:
+	if GridManager.i != self:
 		return
-	GridManager.i = self
+	root = get_tree().root.get_child(0)
 
 func _process(delta: float) -> void:
 	if entityList.size() > 1:
