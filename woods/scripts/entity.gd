@@ -16,7 +16,7 @@ var hasLinearGravity: bool = true
 var LINEAR_GRAVITY_MAX: float = 3;
 const MIN_VELOCITY: float = 0.01
 
-var THROW_VELOCITY: Vector2 = Vector2(10, 10)
+var THROW_VELOCITY: Vector2 = Vector2(4, 5)
 var THROW_Y_BOOST: float = 8
 var POST_THROW_PREVENT_PICKUP_TIME: float = 0.25
 var postThrowPreventPickupTimer: float = 0
@@ -222,12 +222,14 @@ func set_as_held(entity: Entity):
 	holder = entity
 	isHeld = true
 func set_as_not_held():
+	hasLinearGravity = false;
+	
 	holder = null
 	isHeld = false
 	reparent(GridManager.i.root, true)
 	
-	var v2 = GridManager.i.get_entity_round_global_pos(self)
-	global_position = Vector3(v2.x, v2.y, 0)
+	#var v2 = GridManager.i.get_entity_round_global_pos(self)
+	#global_position = Vector3(v2.x, v2.y, 0)
 	pass
 
 func set_is_holding(entity: Entity):
