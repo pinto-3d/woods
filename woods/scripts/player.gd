@@ -125,7 +125,7 @@ func jump():
 
 func get_inputVector():
 	inputVector.x = Input.get_axis("left", "right")
-	inputVector.y = Input.get_axis("up", "down")
+	inputVector.y = Input.get_axis("down", "up")
 	
 	if inputVector.x > MIN_VELOCITY * sign(inputVector.x):
 		direction = RelativeDirection.RIGHT

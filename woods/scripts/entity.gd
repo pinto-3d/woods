@@ -17,7 +17,7 @@ var LINEAR_GRAVITY_MAX: float = 3;
 const MIN_VELOCITY: float = 0.01
 
 var THROW_VELOCITY: Vector2 = Vector2(3, 6)
-var THROW_Y_BOOST: float = 8
+var THROW_Y_BOOST: float = 6
 var POST_THROW_PREVENT_PICKUP_TIME: float = 0.25
 var postThrowPreventPickupTimer: float = 0
 
@@ -171,10 +171,11 @@ func handle_collision(info: CollisionInfo):
 			if self is not Character:
 				if info.entity is Entity:
 					if not info.entity.isHolding:
-						
 						info.entity.pickup(self)
-					pass
-			pass
+					if info.entity is ImmovableBlock:
+						GridManager.i.snap_entity_to_grid(self)
+						self.velocity = Vector3.ZERO
+						pass
 		
 		#if normal.x != 0:
 			#if not isHeld:
@@ -239,11 +240,11 @@ func set_is_holding(entity: Entity):
 		entity.set_as_not_held()
 	
 	heldEntity = entity
-	heldEntity.reparent(holdPoint, false)
 	add_collision_exception_with(heldEntity)
-	
 	heldEntity.position = Vector3.ZERO
 	heldEntity.set_as_held(self)
+	heldEntity.reparent(holdPoint, false)
+	
 	isHolding = true
 	pass
 func set_is_not_holding():
@@ -261,12 +262,12 @@ func throw(dir: Vector2):
 		dir.x *= THROW_VELOCITY.x
 		if dir.y != 0:
 			dir.y *= -THROW_VELOCITY.y
-			if dir.y < 0:
+			if dir.y > 0:
 				var highestHolder: Entity = heldEntity
 				while highestHolder.heldEntity:
 					highestHolder = highestHolder.heldEntity
 				self.global_position = highestHolder.holdPoint.global_position
-				heldEntity.velocity.y = -THROW_Y_BOOST
+				dir.y = -THROW_Y_BOOST * 2
 				self.velocity.y = THROW_Y_BOOST
 			pass
 		else:

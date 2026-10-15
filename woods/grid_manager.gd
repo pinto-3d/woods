@@ -53,12 +53,17 @@ func get_grid_pos_of_entity(entity: Entity):
 	return null
 
 func get_entity_round_global_pos(entity: Entity):
-	var v2: Vector2i = GridManager.i.get_grid_pos_of_entity(entity)
-	return GridManager.i.grid_to_position(v2)
+	var v2 = GridManager.i.get_grid_pos_of_entity(entity)
+	if v2:
+		return GridManager.i.grid_to_position(v2)
+	return null
 
 func snap_entity_to_grid(entity:Entity):
-	entity.global_position = get_entity_round_global_pos(entity)
-	_entity_update(entity, entity.global_position)
+	if entity:
+		var v3 = get_entity_round_global_pos(entity)
+		if v3:
+			entity.global_position = v3
+			_entity_update(entity, entity.global_position)
 	pass
 
 func register_entity(entity: Entity):
@@ -86,9 +91,8 @@ func _check_tints_in_direction(tint: Color, start: Vector2i, direction: Vector2i
 	var curEraseList: Array[Vector2i] = []
 	var cursor: Vector2i = start
 	
-	while curEraseList.size() < MATCH_NUM and continuing:
+	while continuing:
 		var curEntity = get_entity_at_grid_pos(cursor)
-		var isValid
 		if !_does_block_match(curEntity, tint):
 			if turns == 0:
 				direction *= -1
