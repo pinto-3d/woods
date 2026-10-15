@@ -36,6 +36,7 @@ static var i: LevelManager
 
 var mode: Mode = Mode.Off
 @export var dimensions: Vector2 = Vector2(7, 9)
+var offset: Vector2 = Vector2(5, 0);
 
 var immovableBlockScene: PackedScene = load("res://entity/block/immovable_block.tscn")
 var basicBlockScene: PackedScene = load("res://entity/block/basic_block.tscn")
@@ -45,17 +46,17 @@ var TIME_BT_BLOCKS: float = 4.0
 
 var topLeft: Vector2: 
 	get:
-		return Vector2(0, dimensions.y)
+		return Vector2(0, dimensions.y) + offset
 var topRight: Vector2: 
 	get:
-		return Vector2(dimensions.x, dimensions.y)
+		return Vector2(dimensions.x, dimensions.y) + offset
 
 @export var doUpdate: bool = false
 
 func _ready() -> void:
 	if Engine.is_editor_hint():
 		return
-	generate_level(dimensions)
+	generate_level(dimensions, offset)
 	set_mode(Mode.SendingBlocks)
 	
 	if LevelManager.i:
@@ -67,7 +68,7 @@ func _ready() -> void:
 func _process(delta: float) -> void:
 	if Engine.is_editor_hint():
 		if doUpdate:
-			generate_level(dimensions)
+			generate_level(dimensions, offset)
 			doUpdate = false
 			pass
 	pass
@@ -121,7 +122,7 @@ func get_player_start_position():
 	pass
 
 func spawn_block_from_current_pool():
-	var randx: int = randi_range(0, dimensions.x-1)
+	var randx: int = topLeft.x + randi_range(0, dimensions.x-1)
 	var pos: Vector2 = Vector2(randx, topLeft.y)
 	
 	var chosenScene: PackedScene = basicBlockScene

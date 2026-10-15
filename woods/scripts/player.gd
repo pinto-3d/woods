@@ -112,10 +112,10 @@ func _try_place(dir: Vector2i):
 func place(pos: Vector2i):
 	if heldEntity:
 		heldEntity.was_thrown()
-		heldEntity.reparent(GridManager.i.root, true)
 		self.remove_collision_exception_with(heldEntity)
 		GridManager.i.grid_to_position(pos)
 		heldEntity.global_position = Vector3(pos.x, pos.y, 0)
+		heldEntity.reparent(GridManager.i.root, true)
 		heldEntity = null
 	pass
 

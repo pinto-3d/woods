@@ -47,6 +47,8 @@ var heldEntity: Entity
 var debugCubeScene: PackedScene = load("res://debug_cube.tscn")
 var debugGridPosition: MeshInstance3D
 
+var debugLabel3d: Label3D
+
 const MAX_COLLISIONS = 6
 
 var direction: RelativeDirection = RelativeDirection.RIGHT
@@ -66,14 +68,28 @@ func _ready() -> void:
 		debugGridPosition = await NodeSpawner.spawn(debugCubeScene, get_tree())
 		debugGridPosition.reparent(self, false)
 		debugGridPosition.position = position
+		
+	debugLabel3d = get_node_or_null("DebugLabel3D")
 	pass
 
 func _process(delta: float) -> void:
-	pass
+	if debugLabel3d:
+		debugLabel3d.text = ""
+		var v2 = GridManager.i.get_entity_grid_pos(self)
+		if v2:
+			debugLabel3d.text += str(v2) + "\n"
+		if heldEntity:
+			v2 = GridManager.i.get_entity_grid_pos(heldEntity)
+			if v2:
+				debugLabel3d.text += ".  "+str(v2) + "\n"
+		else:
+				debugLabel3d.text += ".  " + "\n"
+		debugLabel3d.text += str(isHeld) + "\n"
 
 func _set_is_on_ground():
 	isOnGround = false;
 	for ray in groundRays:
+		ray.force_raycast_update()
 		if ray.is_colliding():
 			isOnGround = true
 			break

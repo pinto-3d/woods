@@ -12,7 +12,6 @@ var _brightness_min_max
 var _tint
 var _resolution
 
-var debugLabel3d: Label3D
 
 func _init() -> void:
 	super._init()
@@ -21,7 +20,6 @@ func _ready() -> void:
 	super._ready()
 	mesh = $MeshInstance3D
 	col = $CollisionShape3D
-	debugLabel3d = get_node_or_null("DebugLabel3D")
 	TEX_SEED = global_position.x
 	
 	mesh.material_override.set("shader_parameter/seed", TEX_SEED);
@@ -60,18 +58,6 @@ func _process(delta: float) -> void:
 			_resolution = RESOLUTION
 		return
 	super._process(delta)
-	if debugLabel3d:
-		debugLabel3d.text = ""
-		var v2 = GridManager.i.get_entity_grid_pos(self)
-		if v2:
-			debugLabel3d.text += str(v2) + "\n"
-		if heldEntity:
-			v2 = GridManager.i.get_entity_grid_pos(heldEntity)
-			if v2:
-				debugLabel3d.text += ".  "+str(v2) + "\n"
-		else:
-				debugLabel3d.text += ".  " + "\n"
-		debugLabel3d.text += str(isHeld) + "\n"
 
 func set_color(color: Color):
 	
