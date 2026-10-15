@@ -10,9 +10,10 @@ const BLOCK_SIZE: float = 1.0
 const OFFSET: Vector2 = Vector2(0, 0)
 const Z_OFFSET: float = 0
 
+var MATCH_NUM: int = 4;
+
 var dictGrid2Entity: Dictionary[Vector2i, Entity] = {}
 var dictEntity2Grid: Dictionary[Entity, Vector2i] = {}
-var entityList: Array[Entity] = []
 
 func _init() -> void:
 	if GridManager.i:
@@ -27,12 +28,6 @@ func _ready() -> void:
 	root = get_tree().root.get_child(0)
 
 func _process(delta: float) -> void:
-	if entityList.size() > 1:
-		#print("grav: ",entityList[1].GRAVITY_DIRECTION * entityList[1].GRAVITY)
-		#print("velo: ",entityList[1].velocity)
-		#print("dot:  ",entityList[1].velocity.dot(entityList[1].GRAVITY_DIRECTION * entityList[1].LINEAR_GRAVITY_MAX))
-		#print("dot2:  ",(entityList[1].GRAVITY_DIRECTION * entityList[1].LINEAR_GRAVITY_MAX).dot(entityList[1].velocity))
-		pass
 	pass
 
 func clear():
@@ -48,17 +43,17 @@ func grid_to_position(grid:Vector2) -> Vector3:
 	grid += OFFSET
 	return Vector3(grid.x, grid.y, Z_OFFSET)
 
-func get_grid_pos_entity(pos: Vector2i):
+func get_entity_at_grid_pos(pos: Vector2i):
 	if dictGrid2Entity.has(pos):
 		return dictGrid2Entity[pos]
 	return null
-func get_entity_grid_pos(entity: Entity):
+func get_grid_pos_of_entity(entity: Entity):
 	if dictEntity2Grid.has(entity):
 		return dictEntity2Grid[entity]
 	return null
 
 func get_entity_round_global_pos(entity: Entity):
-	var v2: Vector2i = GridManager.i.get_entity_grid_pos(entity)
+	var v2: Vector2i = GridManager.i.get_grid_pos_of_entity(entity)
 	return GridManager.i.grid_to_position(v2)
 
 func snap_entity_to_grid(entity:Entity):
@@ -68,7 +63,68 @@ func snap_entity_to_grid(entity:Entity):
 
 func register_entity(entity: Entity):
 	entity.entityGridUpdate.connect(_entity_update)
-	entityList.append(entity)
+	pass
+
+func deregister_entity(entity: Entity):
+	entity.entityGridUpdate.disconnect(_entity_update)
+	var v2: Vector2i = dictEntity2Grid[entity]
+	dictGrid2Entity.erase(v2)
+	dictEntity2Grid.erase(entity)
+	entity.erase()
+	pass
+
+func _does_block_match(entity, tint: Color) -> bool:
+	if entity:
+		if "TINT" in entity:
+			if entity.TINT == tint:
+				return true
+	return false
+
+func _check_tints_in_direction(tint: Color, start: Vector2i, direction: Vector2i) -> Array[Vector2i]:
+	var turns: int = 0
+	var continuing: bool = true
+	var curEraseList: Array[Vector2i] = []
+	var cursor: Vector2i = start
+	
+	while curEraseList.size() < MATCH_NUM and continuing:
+		var curEntity = get_entity_at_grid_pos(cursor)
+		var isValid
+		if !_does_block_match(curEntity, tint):
+			if turns == 0:
+				direction *= -1
+				cursor = start
+			else:
+				continuing = false
+				break
+			turns += 1
+		else:
+			curEraseList.append(cursor)
+		cursor += direction
+	if curEraseList.size() >= MATCH_NUM:
+		return curEraseList
+	return []
+
+func _adjust_changed_entity(entity):
+	if not entity is Block:
+		return
+	var block: Block = entity
+	var tint: Color = block.TINT
+	var v2: Vector2i = dictEntity2Grid[entity]
+	
+	var eraseList: Array[Vector2i] = []
+	#horizontal
+	var cursor: Vector2i = dictEntity2Grid[entity]
+	eraseList.append_array(_check_tints_in_direction(tint, dictEntity2Grid[entity], Vector2(1,0)))
+	eraseList.append_array(_check_tints_in_direction(tint, dictEntity2Grid[entity], Vector2(0,1)))
+	eraseList.append_array(_check_tints_in_direction(tint, dictEntity2Grid[entity], Vector2(1,1)))
+	eraseList.append_array(_check_tints_in_direction(tint, dictEntity2Grid[entity], Vector2(-1,1)))
+	
+	for erasePos in eraseList:
+		if dictGrid2Entity.has(erasePos):
+			deregister_entity(dictGrid2Entity[erasePos])
+		else:
+			pass
+		pass 
 	pass
 
 func _entity_update(entity: Entity, pos):
@@ -77,10 +133,16 @@ func _entity_update(entity: Entity, pos):
 		pass
 	if entity is Player:
 		pass
+	var prevPos = null
 	if dictEntity2Grid.has(entity):
+		prevPos = dictEntity2Grid[entity]
 		if dictGrid2Entity.has(dictEntity2Grid[entity]):
 			if dictGrid2Entity[dictEntity2Grid[entity]] == entity:
 				dictGrid2Entity.erase(dictEntity2Grid[entity])
 	dictEntity2Grid[entity] = pos
 	dictGrid2Entity[pos] = entity
+	
+	if prevPos != pos:
+		_adjust_changed_entity(entity)
+		pass
 	pass

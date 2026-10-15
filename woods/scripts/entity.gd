@@ -16,7 +16,7 @@ var hasLinearGravity: bool = true
 var LINEAR_GRAVITY_MAX: float = 3;
 const MIN_VELOCITY: float = 0.01
 
-var THROW_VELOCITY: Vector2 = Vector2(4, 5)
+var THROW_VELOCITY: Vector2 = Vector2(3, 6)
 var THROW_Y_BOOST: float = 8
 var POST_THROW_PREVENT_PICKUP_TIME: float = 0.25
 var postThrowPreventPickupTimer: float = 0
@@ -65,9 +65,10 @@ func _ready() -> void:
 	if self is Player:
 		pass
 	if self is not ImmovableBlock:
-		debugGridPosition = await NodeSpawner.spawn(debugCubeScene, get_tree())
-		debugGridPosition.reparent(self, false)
-		debugGridPosition.position = position
+		#debugGridPosition = await NodeSpawner.spawn(debugCubeScene, get_tree())
+		#debugGridPosition.reparent(self, false)
+		#debugGridPosition.position = position
+		pass
 		
 	debugLabel3d = get_node_or_null("DebugLabel3D")
 	pass
@@ -75,11 +76,11 @@ func _ready() -> void:
 func _process(delta: float) -> void:
 	if debugLabel3d:
 		debugLabel3d.text = ""
-		var v2 = GridManager.i.get_entity_grid_pos(self)
+		var v2 = GridManager.i.get_grid_pos_of_entity(self)
 		if v2:
 			debugLabel3d.text += str(v2) + "\n"
 		if heldEntity:
-			v2 = GridManager.i.get_entity_grid_pos(heldEntity)
+			v2 = GridManager.i.get_grid_pos_of_entity(heldEntity)
 			if v2:
 				debugLabel3d.text += ".  "+str(v2) + "\n"
 		else:
@@ -302,6 +303,10 @@ func pickup(entity: Entity):
 	set_is_holding(entity)
 	
 	print("pickup")
+	pass
+
+func erase():
+	queue_free()
 	pass
 
 func get_down_normal() -> Variant:

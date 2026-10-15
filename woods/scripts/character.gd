@@ -177,10 +177,10 @@ func _try_interact(dir: Vector2):
 	pass
 
 func interact(dir: Vector2i):
-	var curPos: Vector2i = GridManager.i.get_entity_grid_pos(self)
+	var curPos: Vector2i = GridManager.i.get_grid_pos_of_entity(self)
 	curPos += dir
 	
-	var interactEntity: Entity = GridManager.i.get_grid_pos_entity(curPos)
+	var interactEntity: Entity = GridManager.i.get_entity_at_grid_pos(curPos)
 	if interactEntity:
 		interactEntity.iteracted_with(self)
 		if interactEntity is Block:

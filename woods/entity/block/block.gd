@@ -60,7 +60,6 @@ func _process(delta: float) -> void:
 	super._process(delta)
 
 func set_color(color: Color):
-	
 	_tint = color
 	TINT = color
 	mesh.material_override.set("shader_parameter/tint", TINT);

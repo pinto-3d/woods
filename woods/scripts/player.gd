@@ -88,7 +88,7 @@ func _try_place(dir: Vector2i):
 	if not heldEntity:
 		return
 	
-	var playerV2: Vector2i = GridManager.i.get_entity_grid_pos(self)
+	var playerV2: Vector2i = GridManager.i.get_grid_pos_of_entity(self)
 	var posList: Array[Vector2i] = [
 		Vector2i(1,0),
 		Vector2i(1,1)
@@ -96,12 +96,12 @@ func _try_place(dir: Vector2i):
 	var placable: bool = true
 	var i: int = 0
 	var pos = playerV2 + posList[i]
-	var posEntity = GridManager.i.get_grid_pos_entity(pos)
+	var posEntity = GridManager.i.get_entity_at_grid_pos(pos)
 	while posEntity:
 		i += 1
 		if i < posList.size():
 			pos = playerV2 + posList[i]
-			posEntity = GridManager.i.get_grid_pos_entity(pos)
+			posEntity = GridManager.i.get_entity_at_grid_pos(pos)
 		else:
 			placable = false
 		pass

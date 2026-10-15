@@ -42,7 +42,7 @@ var immovableBlockScene: PackedScene = load("res://entity/block/immovable_block.
 var basicBlockScene: PackedScene = load("res://entity/block/basic_block.tscn")
 
 var blockTimer: float = 0.0
-var TIME_BT_BLOCKS: float = 4.0
+var TIME_BT_BLOCKS: float = 0.25
 
 var topLeft: Vector2: 
 	get:
@@ -118,7 +118,7 @@ func generate_level(dimensions: Vector2, pos:Vector2 = Vector2.ZERO):
 
 func get_player_start_position():
 	#Vector2()
-	#while get_grid_pos_entity()
+	#while get_entity_at_grid_pos()
 	pass
 
 func spawn_block_from_current_pool():
@@ -137,7 +137,7 @@ func spawn_block_from_current_pool():
 func spawn_block(blockScene: PackedScene, color:BlockColor, pos: Vector2i, isBorder: bool = false):
 	var block: Entity = await NodeSpawner.spawn(blockScene, get_tree())
 	if block is Block:
-		#block.set_color(dictColors[color])
+		block.set_color(dictColors[color])
 		pass
 	
 	block.global_position = GridManager.i.grid_to_position(pos)
