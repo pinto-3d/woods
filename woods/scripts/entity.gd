@@ -59,6 +59,7 @@ func _init() -> void:
 	pass
 
 func _ready() -> void:
+	col = get_node_or_null("CollisionShape3D")
 	holdPoint = get_node_or_null("HoldPoint")
 	if holdPoint:
 		holdPoint.position.y = HOLD_POINT_Y_OFFSET
