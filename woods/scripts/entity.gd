@@ -15,7 +15,7 @@ var MIN_SLIDE_BOOST_SPEED = 200
 var GRAVITY: float = 10.0;
 var GRAVITY_DIRECTION: Vector3 = Vector3.DOWN;
 var hasLinearGravity: bool = true
-var LINEAR_GRAVITY_MAX: float = 3;
+var LINEAR_GRAVITY_MAX: float =10;
 const MIN_VELOCITY: float = 0.01
 
 var THROW_VELOCITY: Vector2 = Vector2(3, 6)
@@ -203,8 +203,10 @@ func handle_collision(info: CollisionInfo):
 	pass
 
 func is_above_entity(entity: Entity):
-	var selfgrid: Vector2i = GridManager.i.get_grid_pos_of_entity(self)
+	var selfgrid = GridManager.i.get_grid_pos_of_entity(self)
 	var othergrid = null
+	if not selfgrid:
+		return false
 	if entity.isRegisteredToGrid:
 		othergrid = GridManager.i.get_grid_pos_of_entity(entity)
 	else:
@@ -378,6 +380,11 @@ func pickup(entity: Entity):
 	pass
 
 func erase():
+	if isHeld:
+		holder.set_is_not_holding()
+		set_as_not_held()
+	if isHolding:
+		set_is_not_holding()
 	queue_free()
 	pass
 
