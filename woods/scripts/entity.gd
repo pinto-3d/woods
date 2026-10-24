@@ -301,6 +301,10 @@ func update_collider():
 	var highest: Entity = get_highest_held_entity()
 	var lowest: Entity = get_lowest_held_entity()
 	var colShape = BasicBoxCollisionShape.duplicate()
+	if highest == lowest:
+		lowest.col.shape = colShape
+		lowest.col.position.y = 0
+		return
 	var diff = highest.global_position.y - lowest.global_position.y
 	var colSize = (highest.col.shape as BoxShape3D).size.y
 	colShape.size.y = colSize + diff
@@ -312,8 +316,7 @@ func set_is_not_holding():
 	remove_collision_exception_with(heldEntity)
 	heldEntity = null
 	isHolding = false
-	col.shape = BasicBoxCollisionShape
-	col.position.y = 0
+	update_collider()
 	pass
 
 func put_down(velocity: Vector2):
