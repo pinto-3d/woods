@@ -15,7 +15,7 @@ var MIN_SLIDE_BOOST_SPEED = 200
 var GRAVITY: float = 10.0;
 var GRAVITY_DIRECTION: Vector3 = Vector3.DOWN;
 var hasLinearGravity: bool = true
-var LINEAR_GRAVITY_MAX: float = 10;
+var LINEAR_GRAVITY_MAX: float = 3;
 const MIN_VELOCITY: float = 0.01
 
 var THROW_VELOCITY: Vector2 = Vector2(3, 6)
@@ -55,6 +55,7 @@ const MAX_COLLISIONS = 6
 
 var direction: RelativeDirection = RelativeDirection.RIGHT
 
+var isRegisteredToGrid: bool = false
 signal entityGridUpdate(entity: Entity, pos: Vector2)
 
 func _init() -> void:
@@ -63,18 +64,22 @@ func _init() -> void:
 func _ready() -> void:
 	col = get_node_or_null("CollisionShape3D")
 	mesh = get_node_or_null("MeshInstance3D")
+	if mesh:
+		if GameManager.i.isDebug:
+			mesh.scale = Vector3.ONE * 0.8
+			pass
+	
 	holdPoint = get_node_or_null("HoldPoint")
 	if holdPoint:
 		holdPoint.position.y = HOLD_POINT_Y_OFFSET
 	if self is Player:
 		pass
 	if self is not ImmovableBlock:
-		#debugGridPosition = await NodeSpawner.spawn(debugCubeScene, get_tree())
-		#debugGridPosition.reparent(self, false)
-		#debugGridPosition.position = position
+		if GameManager.i.showDebugGrid:
+			debugGridPosition = await NodeSpawner.spawn(debugCubeScene, get_tree())
+			debugGridPosition.reparent(self, false)
+			debugGridPosition.position = position
 		pass
-	if mesh:
-		mesh.scale *= 0.9
 		
 	debugLabel3d = get_node_or_null("DebugLabel3D")
 	pass
@@ -138,6 +143,7 @@ func _physics_process(delta: float) -> void:
 				if velocity.y < -LINEAR_GRAVITY_MAX:
 					velocity.y = -LINEAR_GRAVITY_MAX
 					pass
+
 	move(delta)
 	global_position.z = 0
 
@@ -176,17 +182,38 @@ func handle_collision(info: CollisionInfo):
 		if info.normal.y > 0:
 			if self is not Character:
 				if info.entity is Entity:
-					(info.entity as Entity).get_highest_held_entity().pickup(self)
 					if info.entity is ImmovableBlock:
-						GridManager.i.snap_entity_to_grid(self)
-						self.velocity = Vector3.ZERO
-						pass
+						if is_above_entity(info.entity):
+							GridManager.i.snap_entity_to_grid(self)
+							self.velocity = Vector3.ZERO
+					else:
+						var highest = (info.entity as Entity).get_highest_held_entity()
+						if not highest.isHolding:
+							if is_above_entity(highest):
+								highest.pickup(self)
+								self.velocity = Vector3.ZERO
+							else:
+								GridManager.i.snap_entity_to_grid(self)
+								self.velocity.x = 0
 		
 		#if normal.x != 0:
 			#if not isHeld:
 				#velocity.y = 0
 			#pass
 	pass
+
+func is_above_entity(entity: Entity):
+	var selfgrid: Vector2i = GridManager.i.get_grid_pos_of_entity(self)
+	var othergrid = null
+	if entity.isRegisteredToGrid:
+		othergrid = GridManager.i.get_grid_pos_of_entity(entity)
+	else:
+		othergrid = Vector2i(round(entity.global_position.x), round(entity.global_position.y))
+		pass
+	if selfgrid.x == othergrid.x:
+		if selfgrid.y == othergrid.y+1 or selfgrid.y == othergrid.y:
+			return true
+	return false
 
 func move(delta: float):
 	var preCollisionVelocity: Vector3 = velocity
@@ -232,6 +259,7 @@ func set_as_held(entity: Entity):
 func set_as_not_held():
 	hasLinearGravity = false;
 	col.disabled = false
+	
 	holder = null
 	isHeld = false
 	reparent(GridManager.i.root, true)
@@ -272,9 +300,7 @@ func set_is_holding(entity: Entity):
 func update_collider():
 	var highest: Entity = get_highest_held_entity()
 	var lowest: Entity = get_lowest_held_entity()
-	
 	var colShape = BasicBoxCollisionShape.duplicate()
-	
 	var diff = highest.global_position.y - lowest.global_position.y
 	var colSize = (highest.col.shape as BoxShape3D).size.y
 	colShape.size.y = colSize + diff
@@ -289,15 +315,15 @@ func set_is_not_holding():
 	col.shape = BasicBoxCollisionShape
 	col.position.y = 0
 	pass
-	
 
 func put_down(velocity: Vector2):
 	if heldEntity:
 		heldEntity.set_as_not_held()
 		heldEntity.velocity = Vector3(velocity.x, velocity.y, 0)
 	set_is_not_holding()
+	pass
 	
-
+	
 func throw(dir: Vector2):
 	isHolding = false
 	if heldEntity:

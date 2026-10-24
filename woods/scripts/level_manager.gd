@@ -29,7 +29,7 @@ var dictColors: Dictionary[BlockColor, Color] = {
 
 var availableColors: Array[BlockColor] = [
 	BlockColor.RED,
-	BlockColor.PINK
+	BlockColor.BLUE
 ]
 
 static var i: LevelManager
@@ -42,7 +42,7 @@ var immovableBlockScene: PackedScene = load("res://entity/block/immovable_block.
 var basicBlockScene: PackedScene = load("res://entity/block/basic_block.tscn")
 
 var blockTimer: float = 0.0
-var TIME_BT_BLOCKS: float = 0.5
+var TIME_BT_BLOCKS: float = 2
 
 var topLeft: Vector2: 
 	get:

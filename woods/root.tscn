@@ -1,6 +1,7 @@
 [gd_scene format=3 uid="uid://bugyqet37rfxl"]
 
 [ext_resource type="PackedScene" uid="uid://7leje722w1w6" path="res://entity/player/player.tscn" id="1_pyidc"]
+[ext_resource type="Script" uid="uid://chgaug0vb25la" path="res://game_manager.gd" id="2_l8v81"]
 [ext_resource type="Script" uid="uid://joq0fup114d2" path="res://scripts/level_manager.gd" id="2_vvh5c"]
 [ext_resource type="Script" uid="uid://cajsvalmbtbsa" path="res://scripts/node_spawner.gd" id="3_vvh5c"]
 [ext_resource type="Script" uid="uid://k35s75eptaba" path="res://grid_manager.gd" id="5_jnlp7"]
@@ -27,6 +28,9 @@ script = ExtResource("3_vvh5c")
 
 [node name="GridManager" type="Node3D" parent="." unique_id=624511250 groups=["grid_manager"]]
 script = ExtResource("5_jnlp7")
+
+[node name="GameManager" type="Node3D" parent="." unique_id=1562308056]
+script = ExtResource("2_l8v81")
 
 [node name="ui" type="CanvasLayer" parent="." unique_id=1983218638]
 
