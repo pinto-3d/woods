@@ -73,6 +73,12 @@ func register_entity(entity: Entity):
 func deregister_entity(entity: Entity):
 	entity.entityGridUpdate.disconnect(_entity_update)
 	var v2: Vector2i = dictEntity2Grid[entity]
+	
+	if entity.isHeld:
+		entity.holder.put_down(Vector2.ZERO)
+	if entity.isHolding:
+		entity.put_down(Vector2.ZERO)
+	
 	dictGrid2Entity.erase(v2)
 	dictEntity2Grid.erase(entity)
 	entity.erase()

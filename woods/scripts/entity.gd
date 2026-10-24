@@ -1,6 +1,8 @@
 extends CharacterBody3D
 class_name Entity
 
+static var BasicBoxCollisionShape: BoxShape3D = load("res://basic_box_collision_shape.tres")
+
 enum State { FREE=0, DISABLE_INPUT=1, SPAWNING=2, DYING=3, DISABLE_COMPLETELY=4, DISABLE_PHYSICS = 5 }
 enum RelativeDirection {
 	LEFT = -1, 
@@ -13,7 +15,7 @@ var MIN_SLIDE_BOOST_SPEED = 200
 var GRAVITY: float = 10.0;
 var GRAVITY_DIRECTION: Vector3 = Vector3.DOWN;
 var hasLinearGravity: bool = true
-var LINEAR_GRAVITY_MAX: float = 3;
+var LINEAR_GRAVITY_MAX: float = 10;
 const MIN_VELOCITY: float = 0.01
 
 var THROW_VELOCITY: Vector2 = Vector2(3, 6)
@@ -60,6 +62,7 @@ func _init() -> void:
 
 func _ready() -> void:
 	col = get_node_or_null("CollisionShape3D")
+	mesh = get_node_or_null("MeshInstance3D")
 	holdPoint = get_node_or_null("HoldPoint")
 	if holdPoint:
 		holdPoint.position.y = HOLD_POINT_Y_OFFSET
@@ -70,6 +73,8 @@ func _ready() -> void:
 		#debugGridPosition.reparent(self, false)
 		#debugGridPosition.position = position
 		pass
+	if mesh:
+		mesh.scale *= 0.9
 		
 	debugLabel3d = get_node_or_null("DebugLabel3D")
 	pass
@@ -133,8 +138,8 @@ func _physics_process(delta: float) -> void:
 				if velocity.y < -LINEAR_GRAVITY_MAX:
 					velocity.y = -LINEAR_GRAVITY_MAX
 					pass
-
 	move(delta)
+	global_position.z = 0
 
 func _try_slant_boost(normal:Vector3, preCollisionVelocity: Vector3):
 	pass
@@ -171,8 +176,7 @@ func handle_collision(info: CollisionInfo):
 		if info.normal.y > 0:
 			if self is not Character:
 				if info.entity is Entity:
-					if not info.entity.isHolding:
-						info.entity.pickup(self)
+					(info.entity as Entity).get_highest_held_entity().pickup(self)
 					if info.entity is ImmovableBlock:
 						GridManager.i.snap_entity_to_grid(self)
 						self.velocity = Vector3.ZERO
@@ -224,9 +228,10 @@ var prevNormal = Vector3.ZERO
 func set_as_held(entity: Entity):
 	holder = entity
 	isHeld = true
+	col.disabled = true
 func set_as_not_held():
 	hasLinearGravity = false;
-	
+	col.disabled = false
 	holder = null
 	isHeld = false
 	reparent(GridManager.i.root, true)
@@ -234,6 +239,19 @@ func set_as_not_held():
 	#var v2 = GridManager.i.get_entity_round_global_pos(self)
 	#global_position = Vector3(v2.x, v2.y, 0)
 	pass
+
+func get_highest_held_entity() -> Entity:
+	var highestEntity: Entity = self
+	while highestEntity.heldEntity:
+		highestEntity = highestEntity.heldEntity
+	return highestEntity
+
+func get_lowest_held_entity() -> Entity:
+	var lowestEntity: Entity = self
+	while lowestEntity.holder:
+		lowestEntity = lowestEntity.holder
+	return lowestEntity
+
 
 func set_is_holding(entity: Entity):
 	if entity.isHeld:
@@ -247,34 +265,57 @@ func set_is_holding(entity: Entity):
 	heldEntity.reparent(holdPoint, false)
 	
 	isHolding = true
+	
+	update_collider()
 	pass
+
+func update_collider():
+	var highest: Entity = get_highest_held_entity()
+	var lowest: Entity = get_lowest_held_entity()
+	
+	var colShape = BasicBoxCollisionShape.duplicate()
+	
+	var diff = highest.global_position.y - lowest.global_position.y
+	var colSize = (highest.col.shape as BoxShape3D).size.y
+	colShape.size.y = colSize + diff
+	lowest.col.shape = colShape
+	lowest.col.position.y = diff/2
+	pass
+	
 func set_is_not_holding():
 	remove_collision_exception_with(heldEntity)
 	heldEntity = null
 	isHolding = false
+	col.shape = BasicBoxCollisionShape
+	col.position.y = 0
 	pass
 	
+
+func put_down(velocity: Vector2):
+	if heldEntity:
+		heldEntity.set_as_not_held()
+		heldEntity.velocity = Vector3(velocity.x, velocity.y, 0)
+	set_is_not_holding()
 	
+
 func throw(dir: Vector2):
 	isHolding = false
 	if heldEntity:
-		heldEntity.set_as_not_held()
-		
 		dir.x *= THROW_VELOCITY.x
 		if dir.y != 0:
 			dir.y *= -THROW_VELOCITY.y
 			if dir.y > 0:
-				var highestHolder: Entity = heldEntity
-				while highestHolder.heldEntity:
-					highestHolder = highestHolder.heldEntity
-				self.global_position = highestHolder.holdPoint.global_position
 				dir.y = -THROW_Y_BOOST * 2
-				self.velocity.y = THROW_Y_BOOST
 			pass
 		else:
 			dir.y = THROW_VELOCITY.y
-		heldEntity.velocity = Vector3(dir.x, dir.y, 0);
-		set_is_not_holding()
+		var highestHolder: Entity = get_highest_held_entity()
+		var highestPos: Vector3 = highestHolder.holdPoint.global_position
+		put_down(dir)
+		if dir.y < 0:
+			self.global_position = highestPos
+			self.velocity.y = THROW_Y_BOOST
+			pass
 		postThrowPreventPickupTimer = POST_THROW_PREVENT_PICKUP_TIME
 
 func place(dir: Vector2i):
