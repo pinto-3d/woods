@@ -77,6 +77,11 @@ func _ready() -> void:
 	holdPoint = get_node_or_null("HoldPoint")
 	if holdPoint:
 		holdPoint.position.y = HOLD_POINT_Y_OFFSET
+		
+		if not GameManager.i.isDebug:
+			var holdPointVisual = holdPoint.get_node_or_null("MeshInstance3D")
+			if holdPointVisual:
+				holdPointVisual.queue_free()
 	if self is Player:
 		pass
 	if self is not ImmovableBlock:
