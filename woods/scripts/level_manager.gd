@@ -41,8 +41,13 @@ var offset: Vector2 = Vector2(5, 0);
 var immovableBlockScene: PackedScene = load("res://entity/block/immovable_block.tscn")
 var basicBlockScene: PackedScene = load("res://entity/block/basic_block.tscn")
 
+var timeSinceLevelStart: float = 0
+
 var blockTimer: float = 0.0
-var TIME_BT_BLOCKS: float = 2
+var currentTimeBtBlocks: float = 2
+var BASE_TIME_BT_BLOCKS: float = 2
+var DECREASE_BT_BLOCKS_INC: float = 0.1
+var DECREASE_BT_BLOCKS_LOG: float = 2
 
 var topLeft: Vector2: 
 	get:
@@ -56,13 +61,23 @@ var topRight: Vector2:
 func _ready() -> void:
 	if Engine.is_editor_hint():
 		return
-	generate_level(dimensions, offset)
-	set_mode(Mode.SendingBlocks)
-	
 	if LevelManager.i:
 		return
 	LevelManager.i = self
+	start_new_level()
 	pass # Replace with function body.
+
+func decrease_time_bt_blocks(amt: int):
+	var mult: int = log(amt + 1)/log(DECREASE_BT_BLOCKS_LOG)
+	currentTimeBtBlocks = BASE_TIME_BT_BLOCKS - (mult * DECREASE_BT_BLOCKS_INC)
+	pass
+
+func start_new_level():
+	generate_level(dimensions, offset)
+	set_mode(Mode.SendingBlocks)
+	currentTimeBtBlocks = BASE_TIME_BT_BLOCKS
+	timeSinceLevelStart = 0
+	pass
 
 # Called every frame. 'delta' is the elapsed time since the previous frame.
 func _process(delta: float) -> void:
@@ -82,9 +97,10 @@ func _physics_process(delta: float) -> void:
 			blockTimer -= delta
 			if blockTimer < 0:
 				spawn_block_from_current_pool()
-				blockTimer = TIME_BT_BLOCKS
+				decrease_time_bt_blocks(timeSinceLevelStart)
+				blockTimer = currentTimeBtBlocks
 				pass
-			pass
+			timeSinceLevelStart += delta
 	pass
 
 func set_mode(mode: Mode):

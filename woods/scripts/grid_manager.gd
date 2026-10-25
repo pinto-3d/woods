@@ -23,6 +23,7 @@ var dictGrid2Entity: Dictionary[Vector2i, Entity] = {}
 var dictEntity2Grid: Dictionary[Entity, Vector2i] = {}
 
 signal entity_registed(entity: Entity)
+signal matchMade(count: int)
 
 func _init() -> void:
 	pass
@@ -131,13 +132,15 @@ func _adjust_changed_entity(entity):
 	eraseList.append_array(_check_tints_in_direction(tint, dictEntity2Grid[entity], Vector2(1,1)))
 	eraseList.append_array(_check_tints_in_direction(tint, dictEntity2Grid[entity], Vector2(-1,1)))
 	
+	var erasedCount: int = 0
 	for erasePos in eraseList:
 		if dictGrid2Entity.has(erasePos):
 			deregister_entity(dictGrid2Entity[erasePos])
+			erasedCount += 1
 		else:
 			pass
 		pass 
-	pass
+	matchMade.emit(erasedCount)
 
 func _entity_update(entity: Entity, pos):
 	if pos is Vector3:

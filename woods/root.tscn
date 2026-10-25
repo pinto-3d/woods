@@ -6,9 +6,11 @@
 [ext_resource type="PackedScene" uid="uid://c8uug5uucmxwd" path="res://entity/block/immovable_block.tscn" id="3_huihk"]
 [ext_resource type="Script" uid="uid://cajsvalmbtbsa" path="res://scripts/node_spawner.gd" id="3_vvh5c"]
 [ext_resource type="Script" uid="uid://k35s75eptaba" path="res://scripts/grid_manager.gd" id="4_bf3um"]
+[ext_resource type="Script" uid="uid://ci80hj63fn02a" path="res://round_manager.gd" id="6_eji0w"]
 [ext_resource type="Script" uid="uid://byp4mx16wjqi5" path="res://scripts/debug_block_spawning_box.gd" id="7_vyht1"]
 [ext_resource type="Script" uid="uid://caoqw8vhoiqwn" path="res://scripts/debug_entity_details.gd" id="8_bf3um"]
 [ext_resource type="LabelSettings" uid="uid://8e6vq6gmkg41" path="res://debug_label_setting.tres" id="9_huihk"]
+[ext_resource type="PackedScene" uid="uid://ct32fa5iqydfk" path="res://scenes/points_menu.tscn" id="11_gd4vy"]
 
 [sub_resource type="GDScript" id="GDScript_vyht1"]
 script/source = "extends Panel
@@ -82,7 +84,7 @@ font_size = 10
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 8, 5, 0)
 
 [node name="Camera3D" type="Camera3D" parent="." unique_id=1056890238]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 7.5, 4, 17.849358)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 6.25, 4, 17.849358)
 fov = 40.0
 
 [node name="LevelManager" type="Node3D" parent="." unique_id=171994457]
@@ -203,6 +205,9 @@ script = ExtResource("3_vvh5c")
 [node name="GridManager" type="Node3D" parent="." unique_id=624511250 groups=["grid_manager"]]
 script = ExtResource("4_bf3um")
 
+[node name="RoundManager" type="Node3D" parent="." unique_id=2122044745]
+script = ExtResource("6_eji0w")
+
 [node name="GameManager" type="Node3D" parent="." unique_id=1562308056]
 script = ExtResource("2_l8v81")
 
@@ -226,6 +231,7 @@ grow_vertical = 2
 mouse_filter = 1
 script = SubResource("GDScript_vyht1")
 dictDebugValues = Dictionary[String, String]({
+"Time bt blocks": "LevelManager.currentTimeBtBlocks",
 "first block normal": "GridManager.entityList.1.prevNormal",
 "first block velocity": "GridManager.entityList.1.velocity",
 "held velocity": "Player.holdPoint.get_child(0).velocity",
@@ -282,6 +288,12 @@ label_settings = ExtResource("9_huihk")
 autowrap_trim_flags = 0
 
 [node name="DirectionalLight3D" type="DirectionalLight3D" parent="." unique_id=1639722659]
+
+[node name="Game UI" type="Node3D" parent="." unique_id=462620827]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 2.9888577, 7.580269, 0)
+
+[node name="Points menu" parent="Game UI" unique_id=282033947 instance=ExtResource("11_gd4vy")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.125, 0, -0.875)
 
 [connection signal="input_event" from="Player" to="Player" method="_on_input_event"]
 [connection signal="mouse_entered" from="Player" to="Player" method="_on_mouse_entered"]
