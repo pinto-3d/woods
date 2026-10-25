@@ -157,7 +157,15 @@ func _entity_update(entity: Entity, pos):
 	dictEntity2Grid[entity] = pos
 	dictGrid2Entity[pos] = entity
 	
+	if pos.y > LevelManager.i.topLeft.y:
+		lost.emit()
+	
 	if prevPos != pos:
 		_adjust_changed_entity(entity)
 		pass
 	pass
+
+func lose():
+	pass
+
+signal lost

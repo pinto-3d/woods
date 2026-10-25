@@ -205,8 +205,9 @@ func handle_collision(info: CollisionInfo):
 								add_log_entry(LogEntry.InteractionType.Collision, 
 									"was picked up", info.entity)
 							else:
+								self.velocity = Vector3.ZERO
+								info.entity.velocity = Vector3.ZERO
 								GridManager.i.snap_entity_to_grid(self)
-								self.velocity.x = 0
 								GridManager.i.snap_entity_to_grid(info.entity)
 								add_log_entry(LogEntry.InteractionType.Collision, 
 									"almost picked up but instead snapped to grid", info.entity)

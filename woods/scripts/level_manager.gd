@@ -29,7 +29,9 @@ var dictColors: Dictionary[BlockColor, Color] = {
 
 var availableColors: Array[BlockColor] = [
 	BlockColor.RED,
-	BlockColor.BLUE
+	BlockColor.BLUE,
+	BlockColor.YELLOW,
+	BlockColor.PINK
 ]
 
 static var i: LevelManager

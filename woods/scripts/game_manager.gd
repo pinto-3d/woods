@@ -12,7 +12,7 @@ static var _i:GameManager
 func _init() -> void:
 	pass
 
-var isDebug: bool = false
+var isDebug: bool = true
 var showDebugGrid: bool = false
 
 # Called when the node enters the scene tree for the first time.
