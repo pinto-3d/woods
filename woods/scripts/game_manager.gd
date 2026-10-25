@@ -1,12 +1,15 @@
 extends Node3D
 class_name GameManager
 
-static var i: GameManager
+static var i: GameManager:
+	get:
+		if _i:
+			return _i
+		_i = ((Engine.get_main_loop() as SceneTree).root as Node).get_child(0).get_node("GameManager")
+		return _i
+static var _i:GameManager
 
 func _init() -> void:
-	if GameManager.i:
-		return
-	GameManager.i = self
 	pass
 
 var isDebug: bool = true

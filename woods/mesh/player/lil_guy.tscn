@@ -1,0 +1,6 @@
+[gd_scene format=3 uid="uid://ummmwhhfwjo"]
+
+[ext_resource type="PackedScene" uid="uid://blqwt2o1kmln5" path="res://mesh/lil guy.glb" id="1_wq0tc"]
+
+[node name="Armature" unique_id=815777656 instance=ExtResource("1_wq0tc")]
+transform = Transform3D(-1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0)

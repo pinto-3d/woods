@@ -15,7 +15,7 @@ var MIN_SLIDE_BOOST_SPEED = 200
 var GRAVITY: float = 10.0;
 var GRAVITY_DIRECTION: Vector3 = Vector3.DOWN;
 var hasLinearGravity: bool = true
-var LINEAR_GRAVITY_MAX: float =10;
+var LINEAR_GRAVITY_MAX: float = 3
 const MIN_VELOCITY: float = 0.01
 
 var THROW_VELOCITY: Vector2 = Vector2(3, 6)
@@ -23,6 +23,7 @@ var THROW_Y_BOOST: float = 6
 var POST_THROW_PREVENT_PICKUP_TIME: float = 0.25
 var postThrowPreventPickupTimer: float = 0
 
+var armature: Node3D
 var mesh: MeshInstance3D
 var col: CollisionShape3D
 var leftRay: RayCast3D
@@ -58,12 +59,16 @@ var direction: RelativeDirection = RelativeDirection.RIGHT
 var isRegisteredToGrid: bool = false
 signal entityGridUpdate(entity: Entity, pos: Vector2)
 
+signal clicked(entity: Entity)
+var log: Log
+
 func _init() -> void:
 	pass
 
 func _ready() -> void:
 	col = get_node_or_null("CollisionShape3D")
 	mesh = get_node_or_null("MeshInstance3D")
+	armature = get_node_or_null("Armature")
 	if mesh:
 		if GameManager.i.isDebug:
 			mesh.scale = Vector3.ONE * 0.8
@@ -82,6 +87,14 @@ func _ready() -> void:
 		pass
 		
 	debugLabel3d = get_node_or_null("DebugLabel3D")
+	if not GameManager.i.isDebug:
+		if debugLabel3d:
+			debugLabel3d.queue_free()
+	log = Log.new(self)
+	pass
+
+func add_log_entry(interactionType: LogEntry.InteractionType, interaction: String, thatEntity):
+	log.add_entry(interactionType, interaction, self, thatEntity)
 	pass
 
 func _process(delta: float) -> void:
@@ -163,16 +176,6 @@ class CollisionInfo:
 	pass
 
 func handle_collision(info: CollisionInfo):
-	if info.count > 1:
-		for i in range(0, info.count):
-			#print(Time.get_ticks_msec())
-			#print("   ",get_slide_collision(i).get_normal())
-			#print("   ",get_slide_collision(i).get_position())
-			
-			if get_slide_collision(i).get_normal() == Vector3(0, -1, 0):
-				pass
-			pass
-		pass
 	
 	if isHeld:
 		pass
@@ -186,16 +189,22 @@ func handle_collision(info: CollisionInfo):
 						if is_above_entity(info.entity):
 							GridManager.i.snap_entity_to_grid(self)
 							self.velocity = Vector3.ZERO
+							#add_log_entry(LogEntry.InteractionType.Collision, 
+								#"snapped to grid above immovable block", info.entity)
 					else:
 						var highest = (info.entity as Entity).get_highest_held_entity()
 						if not highest.isHolding:
 							if is_above_entity(highest):
 								highest.pickup(self)
 								self.velocity = Vector3.ZERO
+								add_log_entry(LogEntry.InteractionType.Collision, 
+									"was picked up", info.entity)
 							else:
 								GridManager.i.snap_entity_to_grid(self)
 								self.velocity.x = 0
-		
+								GridManager.i.snap_entity_to_grid(info.entity)
+								add_log_entry(LogEntry.InteractionType.Collision, 
+									"almost picked up but instead snapped to grid", info.entity)
 		#if normal.x != 0:
 			#if not isHeld:
 				#velocity.y = 0
@@ -223,14 +232,19 @@ func move(delta: float):
 	var collided = move_and_slide()
 	if collided:
 		var collisionInfo: CollisionInfo = CollisionInfo.new()
-		var collision = get_last_slide_collision()
-		collisionInfo.collision = collision
-		collisionInfo.normal = collision.get_normal()
-		collisionInfo.position = collision.get_position()
-		collisionInfo.count = get_slide_collision_count()
-		collisionInfo.travel = collision.get_travel()
-		collisionInfo.entity = collision.get_collider()
-		handle_collision(collisionInfo)
+		var collisionCount: int = 1
+		for index in range(0, collisionCount):
+			var collision = get_last_slide_collision()
+			if not collision:
+				return
+			collisionInfo.collision = collision
+			collisionInfo.normal = collision.get_normal()
+			collisionInfo.position = collision.get_position()
+			collisionInfo.count = index
+			collisionInfo.travel = collision.get_travel()
+			collisionInfo.entity = collision.get_collider()
+			handle_collision(collisionInfo)
+			pass
 	else:
 		if isOnGround:
 			var downNormal = get_down_normal()
@@ -303,15 +317,18 @@ func update_collider():
 	var highest: Entity = get_highest_held_entity()
 	var lowest: Entity = get_lowest_held_entity()
 	var colShape = BasicBoxCollisionShape.duplicate()
-	if highest == lowest:
+	if highest.name == lowest.name:
 		lowest.col.shape = colShape
 		lowest.col.position.y = 0
+		add_log_entry(LogEntry.InteractionType.ColliderUpdate, "collider set to single", self)
 		return
 	var diff = highest.global_position.y - lowest.global_position.y
 	var colSize = (highest.col.shape as BoxShape3D).size.y
-	colShape.size.y = colSize + diff
+	var totalSize = colSize + diff
+	colShape.size.y = totalSize
 	lowest.col.shape = colShape
 	lowest.col.position.y = diff/2
+	add_log_entry(LogEntry.InteractionType.ColliderUpdate, str("collider set to size ",totalSize), self)
 	pass
 	
 func set_is_not_holding():
@@ -384,6 +401,7 @@ func erase():
 		holder.set_is_not_holding()
 		set_as_not_held()
 	if isHolding:
+		heldEntity.set_as_not_held()
 		set_is_not_holding()
 	queue_free()
 	pass
@@ -397,3 +415,19 @@ func get_down_normal() -> Variant:
 
 func iteracted_with(entity: Entity):
 	pass
+
+
+
+func _input_event(camera: Camera3D, event: InputEvent, event_position: Vector3, normal: Vector3, shape_idx: int):
+	if event is InputEventMouseButton:
+		if (event as InputEventMouseButton).button_index == MOUSE_BUTTON_LEFT:
+			if (event as InputEventMouseButton).pressed:
+				clicked.emit(self)
+			pass
+		pass
+	pass
+	
+func _on_mouse_entered() -> void:
+	if not GameManager.i.isDebug:
+		return
+	pass # Replace with function body.

@@ -1,11 +1,77 @@
 [gd_scene format=3 uid="uid://bugyqet37rfxl"]
 
 [ext_resource type="PackedScene" uid="uid://7leje722w1w6" path="res://entity/player/player.tscn" id="1_pyidc"]
-[ext_resource type="Script" uid="uid://chgaug0vb25la" path="res://game_manager.gd" id="2_l8v81"]
+[ext_resource type="Script" uid="uid://chgaug0vb25la" path="res://scripts/game_manager.gd" id="2_l8v81"]
 [ext_resource type="Script" uid="uid://joq0fup114d2" path="res://scripts/level_manager.gd" id="2_vvh5c"]
+[ext_resource type="PackedScene" uid="uid://c8uug5uucmxwd" path="res://entity/block/immovable_block.tscn" id="3_huihk"]
 [ext_resource type="Script" uid="uid://cajsvalmbtbsa" path="res://scripts/node_spawner.gd" id="3_vvh5c"]
-[ext_resource type="Script" uid="uid://k35s75eptaba" path="res://grid_manager.gd" id="5_jnlp7"]
-[ext_resource type="Script" uid="uid://bl1spnekn1epc" path="res://debug_values.gd" id="6_l8v81"]
+[ext_resource type="Script" uid="uid://k35s75eptaba" path="res://scripts/grid_manager.gd" id="4_bf3um"]
+[ext_resource type="Script" uid="uid://byp4mx16wjqi5" path="res://scripts/debug_block_spawning_box.gd" id="7_vyht1"]
+[ext_resource type="Script" uid="uid://caoqw8vhoiqwn" path="res://scripts/debug_entity_details.gd" id="8_bf3um"]
+[ext_resource type="LabelSettings" uid="uid://8e6vq6gmkg41" path="res://debug_label_setting.tres" id="9_huihk"]
+
+[sub_resource type="GDScript" id="GDScript_vyht1"]
+script/source = "extends Panel
+
+var label:Label
+@export var dictDebugValues: Dictionary[String, String] = {}
+
+# Called when the node enters the scene tree for the first time.
+func _ready() -> void:
+	label = $Label
+	pass # Replace with function body.
+
+
+func _process(delta: float) -> void:
+	label.text = \"\"
+
+	for key in dictDebugValues:
+		var variables = dictDebugValues[key].split(\".\")
+		var current_value = get_tree().root.get_child(0).get_node(variables[0])
+		variables.remove_at(0)
+
+		for variable in variables:
+			if variable.begins_with(\"get_child(\") and variable.ends_with(\")\"):
+				var index_str = variable.trim_prefix(\"get_child(\").trim_suffix(\")\")
+
+				if not index_str.is_valid_int():
+					break
+
+				var index = int(index_str)
+
+				if current_value is Node:
+					if index < 0 or index >= current_value.get_child_count():
+						break
+					current_value = current_value.get_child(index)
+				else:
+					break
+
+			elif current_value is Dictionary:
+				if not current_value.has(variable):
+					break
+				current_value = current_value[variable]
+
+			elif current_value is Array:
+				if not variable.is_valid_int():
+					break
+
+				var index = int(variable)
+
+				if index < 0 or index >= current_value.size():
+					break
+
+				current_value = current_value[index]
+
+			elif current_value is Object:
+				if not variable in current_value:
+					break
+				current_value = current_value.get(variable)
+
+			else:
+				break
+
+		label.text += key + \": \" + str(current_value) + \"\\n\"
+"
 
 [sub_resource type="LabelSettings" id="LabelSettings_l8v81"]
 font_size = 10
@@ -23,11 +89,119 @@ fov = 40.0
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.5, 0, 0)
 script = ExtResource("2_vvh5c")
 
+[node name="ImmovableBlock" parent="LevelManager" unique_id=1221345012 instance=ExtResource("3_huihk")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 3.5, -1, 0)
+TINT = Color(0.502, 0, 0.502, 1)
+
+[node name="@CharacterBody3D@22000" parent="LevelManager" unique_id=1958085686 instance=ExtResource("3_huihk")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 4.5, -1, 0)
+TINT = Color(0.502, 0, 0.502, 1)
+
+[node name="@CharacterBody3D@22001" parent="LevelManager" unique_id=2015651930 instance=ExtResource("3_huihk")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 5.5, -1, 0)
+TINT = Color(0.502, 0, 0.502, 1)
+
+[node name="@CharacterBody3D@22002" parent="LevelManager" unique_id=1325220835 instance=ExtResource("3_huihk")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 6.5, -1, 0)
+TINT = Color(0.502, 0, 0.502, 1)
+
+[node name="@CharacterBody3D@22003" parent="LevelManager" unique_id=40306995 instance=ExtResource("3_huihk")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 7.5, -1, 0)
+TINT = Color(0.502, 0, 0.502, 1)
+
+[node name="@CharacterBody3D@22004" parent="LevelManager" unique_id=384143486 instance=ExtResource("3_huihk")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 8.5, -1, 0)
+TINT = Color(0.502, 0, 0.502, 1)
+
+[node name="@CharacterBody3D@22005" parent="LevelManager" unique_id=1419223824 instance=ExtResource("3_huihk")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 9.5, -1, 0)
+TINT = Color(0.502, 0, 0.502, 1)
+
+[node name="@CharacterBody3D@22006" parent="LevelManager" unique_id=906985473 instance=ExtResource("3_huihk")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 10.5, -1, 0)
+TINT = Color(0.502, 0, 0.502, 1)
+
+[node name="@CharacterBody3D@22007" parent="LevelManager" unique_id=1949532616 instance=ExtResource("3_huihk")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 11.5, -1, 0)
+TINT = Color(0.502, 0, 0.502, 1)
+
+[node name="@CharacterBody3D@22008" parent="LevelManager" unique_id=216651776 instance=ExtResource("3_huihk")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 3.5, -1, 0)
+TINT = Color(0.502, 0, 0.502, 1)
+
+[node name="@CharacterBody3D@22009" parent="LevelManager" unique_id=195124253 instance=ExtResource("3_huihk")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 11.5, -1, 0)
+TINT = Color(0.502, 0, 0.502, 1)
+
+[node name="@CharacterBody3D@22010" parent="LevelManager" unique_id=1658764270 instance=ExtResource("3_huihk")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 3.5, 0, 0)
+TINT = Color(0.502, 0, 0.502, 1)
+
+[node name="@CharacterBody3D@22011" parent="LevelManager" unique_id=315825561 instance=ExtResource("3_huihk")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 11.5, 0, 0)
+TINT = Color(0.502, 0, 0.502, 1)
+
+[node name="@CharacterBody3D@22012" parent="LevelManager" unique_id=2129164083 instance=ExtResource("3_huihk")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 3.5, 1, 0)
+TINT = Color(0.502, 0, 0.502, 1)
+
+[node name="@CharacterBody3D@22013" parent="LevelManager" unique_id=1684046183 instance=ExtResource("3_huihk")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 11.5, 1, 0)
+TINT = Color(0.502, 0, 0.502, 1)
+
+[node name="@CharacterBody3D@22014" parent="LevelManager" unique_id=1052759639 instance=ExtResource("3_huihk")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 3.5, 2, 0)
+TINT = Color(0.502, 0, 0.502, 1)
+
+[node name="@CharacterBody3D@22015" parent="LevelManager" unique_id=215494355 instance=ExtResource("3_huihk")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 11.5, 2, 0)
+TINT = Color(0.502, 0, 0.502, 1)
+
+[node name="@CharacterBody3D@22016" parent="LevelManager" unique_id=485408727 instance=ExtResource("3_huihk")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 3.5, 3, 0)
+TINT = Color(0.502, 0, 0.502, 1)
+
+[node name="@CharacterBody3D@22017" parent="LevelManager" unique_id=540163306 instance=ExtResource("3_huihk")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 11.5, 3, 0)
+TINT = Color(0.502, 0, 0.502, 1)
+
+[node name="@CharacterBody3D@22018" parent="LevelManager" unique_id=2022488751 instance=ExtResource("3_huihk")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 3.5, 4, 0)
+TINT = Color(0.502, 0, 0.502, 1)
+
+[node name="@CharacterBody3D@22019" parent="LevelManager" unique_id=1165580670 instance=ExtResource("3_huihk")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 11.5, 4, 0)
+TINT = Color(0.502, 0, 0.502, 1)
+
+[node name="@CharacterBody3D@22020" parent="LevelManager" unique_id=535278405 instance=ExtResource("3_huihk")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 3.5, 5, 0)
+TINT = Color(0.502, 0, 0.502, 1)
+
+[node name="@CharacterBody3D@22021" parent="LevelManager" unique_id=939960792 instance=ExtResource("3_huihk")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 11.5, 5, 0)
+TINT = Color(0.502, 0, 0.502, 1)
+
+[node name="@CharacterBody3D@22022" parent="LevelManager" unique_id=630737480 instance=ExtResource("3_huihk")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 3.5, 6, 0)
+TINT = Color(0.502, 0, 0.502, 1)
+
+[node name="@CharacterBody3D@22023" parent="LevelManager" unique_id=1728590960 instance=ExtResource("3_huihk")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 11.5, 6, 0)
+TINT = Color(0.502, 0, 0.502, 1)
+
+[node name="@CharacterBody3D@22024" parent="LevelManager" unique_id=1131705238 instance=ExtResource("3_huihk")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 3.5, 7, 0)
+TINT = Color(0.502, 0, 0.502, 1)
+
+[node name="@CharacterBody3D@22025" parent="LevelManager" unique_id=804837231 instance=ExtResource("3_huihk")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 11.5, 7, 0)
+TINT = Color(0.502, 0, 0.502, 1)
+
 [node name="NodeSpawner" type="Node3D" parent="." unique_id=1441461848 groups=["node_spawner"]]
 script = ExtResource("3_vvh5c")
 
 [node name="GridManager" type="Node3D" parent="." unique_id=624511250 groups=["grid_manager"]]
-script = ExtResource("5_jnlp7")
+script = ExtResource("4_bf3um")
 
 [node name="GameManager" type="Node3D" parent="." unique_id=1562308056]
 script = ExtResource("2_l8v81")
@@ -41,6 +215,7 @@ anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
+mouse_filter = 1
 
 [node name="Panel" type="Panel" parent="ui/Control" unique_id=1372965056]
 layout_mode = 1
@@ -48,7 +223,8 @@ anchors_preset = 9
 anchor_bottom = 1.0
 offset_right = 321.0
 grow_vertical = 2
-script = ExtResource("6_l8v81")
+mouse_filter = 1
+script = SubResource("GDScript_vyht1")
 dictDebugValues = Dictionary[String, String]({
 "first block normal": "GridManager.entityList.1.prevNormal",
 "first block velocity": "GridManager.entityList.1.velocity",
@@ -66,3 +242,47 @@ grow_horizontal = 2
 grow_vertical = 2
 label_settings = SubResource("LabelSettings_l8v81")
 autowrap_mode = 3
+
+[node name="CheckBox" type="CheckBox" parent="ui/Control/Panel" unique_id=719272682]
+layout_mode = 1
+anchors_preset = 2
+anchor_top = 1.0
+anchor_bottom = 1.0
+offset_top = -31.0
+offset_right = 149.0
+grow_vertical = 0
+button_pressed = true
+text = "Block Spawning"
+script = ExtResource("7_vyht1")
+
+[node name="EntityDetails" type="ScrollContainer" parent="ui/Control/Panel" unique_id=198819918]
+layout_mode = 1
+anchors_preset = 4
+anchor_top = 0.5
+anchor_bottom = 0.5
+offset_top = -141.0
+offset_right = 310.0
+offset_bottom = 141.0
+grow_vertical = 2
+script = ExtResource("8_bf3um")
+
+[node name="VBoxContainer" type="VBoxContainer" parent="ui/Control/Panel/EntityDetails" unique_id=1959073510]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+
+[node name="EntityName" type="Label" parent="ui/Control/Panel/EntityDetails/VBoxContainer" unique_id=622050330]
+layout_mode = 2
+label_settings = ExtResource("9_huihk")
+uppercase = true
+
+[node name="EntityDesc" type="Label" parent="ui/Control/Panel/EntityDetails/VBoxContainer" unique_id=617667839]
+layout_mode = 2
+label_settings = ExtResource("9_huihk")
+autowrap_trim_flags = 0
+
+[node name="DirectionalLight3D" type="DirectionalLight3D" parent="." unique_id=1639722659]
+
+[connection signal="input_event" from="Player" to="Player" method="_on_input_event"]
+[connection signal="mouse_entered" from="Player" to="Player" method="_on_mouse_entered"]
+[connection signal="toggled" from="ui/Control/Panel/CheckBox" to="ui/Control/Panel/CheckBox" method="_on_toggled"]

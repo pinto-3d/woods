@@ -62,17 +62,15 @@ func _process(delta: float) -> void:
 	super._process(delta)
 	pass
 
-func set_direction(dir: int):
-	if dir == 0:
-		pass
+func set_direction(dir: RelativeDirection):
+	var wasChanged: bool = direction != dir
 	direction = dir
-	if dir == -1:
-		pass
-	elif dir == 1:
-		pass
-	else:
-		return
-		
+	if wasChanged:
+		direction_updated()
+
+func direction_updated():
+	pass
+
 func _physics_process(delta: float) -> void:
 	super._physics_process(delta)
 	if isOnGround:
@@ -164,6 +162,7 @@ func wall_jump(dir: int):
 	velocity.x = dir * WALL_JUMP_VELOCITY.x
 	wallJumpCount -= 1
 	prevWallJumpSide = -dir
+	set_direction(dir)
 	start_launch(WALL_JUMP_LAUNCH_TIME)
 	pass
 

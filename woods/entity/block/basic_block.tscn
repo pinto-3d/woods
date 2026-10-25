@@ -41,3 +41,5 @@ asdfasdf"
 font_size = 52
 outline_size = 8
 line_spacing = -20.0
+
+[connection signal="input_event" from="." to="." method="_on_input_event"]

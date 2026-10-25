@@ -84,6 +84,18 @@ func _physics_process(delta):
 		State.DISABLE_PHYSICS:
 			pass
 
+func direction_updated():
+	match direction:
+		RelativeDirection.LEFT:
+			if armature:
+				armature.scale.x = 1
+			pass
+		RelativeDirection.RIGHT:
+			if armature:
+				armature.scale.x = -1
+			pass
+	pass
+	
 func _try_place(dir: Vector2i):
 	if not heldEntity:
 		return
@@ -128,9 +140,9 @@ func get_inputVector():
 	inputVector.y = Input.get_axis("down", "up")
 	
 	if inputVector.x > MIN_VELOCITY * sign(inputVector.x):
-		direction = RelativeDirection.RIGHT
+		set_direction(RelativeDirection.RIGHT)
 	elif inputVector.x < MIN_VELOCITY * sign(inputVector.x):
-		direction = RelativeDirection.LEFT
+		set_direction(RelativeDirection.LEFT)
 	return inputVector
 
 func iteracted_with(entity: Entity):

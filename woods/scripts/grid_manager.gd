@@ -1,7 +1,14 @@
+@tool
 extends Node3D
 class_name GridManager
 
-static var i: GridManager
+static var i: GridManager:
+	get:
+		if _i:
+			return _i
+		_i = (Engine.get_main_loop() as SceneTree).root.get_tree().get_nodes_in_group("grid_manager")[0]
+		return _i
+static var _i:GridManager
 
 
 var root: Node3D
@@ -15,10 +22,9 @@ var MATCH_NUM: int = 4;
 var dictGrid2Entity: Dictionary[Vector2i, Entity] = {}
 var dictEntity2Grid: Dictionary[Entity, Vector2i] = {}
 
+signal entity_registed(entity: Entity)
+
 func _init() -> void:
-	if GridManager.i:
-		return
-	GridManager.i = self
 	pass
 
 # Called when the node enters the scene tree for the first time.
@@ -69,6 +75,7 @@ func snap_entity_to_grid(entity:Entity):
 func register_entity(entity: Entity):
 	entity.entityGridUpdate.connect(_entity_update)
 	entity.isRegisteredToGrid = true
+	entity_registed.emit(entity)
 	pass
 
 func deregister_entity(entity: Entity):
