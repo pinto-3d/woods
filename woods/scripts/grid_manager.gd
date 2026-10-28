@@ -71,7 +71,8 @@ func snap_entity_to_grid(entity:Entity):
 		if v3:
 			entity.global_position = v3
 			_entity_update(entity, entity.global_position)
-	pass
+		return v3
+	return null
 
 func register_entity(entity: Entity):
 	entity.entityGridUpdate.connect(_entity_update)

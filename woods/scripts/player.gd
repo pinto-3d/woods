@@ -16,7 +16,7 @@ func _ready() -> void:
 
 
 func start():
-	GridManager.i.register_entity(self)
+	
 	pass
 
 # Called every frame. 'delta' is the elapsed time since the previous frame.

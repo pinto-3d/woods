@@ -57,6 +57,9 @@ var topLeft: Vector2:
 var topRight: Vector2: 
 	get:
 		return Vector2(dimensions.x, dimensions.y) + offset
+var middle: Vector2:
+	get:
+		return Vector2(round(dimensions.x/2), dimensions.y) + offset
 
 @export var doUpdate: bool = false
 
@@ -122,6 +125,8 @@ func generate_level(dimensions: Vector2, pos:Vector2 = Vector2.ZERO):
 		pass
 	GridManager.i.clear()
 	
+	GridManager.i.register_entity((Engine.get_main_loop() as SceneTree).root.get_tree().get_nodes_in_group("player")[0])
+	
 	var xval: float = pos.x - GridManager.i.BLOCK_SIZE
 	var yval: float = pos.y - GridManager.i.BLOCK_SIZE
 	print(xval)
@@ -140,7 +145,13 @@ func get_player_start_position():
 	pass
 
 func spawn_block_from_current_pool():
-	var randx: int = topLeft.x + randi_range(0, dimensions.x-1)
+	var randrange: Array[int] = []
+	for i in range(0, dimensions.x):
+		randrange.append(topLeft.x + dimensions.x)
+		pass
+	
+	var randxIndex: int = randi_range(0, randrange.size())
+	
 	var pos: Vector2 = Vector2(randx, topLeft.y)
 	
 	var chosenScene: PackedScene = basicBlockScene

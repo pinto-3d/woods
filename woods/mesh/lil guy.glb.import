@@ -40,6 +40,13 @@ materials/extract=0
 materials/extract_format=0
 materials/extract_path=""
 _subresources={
+"materials": {
+"Material_0.001": {
+"use_external/enabled": true,
+"use_external/fallback_path": "res://mesh/player/Material_0.001.tres",
+"use_external/path": "uid://dreq2imhs21fq"
+}
+},
 "meshes": {
 "lil guy_Mesh_3_001": {
 "generate/lightmap_uv": 0,

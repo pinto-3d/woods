@@ -2,7 +2,7 @@
 
 [ext_resource type="Script" uid="uid://civl5wm3jlhls" path="res://points_menu.gd" id="1_632ud"]
 [ext_resource type="Texture2D" uid="uid://dwxwwqhvrj7dm" path="res://textures/construction_sign.png" id="2_16qo1"]
-[ext_resource type="Texture2D" uid="uid://b5pum0aunynic" path="res://textures/sign_poles.png" id="3_d4fak"]
+[ext_resource type="Material" uid="uid://efans2fdgvxq" path="res://materials/point sign poles.tres" id="3_632ud"]
 [ext_resource type="FontFile" uid="uid://b0fis5ukphet6" path="res://visitor1.ttf" id="4_euisa"]
 
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_mnlhg"]
@@ -18,16 +18,8 @@ texture_repeat = false
 material = SubResource("StandardMaterial3D_mnlhg")
 size = Vector2(64, 32)
 
-[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_qt76e"]
-transparency = 2
-alpha_scissor_threshold = 0.5
-alpha_antialiasing_mode = 0
-shading_mode = 0
-albedo_texture = ExtResource("3_d4fak")
-texture_filter = 0
-
 [sub_resource type="PlaneMesh" id="PlaneMesh_eji0w"]
-material = SubResource("StandardMaterial3D_qt76e")
+material = ExtResource("3_632ud")
 size = Vector2(64, 1)
 
 [node name="Points menu" type="Node3D" unique_id=282033947]

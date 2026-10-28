@@ -207,10 +207,15 @@ func handle_collision(info: CollisionInfo):
 							else:
 								self.velocity = Vector3.ZERO
 								info.entity.velocity = Vector3.ZERO
-								GridManager.i.snap_entity_to_grid(self)
-								GridManager.i.snap_entity_to_grid(info.entity)
-								add_log_entry(LogEntry.InteractionType.Collision, 
-									"almost picked up but instead snapped to grid", info.entity)
+								var selfpos = GridManager.i.snap_entity_to_grid(self)
+								var otherpos = GridManager.i.snap_entity_to_grid(info.entity)
+								if selfpos == otherpos:
+									add_log_entry(LogEntry.InteractionType.Collision, 
+										"almost picked up but instead snapped to grid. pos was the same after snap", info.entity)
+									pass
+								else:
+									add_log_entry(LogEntry.InteractionType.Collision, 
+										"almost picked up but instead snapped to grid", info.entity)
 		#if normal.x != 0:
 			#if not isHeld:
 				#velocity.y = 0
@@ -227,9 +232,10 @@ func is_above_entity(entity: Entity):
 	else:
 		othergrid = Vector2i(round(entity.global_position.x), round(entity.global_position.y))
 		pass
-	if selfgrid.x == othergrid.x:
-		if selfgrid.y == othergrid.y+1 or selfgrid.y == othergrid.y:
-			return true
+	if othergrid:
+		if selfgrid.x == othergrid.x:
+			if selfgrid.y == othergrid.y+1 or selfgrid.y == othergrid.y:
+				return true
 	return false
 
 func move(delta: float):
@@ -328,13 +334,16 @@ func update_collider():
 		lowest.col.position.y = 0
 		add_log_entry(LogEntry.InteractionType.ColliderUpdate, "collider set to single", self)
 		return
-	var diff = highest.global_position.y - lowest.global_position.y
+	var highestGridPos = GridManager.i.get_grid_pos_of_entity(highest)
+	var lowestGridPos = GridManager.i.get_grid_pos_of_entity(lowest)
+	var diff = highestGridPos.y - lowestGridPos.y
 	var colSize = (highest.col.shape as BoxShape3D).size.y
 	var totalSize = colSize + diff
 	colShape.size.y = totalSize
 	lowest.col.shape = colShape
-	lowest.col.position.y = diff/2
-	add_log_entry(LogEntry.InteractionType.ColliderUpdate, str("collider set to size ",totalSize), self)
+	var halfDiff: float = diff/2.0
+	lowest.col.position.y = halfDiff
+	add_log_entry(LogEntry.InteractionType.ColliderUpdate, str("collider set to size ",halfDiff), self)
 	pass
 	
 func set_is_not_holding():
@@ -355,11 +364,8 @@ func put_down(velocity: Vector2):
 func throw(dir: Vector2):
 	isHolding = false
 	if heldEntity:
-		dir.x *= THROW_VELOCITY.x
+		dir *= THROW_VELOCITY
 		if dir.y != 0:
-			dir.y *= -THROW_VELOCITY.y
-			if dir.y > 0:
-				dir.y = -THROW_Y_BOOST * 2
 			pass
 		else:
 			dir.y = THROW_VELOCITY.y

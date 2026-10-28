@@ -1,0 +1,11 @@
+[gd_resource type="StandardMaterial3D" format=3 uid="uid://efans2fdgvxq"]
+
+[ext_resource type="Texture2D" uid="uid://b5pum0aunynic" path="res://textures/sign_poles.png" id="1_ktlgc"]
+
+[resource]
+transparency = 2
+alpha_scissor_threshold = 0.5
+alpha_antialiasing_mode = 0
+shading_mode = 0
+albedo_texture = ExtResource("1_ktlgc")
+texture_filter = 0

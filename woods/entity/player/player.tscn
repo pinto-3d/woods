@@ -4,17 +4,6 @@
 [ext_resource type="PackedScene" uid="uid://ummmwhhfwjo" path="res://mesh/player/lil_guy.tscn" id="2_4pl66"]
 [ext_resource type="Shape3D" uid="uid://bm7frr50xsne1" path="res://basic_box_collision_shape.tres" id="4_bgq54"]
 
-[sub_resource type="ProceduralSkyMaterial" id="ProceduralSkyMaterial_4pl66"]
-sky_horizon_color = Color(0.66224277, 0.6717428, 0.6867428, 1)
-ground_horizon_color = Color(0.66224277, 0.6717428, 0.6867428, 1)
-
-[sub_resource type="Sky" id="Sky_bgq54"]
-sky_material = SubResource("ProceduralSkyMaterial_4pl66")
-
-[sub_resource type="Environment" id="Environment_482rp"]
-background_mode = 2
-sky = SubResource("Sky_bgq54")
-
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_4pl66"]
 shading_mode = 0
 albedo_color = Color(1, 0, 0, 1)
@@ -46,9 +35,6 @@ script = ExtResource("1_4pl66")
 
 [node name="Armature" parent="." unique_id=815777656 instance=ExtResource("2_4pl66")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.5, 0)
-
-[node name="WorldEnvironment" type="WorldEnvironment" parent="." unique_id=1514212927]
-environment = SubResource("Environment_482rp")
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="." unique_id=1171922087]
 shape = ExtResource("4_bgq54")

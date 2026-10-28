@@ -25,6 +25,7 @@ window/stretch/aspect="expand"
 
 node_spawner=""
 grid_manager=""
+player=""
 
 [input]
 

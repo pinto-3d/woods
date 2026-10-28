@@ -1,0 +1,15 @@
+[gd_resource type="StandardMaterial3D" format=3 uid="uid://dreq2imhs21fq"]
+
+[ext_resource type="Texture2D" uid="uid://bmy4jxqs0yipf" path="res://mesh/lil guy_lil guy texture.png" id="1_3ml02"]
+
+[resource]
+resource_name = "Material_0.001"
+transparency = 2
+alpha_scissor_threshold = 0.05
+alpha_antialiasing_mode = 0
+cull_mode = 2
+shading_mode = 0
+albedo_texture = ExtResource("1_3ml02")
+texture_filter = 2
+texture_repeat = false
+metadata/_gltf_primary_texture_coord = 0

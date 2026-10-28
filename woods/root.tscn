@@ -12,6 +12,7 @@
 [ext_resource type="LabelSettings" uid="uid://8e6vq6gmkg41" path="res://debug_label_setting.tres" id="9_huihk"]
 [ext_resource type="PackedScene" uid="uid://ct32fa5iqydfk" path="res://scenes/points_menu.tscn" id="11_gd4vy"]
 [ext_resource type="FontFile" uid="uid://b0fis5ukphet6" path="res://visitor1.ttf" id="12_qw60f"]
+[ext_resource type="Material" uid="uid://dbxnkgsw68j87" path="res://materials/ground_material.tres" id="13_eji0w"]
 
 [sub_resource type="GDScript" id="GDScript_vyht1"]
 script/source = "extends Panel
@@ -81,16 +82,36 @@ func _process(delta: float) -> void:
 [sub_resource type="LabelSettings" id="LabelSettings_l8v81"]
 font_size = 10
 
-[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_gd4vy"]
-albedo_color = Color(0.6136565, 0.99999994, 0.3505358, 1)
+[sub_resource type="SphereMesh" id="SphereMesh_qw60f"]
+material = ExtResource("13_eji0w")
+radius = 100.0
+height = 9.208
 
-[sub_resource type="PlaneMesh" id="PlaneMesh_gd4vy"]
-material = SubResource("StandardMaterial3D_gd4vy")
-size = Vector2(100, 100)
+[sub_resource type="ProceduralSkyMaterial" id="ProceduralSkyMaterial_qw60f"]
+sky_horizon_color = Color(0.66224277, 0.6717428, 0.6867428, 1)
+ground_horizon_color = Color(0.66224277, 0.6717428, 0.6867428, 1)
+
+[sub_resource type="Sky" id="Sky_bgq54"]
+sky_material = SubResource("ProceduralSkyMaterial_qw60f")
+
+[sub_resource type="Environment" id="Environment_eji0w"]
+background_mode = 1
+background_color = Color(0.46666667, 0.49019608, 0.93333334, 1)
+sky = SubResource("Sky_bgq54")
+ambient_light_source = 2
+ambient_light_color = Color(1, 0.7471556, 0.64610267, 1)
+ambient_light_energy = 1.3
+ssao_radius = 14.3
+ssao_intensity = 11.19
+volumetric_fog_density = 0.0
+volumetric_fog_length = 172.25
+adjustment_enabled = true
+adjustment_contrast = 1.675
+adjustment_saturation = 0.73
 
 [node name="root" type="Node3D" unique_id=227208465]
 
-[node name="Player" parent="." unique_id=898077056 instance=ExtResource("1_pyidc")]
+[node name="Player" parent="." unique_id=898077056 groups=["player"] instance=ExtResource("1_pyidc")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 8, 5, 0)
 
 [node name="Camera3D" type="Camera3D" parent="." unique_id=1056890238]
@@ -324,8 +345,6 @@ layout_mode = 2
 label_settings = ExtResource("9_huihk")
 autowrap_trim_flags = 0
 
-[node name="DirectionalLight3D" type="DirectionalLight3D" parent="." unique_id=1639722659]
-
 [node name="Game UI" type="Node3D" parent="." unique_id=462620827]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 2.9888577, 7.580269, 0)
 
@@ -355,10 +374,21 @@ autowrap_trim_flags = 0
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.625, 0)
 
 [node name="MeshInstance3D" type="MeshInstance3D" parent="Ground" unique_id=496992195]
-mesh = SubResource("PlaneMesh_gd4vy")
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -5, 0)
+mesh = SubResource("SphereMesh_qw60f")
 
-[connection signal="input_event" from="Player" to="Player" method="_on_input_event"]
-[connection signal="mouse_entered" from="Player" to="Player" method="_on_mouse_entered"]
+[node name="WorldEnvironment" type="WorldEnvironment" parent="." unique_id=368699391]
+environment = SubResource("Environment_eji0w")
+
+[node name="DirectionalLight3D" type="DirectionalLight3D" parent="." unique_id=1807445685]
+transform = Transform3D(1, 0, 0, 0, 0.8660254, 0.5, 0, -0.5, 0.8660254, 0, 6.5, 6)
+shadow_enabled = true
+shadow_opacity = 0.99
+shadow_blur = 0.0
+directional_shadow_fade_start = 1.0
+directional_shadow_max_distance = 40.0
+sky_mode = 1
+
 [connection signal="toggled" from="ui/Control/Panel/CheckBox" to="ui/Control/Panel/CheckBox" method="_on_toggled"]
 
 [editable path="Game UI/Points menu"]
