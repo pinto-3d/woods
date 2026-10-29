@@ -207,6 +207,10 @@ func handle_collision(info: CollisionInfo):
 							else:
 								self.velocity = Vector3.ZERO
 								info.entity.velocity = Vector3.ZERO
+								var presnap_selfpos = self.global_position
+								var presnap_otherpos = info.entity.global_position
+								
+								
 								var selfpos = GridManager.i.snap_entity_to_grid(self)
 								var otherpos = GridManager.i.snap_entity_to_grid(info.entity)
 								if selfpos == otherpos:
@@ -215,7 +219,7 @@ func handle_collision(info: CollisionInfo):
 									pass
 								else:
 									add_log_entry(LogEntry.InteractionType.Collision, 
-										str("almost picked up but instead snapped to grid. \n\tnormal:", info.normal,"\n\tselfpos:",global_position,"\n\totherpos:",info.entity.global_position), info.entity)
+										str("almost picked up but instead snapped to grid. \n.\tnormal:", info.normal,"\n.\tselfpos:",presnap_selfpos,"\n.\totherpos:",presnap_otherpos), info.entity)
 		#if normal.x != 0:
 			#if not isHeld:
 				#velocity.y = 0

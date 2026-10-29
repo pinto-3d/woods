@@ -164,7 +164,7 @@ func spawn_block_from_current_pool():
 	var randSpawnPoint: Vector2i = Vector2i(randrange[randxIndex], BLOCK_SPAWN_Y)
 	while GridManager.i.get_entity_at_grid_pos(randSpawnPoint):
 		randrange.remove_at(randxIndex)
-		randxIndex = randi_range(0, randrange.size())
+		randxIndex = randi_range(0, randrange.size()-1)
 		randSpawnPoint = Vector2i(randrange[randxIndex], BLOCK_SPAWN_Y)
 	
 	var pos: Vector2 = randSpawnPoint
