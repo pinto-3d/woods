@@ -18,7 +18,7 @@ enum BlockColor {
 }
 
 var dictColors: Dictionary[BlockColor, Color] = {
-	BlockColor.PINK: Color(0.502, 0.0, 1.0, 1.0),
+	BlockColor.PINK: Color(0.682, 0.0, 0.705, 1.0),
 	BlockColor.BLUE: Color(0.0, 0.502, 1.0, 1.0),
 	BlockColor.RED: Color(1.0, 0.0, 0.502, 1.0),
 	BlockColor.YELLOW: Color(1.0, 1.0, 0.502, 1.0),

@@ -215,7 +215,7 @@ func handle_collision(info: CollisionInfo):
 									pass
 								else:
 									add_log_entry(LogEntry.InteractionType.Collision, 
-										str("almost picked up but instead snapped to grid. normal:", info.normal), info.entity)
+										str("almost picked up but instead snapped to grid. \n\tnormal:", info.normal,"\n\tselfpos:",global_position,"\n\totherpos:",info.entity.global_position), info.entity)
 		#if normal.x != 0:
 			#if not isHeld:
 				#velocity.y = 0
@@ -292,6 +292,9 @@ func set_as_not_held():
 	isHeld = false
 	reparent(GridManager.i.root, true)
 	
+	if isHolding:
+		update_collider()
+	
 	#var v2 = GridManager.i.get_entity_round_global_pos(self)
 	#global_position = Vector3(v2.x, v2.y, 0)
 	pass
@@ -338,7 +341,7 @@ func update_collider():
 	var highCount: int = highestVar.count
 	var lowest: Entity = get_lowest_held_entity()
 	var colShape = BasicBoxCollisionShape.duplicate()
-	if highest.name == lowest.name:
+	if highest == lowest:
 		lowest.col.shape = colShape
 		lowest.col.position.y = 0
 		add_log_entry(LogEntry.InteractionType.ColliderUpdate, "collider set to single", self)
