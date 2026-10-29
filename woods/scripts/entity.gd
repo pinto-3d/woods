@@ -187,7 +187,7 @@ func handle_collision(info: CollisionInfo):
 	else:
 		_set_is_on_ground()
 		prevNormal = info.normal
-		if info.normal.y > 0:
+		if info.normal.y > 0.25:
 			if self is not Character:
 				if info.entity is Entity:
 					if info.entity is ImmovableBlock:
@@ -197,7 +197,7 @@ func handle_collision(info: CollisionInfo):
 							#add_log_entry(LogEntry.InteractionType.Collision, 
 								#"snapped to grid above immovable block", info.entity)
 					else:
-						var highest = (info.entity as Entity).get_highest_held_entity()
+						var highest = (info.entity as Entity).get_highest_held_entity().entity
 						if not highest.isHolding:
 							if is_above_entity(highest):
 								highest.pickup(self)
@@ -215,7 +215,7 @@ func handle_collision(info: CollisionInfo):
 									pass
 								else:
 									add_log_entry(LogEntry.InteractionType.Collision, 
-										"almost picked up but instead snapped to grid", info.entity)
+										str("almost picked up but instead snapped to grid. normal:", info.normal), info.entity)
 		#if normal.x != 0:
 			#if not isHeld:
 				#velocity.y = 0
@@ -296,11 +296,16 @@ func set_as_not_held():
 	#global_position = Vector3(v2.x, v2.y, 0)
 	pass
 
-func get_highest_held_entity() -> Entity:
+func get_highest_held_entity():
 	var highestEntity: Entity = self
+	var count: int = 1
 	while highestEntity.heldEntity:
 		highestEntity = highestEntity.heldEntity
-	return highestEntity
+		count += 1
+	return {
+		"entity": highestEntity,
+		"count": count
+		}
 
 func get_lowest_held_entity() -> Entity:
 	var lowestEntity: Entity = self
@@ -314,19 +319,23 @@ func set_is_holding(entity: Entity):
 		entity.holder.set_is_not_holding()
 		entity.set_as_not_held()
 	
-	heldEntity = entity
-	add_collision_exception_with(heldEntity)
-	heldEntity.position = Vector3.ZERO
-	heldEntity.set_as_held(self)
-	heldEntity.reparent(holdPoint, false)
+	var highest = get_highest_held_entity().entity
+		
+	highest.heldEntity = entity
+	highest.add_collision_exception_with(heldEntity)
+	highest.heldEntity.position = Vector3.ZERO
+	highest.heldEntity.set_as_held(self)
+	highest.heldEntity.reparent(holdPoint, false)
+	highest.isHolding = true
 	
-	isHolding = true
-	
-	update_collider()
+	var lowest = get_lowest_held_entity()
+	lowest.update_collider()
 	pass
 
 func update_collider():
-	var highest: Entity = get_highest_held_entity()
+	var highestVar = get_highest_held_entity()
+	var highest: Entity = highestVar.entity
+	var highCount: int = highestVar.count
 	var lowest: Entity = get_lowest_held_entity()
 	var colShape = BasicBoxCollisionShape.duplicate()
 	if highest.name == lowest.name:
@@ -336,12 +345,12 @@ func update_collider():
 		return
 	var highestGridPos = GridManager.i.get_grid_pos_of_entity(highest)
 	var lowestGridPos = GridManager.i.get_grid_pos_of_entity(lowest)
-	var diff = highestGridPos.y - lowestGridPos.y
+	var diff = highCount
 	var colSize = (highest.col.shape as BoxShape3D).size.y
-	var totalSize = colSize + diff
+	var totalSize = diff
 	colShape.size.y = totalSize
 	lowest.col.shape = colShape
-	var halfDiff: float = diff/2.0
+	var halfDiff: float = (diff - 1)/2.0
 	lowest.col.position.y = halfDiff
 	add_log_entry(LogEntry.InteractionType.ColliderUpdate, str("collider set to size ",halfDiff), self)
 	pass
@@ -350,7 +359,8 @@ func set_is_not_holding():
 	remove_collision_exception_with(heldEntity)
 	heldEntity = null
 	isHolding = false
-	update_collider()
+	var lowest = get_lowest_held_entity()
+	lowest.update_collider()
 	pass
 
 func put_down(velocity: Vector2):
@@ -369,7 +379,7 @@ func throw(dir: Vector2):
 			pass
 		else:
 			dir.y = THROW_VELOCITY.y
-		var highestHolder: Entity = get_highest_held_entity()
+		var highestHolder: Entity = get_highest_held_entity().entity
 		var highestPos: Vector3 = highestHolder.holdPoint.global_position
 		put_down(dir)
 		if dir.y < 0:

@@ -23,7 +23,7 @@ func _ready() -> void:
 		return
 	RoundManager.i = self
 	
-	GridManager.i.matchMade.connect(add_score)
+	GridManager.i.match_made.connect(add_score)
 	
 	start()
 	pass # Replace with function body.

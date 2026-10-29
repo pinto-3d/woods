@@ -51,6 +51,9 @@ var BASE_TIME_BT_BLOCKS: float = 2
 var DECREASE_BT_BLOCKS_INC: float = 0.1
 var DECREASE_BT_BLOCKS_LOG: float = 2
 
+var BLOCK_SPAWN_Y: int = 12
+var DEATH_Y: int = 10
+
 var topLeft: Vector2: 
 	get:
 		return Vector2(0, dimensions.y) + offset
@@ -69,8 +72,15 @@ func _ready() -> void:
 	if LevelManager.i:
 		return
 	LevelManager.i = self
+	GridManager.i.entity_moved.connect(block_moved)
 	start_new_level()
-	pass # Replace with function body.
+
+func block_moved(entity: Entity, gridPosition: Vector2i):
+	if entity is Block:
+		if gridPosition.y > DEATH_Y:
+			
+			pass
+	pass
 
 func decrease_time_bt_blocks(amt: int):
 	var mult: int = log(amt + 1)/log(DECREASE_BT_BLOCKS_LOG)
@@ -147,12 +157,17 @@ func get_player_start_position():
 func spawn_block_from_current_pool():
 	var randrange: Array[int] = []
 	for i in range(0, dimensions.x):
-		randrange.append(topLeft.x + dimensions.x)
+		randrange.append(topLeft.x + i)
 		pass
 	
-	var randxIndex: int = randi_range(0, randrange.size())
+	var randxIndex: int = randi_range(0, randrange.size()-1)
+	var randSpawnPoint: Vector2i = Vector2i(randrange[randxIndex], BLOCK_SPAWN_Y)
+	while GridManager.i.get_entity_at_grid_pos(randSpawnPoint):
+		randrange.remove_at(randxIndex)
+		randxIndex = randi_range(0, randrange.size())
+		randSpawnPoint = Vector2i(randrange[randxIndex], BLOCK_SPAWN_Y)
 	
-	var pos: Vector2 = Vector2(randx, topLeft.y)
+	var pos: Vector2 = randSpawnPoint
 	
 	var chosenScene: PackedScene = basicBlockScene
 	

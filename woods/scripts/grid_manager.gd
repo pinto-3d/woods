@@ -23,7 +23,8 @@ var dictGrid2Entity: Dictionary[Vector2i, Entity] = {}
 var dictEntity2Grid: Dictionary[Entity, Vector2i] = {}
 
 signal entity_registed(entity: Entity)
-signal matchMade(count: int)
+signal match_made(count: int)
+signal entity_moved(entity: Entity, position: Vector2i)
 
 func _init() -> void:
 	pass
@@ -118,20 +119,22 @@ func _check_tints_in_direction(tint: Color, start: Vector2i, direction: Vector2i
 		return curEraseList
 	return []
 
-func _adjust_changed_entity(entity):
+func _adjust_changed_entity(entity: Entity, gridPosition: Vector2i):
 	if not entity is Block:
 		return
+	
+	
 	var block: Block = entity
 	var tint: Color = block.TINT
-	var v2: Vector2i = dictEntity2Grid[entity]
+	var v2: Vector2i = gridPosition
 	
 	var eraseList: Array[Vector2i] = []
 	#horizontal
-	var cursor: Vector2i = dictEntity2Grid[entity]
-	eraseList.append_array(_check_tints_in_direction(tint, dictEntity2Grid[entity], Vector2(1,0)))
-	eraseList.append_array(_check_tints_in_direction(tint, dictEntity2Grid[entity], Vector2(0,1)))
-	eraseList.append_array(_check_tints_in_direction(tint, dictEntity2Grid[entity], Vector2(1,1)))
-	eraseList.append_array(_check_tints_in_direction(tint, dictEntity2Grid[entity], Vector2(-1,1)))
+	var cursor: Vector2i = gridPosition
+	eraseList.append_array(_check_tints_in_direction(tint, gridPosition, Vector2(1,0)))
+	eraseList.append_array(_check_tints_in_direction(tint, gridPosition, Vector2(0,1)))
+	eraseList.append_array(_check_tints_in_direction(tint, gridPosition, Vector2(1,1)))
+	eraseList.append_array(_check_tints_in_direction(tint, gridPosition, Vector2(-1,1)))
 	
 	var erasedCount: int = 0
 	for erasePos in eraseList:
@@ -141,7 +144,11 @@ func _adjust_changed_entity(entity):
 		else:
 			pass
 		pass 
-	matchMade.emit(erasedCount)
+		
+	if erasedCount > 0:
+		match_made.emit(erasedCount)
+	else:
+		entity_moved.emit(entity, gridPosition)
 
 func _entity_update(entity: Entity, pos):
 	if pos is Vector3:
@@ -158,15 +165,10 @@ func _entity_update(entity: Entity, pos):
 	dictEntity2Grid[entity] = pos
 	dictGrid2Entity[pos] = entity
 	
-	if pos.y > LevelManager.i.topLeft.y:
-		lost.emit()
-	
 	if prevPos != pos:
-		_adjust_changed_entity(entity)
+		_adjust_changed_entity(entity, pos)
 		pass
 	pass
 
 func lose():
 	pass
-
-signal lost

@@ -111,6 +111,82 @@ adjustment_saturation = 0.73
 
 [node name="root" type="Node3D" unique_id=227208465]
 
+[node name="ui" type="CanvasLayer" parent="." unique_id=1983218638]
+
+[node name="Control" type="Control" parent="ui" unique_id=800999986]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 1
+
+[node name="Panel" type="Panel" parent="ui/Control" unique_id=1372965056]
+layout_mode = 1
+anchors_preset = 9
+anchor_bottom = 1.0
+offset_right = 321.0
+grow_vertical = 2
+mouse_filter = 1
+script = SubResource("GDScript_vyht1")
+dictDebugValues = Dictionary[String, String]({
+"Time bt blocks": "LevelManager.currentTimeBtBlocks",
+"first block normal": "GridManager.entityList.1.prevNormal",
+"first block velocity": "GridManager.entityList.1.velocity",
+"held velocity": "Player.holdPoint.get_child(0).velocity",
+"player direction": "Player.direction",
+"player position": "Player.global_position"
+})
+
+[node name="Label" type="Label" parent="ui/Control/Panel" unique_id=707459815]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+label_settings = SubResource("LabelSettings_l8v81")
+autowrap_mode = 3
+
+[node name="CheckBox" type="CheckBox" parent="ui/Control/Panel" unique_id=719272682]
+layout_mode = 1
+anchors_preset = 2
+anchor_top = 1.0
+anchor_bottom = 1.0
+offset_top = -31.0
+offset_right = 149.0
+grow_vertical = 0
+button_pressed = true
+text = "Block Spawning"
+script = ExtResource("7_vyht1")
+
+[node name="EntityDetails" type="ScrollContainer" parent="ui/Control/Panel" unique_id=198819918]
+layout_mode = 1
+anchors_preset = 4
+anchor_top = 0.5
+anchor_bottom = 0.5
+offset_top = -141.0
+offset_right = 310.0
+offset_bottom = 141.0
+grow_vertical = 2
+script = ExtResource("8_bf3um")
+
+[node name="VBoxContainer" type="VBoxContainer" parent="ui/Control/Panel/EntityDetails" unique_id=1959073510]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+
+[node name="EntityName" type="Label" parent="ui/Control/Panel/EntityDetails/VBoxContainer" unique_id=622050330]
+layout_mode = 2
+label_settings = ExtResource("9_huihk")
+uppercase = true
+
+[node name="EntityDesc" type="Label" parent="ui/Control/Panel/EntityDetails/VBoxContainer" unique_id=617667839]
+layout_mode = 2
+label_settings = ExtResource("9_huihk")
+autowrap_trim_flags = 0
+
 [node name="Player" parent="." unique_id=898077056 groups=["player"] instance=ExtResource("1_pyidc")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 8, 5, 0)
 
@@ -268,82 +344,6 @@ script = ExtResource("6_eji0w")
 
 [node name="GameManager" type="Node3D" parent="." unique_id=1562308056]
 script = ExtResource("2_l8v81")
-
-[node name="ui" type="CanvasLayer" parent="." unique_id=1983218638]
-
-[node name="Control" type="Control" parent="ui" unique_id=800999986]
-layout_mode = 3
-anchors_preset = 15
-anchor_right = 1.0
-anchor_bottom = 1.0
-grow_horizontal = 2
-grow_vertical = 2
-mouse_filter = 1
-
-[node name="Panel" type="Panel" parent="ui/Control" unique_id=1372965056]
-layout_mode = 1
-anchors_preset = 9
-anchor_bottom = 1.0
-offset_right = 321.0
-grow_vertical = 2
-mouse_filter = 1
-script = SubResource("GDScript_vyht1")
-dictDebugValues = Dictionary[String, String]({
-"Time bt blocks": "LevelManager.currentTimeBtBlocks",
-"first block normal": "GridManager.entityList.1.prevNormal",
-"first block velocity": "GridManager.entityList.1.velocity",
-"held velocity": "Player.holdPoint.get_child(0).velocity",
-"player direction": "Player.direction",
-"player position": "Player.global_position"
-})
-
-[node name="Label" type="Label" parent="ui/Control/Panel" unique_id=707459815]
-layout_mode = 1
-anchors_preset = 15
-anchor_right = 1.0
-anchor_bottom = 1.0
-grow_horizontal = 2
-grow_vertical = 2
-label_settings = SubResource("LabelSettings_l8v81")
-autowrap_mode = 3
-
-[node name="CheckBox" type="CheckBox" parent="ui/Control/Panel" unique_id=719272682]
-layout_mode = 1
-anchors_preset = 2
-anchor_top = 1.0
-anchor_bottom = 1.0
-offset_top = -31.0
-offset_right = 149.0
-grow_vertical = 0
-button_pressed = true
-text = "Block Spawning"
-script = ExtResource("7_vyht1")
-
-[node name="EntityDetails" type="ScrollContainer" parent="ui/Control/Panel" unique_id=198819918]
-layout_mode = 1
-anchors_preset = 4
-anchor_top = 0.5
-anchor_bottom = 0.5
-offset_top = -141.0
-offset_right = 310.0
-offset_bottom = 141.0
-grow_vertical = 2
-script = ExtResource("8_bf3um")
-
-[node name="VBoxContainer" type="VBoxContainer" parent="ui/Control/Panel/EntityDetails" unique_id=1959073510]
-layout_mode = 2
-size_flags_horizontal = 3
-size_flags_vertical = 3
-
-[node name="EntityName" type="Label" parent="ui/Control/Panel/EntityDetails/VBoxContainer" unique_id=622050330]
-layout_mode = 2
-label_settings = ExtResource("9_huihk")
-uppercase = true
-
-[node name="EntityDesc" type="Label" parent="ui/Control/Panel/EntityDetails/VBoxContainer" unique_id=617667839]
-layout_mode = 2
-label_settings = ExtResource("9_huihk")
-autowrap_trim_flags = 0
 
 [node name="Game UI" type="Node3D" parent="." unique_id=462620827]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 2.9888577, 7.580269, 0)
