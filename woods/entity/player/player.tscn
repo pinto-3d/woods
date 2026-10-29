@@ -2,6 +2,7 @@
 
 [ext_resource type="Script" uid="uid://c8lh3okxjdc5y" path="res://scripts/player.gd" id="1_4pl66"]
 [ext_resource type="PackedScene" uid="uid://ummmwhhfwjo" path="res://mesh/player/lil_guy.tscn" id="2_4pl66"]
+[ext_resource type="Script" uid="uid://cqbxqvtewvkqy" path="res://mesh/player/lil_guy_animations.gd" id="3_bgq54"]
 [ext_resource type="Shape3D" uid="uid://bm7frr50xsne1" path="res://basic_box_collision_shape.tres" id="4_bgq54"]
 
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_4pl66"]
@@ -18,6 +19,7 @@ length = 0.001
 
 [sub_resource type="Animation" id="Animation_482rp"]
 resource_name = "hold"
+length = 0.001
 
 [sub_resource type="Animation" id="Animation_4pl66"]
 resource_name = "idle"
@@ -35,6 +37,49 @@ script = ExtResource("1_4pl66")
 
 [node name="Armature" parent="." unique_id=815777656 instance=ExtResource("2_4pl66")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.5, 0)
+script = ExtResource("3_bgq54")
+
+[node name="Armature" parent="Armature" index="0" unique_id=1145174483]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.032, 0, 0)
+
+[node name="GeneralSkeleton" parent="Armature/Armature" index="0" unique_id=1715137503]
+bones/0/position = Vector3(-0.032, 0.5, -0.125)
+
+[node name="Rarm" type="BoneAttachment3D" parent="Armature" unique_id=1853048620]
+transform = Transform3D(1, 6.000034e-15, -1.509958e-07, -6.000034e-15, -1, -7.947286e-08, -1.509958e-07, 7.947286e-08, -1, -0.49999994, 0.625, -0.062500015)
+bone_name = "rarm_2"
+bone_idx = 3
+use_external_skeleton = true
+external_skeleton = NodePath("../Armature/GeneralSkeleton")
+
+[node name="Larm" type="BoneAttachment3D" parent="Armature" unique_id=1320566953]
+transform = Transform3D(1, 0, -1.509958e-07, 0, -1, 0, -1.509958e-07, 0, -1, 0.49999994, 0.625, -0.1875)
+bone_name = "larm_2"
+bone_idx = 1
+use_external_skeleton = true
+external_skeleton = NodePath("../Armature/GeneralSkeleton")
+
+[node name="Rleg" type="BoneAttachment3D" parent="Armature" unique_id=1881394498]
+transform = Transform3D(0.092672825, 0, 0.99569666, 0, -0.99999994, 0, 0.99569666, 0, -0.092672944, -0.124999985, 0.375, -0.18749999)
+bone_name = "rleg_2"
+bone_idx = 4
+use_external_skeleton = true
+external_skeleton = NodePath("../Armature/GeneralSkeleton")
+
+[node name="Lleg" type="BoneAttachment3D" parent="Armature" unique_id=1316755435]
+transform = Transform3D(1, 6.000034e-15, -1.509958e-07, -6.000034e-15, -1, -7.947286e-08, -1.509958e-07, 7.947286e-08, -1, 0.24999999, 0.37500003, -0.06250001)
+bone_name = "lleg_2"
+bone_idx = 2
+use_external_skeleton = true
+external_skeleton = NodePath("../Armature/GeneralSkeleton")
+
+[node name="torso" type="BoneAttachment3D" parent="Armature" unique_id=1158587819]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.5, -0.125)
+bone_name = "torso"
+bone_idx = 0
+override_pose = true
+use_external_skeleton = true
+external_skeleton = NodePath("../Armature/GeneralSkeleton")
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="." unique_id=1171922087]
 shape = ExtResource("4_bgq54")
@@ -68,12 +113,11 @@ mesh = SubResource("SphereMesh_7amsx")
 
 [node name="DebugLabel3D" type="Label3D" parent="." unique_id=816668699]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0.5212679)
-text = "asdfasdf
-asdfasdf
-asdfasdf"
 font_size = 52
 outline_size = 8
 line_spacing = -20.0
 
 [node name="AnimationPlayer" type="AnimationPlayer" parent="." unique_id=823212158]
 libraries/ = SubResource("AnimationLibrary_bgq54")
+
+[editable path="Armature"]

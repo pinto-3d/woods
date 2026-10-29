@@ -1,6 +1,9 @@
 extends Character
 class_name Player
 
+var anim: LilGuyAnimations
+
+
 # Called when the node enters the scene tree for the first time.
 func _ready() -> void:
 	super._ready()
@@ -10,6 +13,7 @@ func _ready() -> void:
 		$GroundRay/Left,
 		$GroundRay/Right
 	]
+	anim = $Armature
 	hasLinearGravity = false
 	start()
 	pass # Replace with function body.
@@ -29,6 +33,8 @@ func _physics_process(delta):
 	
 	match state:
 		State.FREE:
+			anim.set_is_holding(isHolding)
+			anim.isOnGround = isOnGround
 			if isOnGround:
 				if Input.is_action_pressed("down"):
 					isDucking = true
@@ -141,8 +147,12 @@ func get_inputVector():
 	
 	if inputVector.x > MIN_VELOCITY * sign(inputVector.x):
 		set_direction(RelativeDirection.RIGHT)
+		anim.set_is_walking(true)
 	elif inputVector.x < MIN_VELOCITY * sign(inputVector.x):
 		set_direction(RelativeDirection.LEFT)
+		anim.set_is_walking(true)
+	else:
+		anim.set_is_walking(false)
 	return inputVector
 
 func iteracted_with(entity: Entity):

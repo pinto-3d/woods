@@ -37,7 +37,7 @@ var availableColors: Array[BlockColor] = [
 static var i: LevelManager
 
 var mode: Mode = Mode.Off
-@export var dimensions: Vector2 = Vector2(7, 9)
+@export var dimensions: Vector2 = Vector2(8, 12)
 var offset: Vector2 = Vector2(5, 0);
 
 var immovableBlockScene: PackedScene = load("res://entity/block/immovable_block.tscn")
@@ -66,21 +66,15 @@ var middle: Vector2:
 
 @export var doUpdate: bool = false
 
+signal lost
+
 func _ready() -> void:
 	if Engine.is_editor_hint():
 		return
 	if LevelManager.i:
 		return
 	LevelManager.i = self
-	GridManager.i.entity_moved.connect(block_moved)
 	start_new_level()
-
-func block_moved(entity: Entity, gridPosition: Vector2i):
-	if entity is Block:
-		if gridPosition.y > DEATH_Y:
-			
-			pass
-	pass
 
 func decrease_time_bt_blocks(amt: int):
 	var mult: int = log(amt + 1)/log(DECREASE_BT_BLOCKS_LOG)
@@ -163,6 +157,9 @@ func spawn_block_from_current_pool():
 	var randxIndex: int = randi_range(0, randrange.size()-1)
 	var randSpawnPoint: Vector2i = Vector2i(randrange[randxIndex], BLOCK_SPAWN_Y)
 	while GridManager.i.get_entity_at_grid_pos(randSpawnPoint):
+		if randrange.size() == 0:
+			lost.emit()
+			return
 		randrange.remove_at(randxIndex)
 		randxIndex = randi_range(0, randrange.size()-1)
 		randSpawnPoint = Vector2i(randrange[randxIndex], BLOCK_SPAWN_Y)

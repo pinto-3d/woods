@@ -13,6 +13,7 @@
 [ext_resource type="PackedScene" uid="uid://ct32fa5iqydfk" path="res://scenes/points_menu.tscn" id="11_gd4vy"]
 [ext_resource type="FontFile" uid="uid://b0fis5ukphet6" path="res://visitor1.ttf" id="12_qw60f"]
 [ext_resource type="Material" uid="uid://dbxnkgsw68j87" path="res://materials/ground_material.tres" id="13_eji0w"]
+[ext_resource type="Texture2D" uid="uid://cotyoauvh4rbq" path="res://textures/moon.png" id="14_qwhpj"]
 
 [sub_resource type="GDScript" id="GDScript_vyht1"]
 script/source = "extends Panel
@@ -96,7 +97,7 @@ sky_material = SubResource("ProceduralSkyMaterial_qw60f")
 
 [sub_resource type="Environment" id="Environment_eji0w"]
 background_mode = 1
-background_color = Color(0.6705, 0.5055016, 0.42901263, 1)
+background_color = Color(0.19293019, 0.35874894, 0.42233208, 1)
 sky = SubResource("Sky_bgq54")
 ambient_light_source = 2
 ambient_light_color = Color(1, 0.7471556, 0.64610267, 1)
@@ -108,6 +109,17 @@ volumetric_fog_length = 172.25
 adjustment_enabled = true
 adjustment_contrast = 1.675
 adjustment_saturation = 0.73
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_fbn3k"]
+transparency = 2
+alpha_scissor_threshold = 0.5
+alpha_antialiasing_mode = 0
+shading_mode = 0
+albedo_texture = ExtResource("14_qwhpj")
+texture_filter = 0
+
+[sub_resource type="PlaneMesh" id="PlaneMesh_lhcdp"]
+material = SubResource("StandardMaterial3D_fbn3k")
 
 [node name="root" type="Node3D" unique_id=227208465]
 
@@ -191,146 +203,181 @@ autowrap_trim_flags = 0
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 8, 5, 0)
 
 [node name="Camera3D" type="Camera3D" parent="." unique_id=1056890238]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 6.25, 4, 17.849358)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 5.75, 4.5, 17)
 fov = 40.0
 
 [node name="LevelManager" type="Node3D" parent="." unique_id=171994457]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.5, 0, 0)
 script = ExtResource("2_vvh5c")
 
-[node name="ImmovableBlock" parent="LevelManager" unique_id=1221345012 instance=ExtResource("3_huihk")]
+[node name="@CharacterBody3D@22925" parent="LevelManager" unique_id=1221345012 instance=ExtResource("3_huihk")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 3.5, -1, 0)
 TEX_SEED = 4.0
 TINT = Color(0.502, 0, 0.502, 1)
 
-[node name="@CharacterBody3D@22000" parent="LevelManager" unique_id=1958085686 instance=ExtResource("3_huihk")]
+[node name="@CharacterBody3D@22926" parent="LevelManager" unique_id=917071813 instance=ExtResource("3_huihk")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 4.5, -1, 0)
 TEX_SEED = 5.0
 TINT = Color(0.502, 0, 0.502, 1)
 
-[node name="@CharacterBody3D@22001" parent="LevelManager" unique_id=2015651930 instance=ExtResource("3_huihk")]
+[node name="@CharacterBody3D@22927" parent="LevelManager" unique_id=909639409 instance=ExtResource("3_huihk")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 5.5, -1, 0)
 TEX_SEED = 6.0
 TINT = Color(0.502, 0, 0.502, 1)
 
-[node name="@CharacterBody3D@22002" parent="LevelManager" unique_id=1325220835 instance=ExtResource("3_huihk")]
+[node name="@CharacterBody3D@22928" parent="LevelManager" unique_id=2004104292 instance=ExtResource("3_huihk")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 6.5, -1, 0)
 TEX_SEED = 7.0
 TINT = Color(0.502, 0, 0.502, 1)
 
-[node name="@CharacterBody3D@22003" parent="LevelManager" unique_id=40306995 instance=ExtResource("3_huihk")]
+[node name="@CharacterBody3D@22929" parent="LevelManager" unique_id=1964483930 instance=ExtResource("3_huihk")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 7.5, -1, 0)
 TEX_SEED = 8.0
 TINT = Color(0.502, 0, 0.502, 1)
 
-[node name="@CharacterBody3D@22004" parent="LevelManager" unique_id=384143486 instance=ExtResource("3_huihk")]
+[node name="@CharacterBody3D@22930" parent="LevelManager" unique_id=1549303451 instance=ExtResource("3_huihk")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 8.5, -1, 0)
 TEX_SEED = 9.0
 TINT = Color(0.502, 0, 0.502, 1)
 
-[node name="@CharacterBody3D@22005" parent="LevelManager" unique_id=1419223824 instance=ExtResource("3_huihk")]
+[node name="@CharacterBody3D@22931" parent="LevelManager" unique_id=1730258788 instance=ExtResource("3_huihk")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 9.5, -1, 0)
 TEX_SEED = 10.0
 TINT = Color(0.502, 0, 0.502, 1)
 
-[node name="@CharacterBody3D@22006" parent="LevelManager" unique_id=906985473 instance=ExtResource("3_huihk")]
+[node name="@CharacterBody3D@22932" parent="LevelManager" unique_id=1287098295 instance=ExtResource("3_huihk")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 10.5, -1, 0)
 TEX_SEED = 11.0
 TINT = Color(0.502, 0, 0.502, 1)
 
-[node name="@CharacterBody3D@22007" parent="LevelManager" unique_id=1949532616 instance=ExtResource("3_huihk")]
+[node name="@CharacterBody3D@22933" parent="LevelManager" unique_id=944824517 instance=ExtResource("3_huihk")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 11.5, -1, 0)
 TEX_SEED = 12.0
 TINT = Color(0.502, 0, 0.502, 1)
 
-[node name="@CharacterBody3D@22008" parent="LevelManager" unique_id=216651776 instance=ExtResource("3_huihk")]
+[node name="@CharacterBody3D@22934" parent="LevelManager" unique_id=1431546266 instance=ExtResource("3_huihk")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 12.5, -1, 0)
+TEX_SEED = 13.0
+TINT = Color(0.502, 0, 0.502, 1)
+
+[node name="@CharacterBody3D@22935" parent="LevelManager" unique_id=1585834266 instance=ExtResource("3_huihk")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 3.5, -1, 0)
 TEX_SEED = 4.0
 TINT = Color(0.502, 0, 0.502, 1)
 
-[node name="@CharacterBody3D@22009" parent="LevelManager" unique_id=195124253 instance=ExtResource("3_huihk")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 11.5, -1, 0)
-TEX_SEED = 12.0
+[node name="@CharacterBody3D@22936" parent="LevelManager" unique_id=1322468971 instance=ExtResource("3_huihk")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 12.5, -1, 0)
+TEX_SEED = 13.0
 TINT = Color(0.502, 0, 0.502, 1)
 
-[node name="@CharacterBody3D@22010" parent="LevelManager" unique_id=1658764270 instance=ExtResource("3_huihk")]
+[node name="@CharacterBody3D@22937" parent="LevelManager" unique_id=816934539 instance=ExtResource("3_huihk")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 3.5, 0, 0)
 TEX_SEED = 4.0
 TINT = Color(0.502, 0, 0.502, 1)
 
-[node name="@CharacterBody3D@22011" parent="LevelManager" unique_id=315825561 instance=ExtResource("3_huihk")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 11.5, 0, 0)
-TEX_SEED = 12.0
+[node name="@CharacterBody3D@22938" parent="LevelManager" unique_id=1898425100 instance=ExtResource("3_huihk")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 12.5, 0, 0)
+TEX_SEED = 13.0
 TINT = Color(0.502, 0, 0.502, 1)
 
-[node name="@CharacterBody3D@22012" parent="LevelManager" unique_id=2129164083 instance=ExtResource("3_huihk")]
+[node name="@CharacterBody3D@22939" parent="LevelManager" unique_id=165354215 instance=ExtResource("3_huihk")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 3.5, 1, 0)
 TEX_SEED = 4.0
 TINT = Color(0.502, 0, 0.502, 1)
 
-[node name="@CharacterBody3D@22013" parent="LevelManager" unique_id=1684046183 instance=ExtResource("3_huihk")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 11.5, 1, 0)
-TEX_SEED = 12.0
+[node name="@CharacterBody3D@22940" parent="LevelManager" unique_id=893466316 instance=ExtResource("3_huihk")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 12.5, 1, 0)
+TEX_SEED = 13.0
 TINT = Color(0.502, 0, 0.502, 1)
 
-[node name="@CharacterBody3D@22014" parent="LevelManager" unique_id=1052759639 instance=ExtResource("3_huihk")]
+[node name="@CharacterBody3D@22941" parent="LevelManager" unique_id=358299431 instance=ExtResource("3_huihk")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 3.5, 2, 0)
 TEX_SEED = 4.0
 TINT = Color(0.502, 0, 0.502, 1)
 
-[node name="@CharacterBody3D@22015" parent="LevelManager" unique_id=215494355 instance=ExtResource("3_huihk")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 11.5, 2, 0)
-TEX_SEED = 12.0
+[node name="@CharacterBody3D@22942" parent="LevelManager" unique_id=1024451374 instance=ExtResource("3_huihk")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 12.5, 2, 0)
+TEX_SEED = 13.0
 TINT = Color(0.502, 0, 0.502, 1)
 
-[node name="@CharacterBody3D@22016" parent="LevelManager" unique_id=485408727 instance=ExtResource("3_huihk")]
+[node name="@CharacterBody3D@22943" parent="LevelManager" unique_id=2013910257 instance=ExtResource("3_huihk")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 3.5, 3, 0)
 TEX_SEED = 4.0
 TINT = Color(0.502, 0, 0.502, 1)
 
-[node name="@CharacterBody3D@22017" parent="LevelManager" unique_id=540163306 instance=ExtResource("3_huihk")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 11.5, 3, 0)
-TEX_SEED = 12.0
+[node name="@CharacterBody3D@22944" parent="LevelManager" unique_id=904130868 instance=ExtResource("3_huihk")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 12.5, 3, 0)
+TEX_SEED = 13.0
 TINT = Color(0.502, 0, 0.502, 1)
 
-[node name="@CharacterBody3D@22018" parent="LevelManager" unique_id=2022488751 instance=ExtResource("3_huihk")]
+[node name="@CharacterBody3D@22945" parent="LevelManager" unique_id=1084612725 instance=ExtResource("3_huihk")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 3.5, 4, 0)
 TEX_SEED = 4.0
 TINT = Color(0.502, 0, 0.502, 1)
 
-[node name="@CharacterBody3D@22019" parent="LevelManager" unique_id=1165580670 instance=ExtResource("3_huihk")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 11.5, 4, 0)
-TEX_SEED = 12.0
+[node name="@CharacterBody3D@22946" parent="LevelManager" unique_id=714345995 instance=ExtResource("3_huihk")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 12.5, 4, 0)
+TEX_SEED = 13.0
 TINT = Color(0.502, 0, 0.502, 1)
 
-[node name="@CharacterBody3D@22020" parent="LevelManager" unique_id=535278405 instance=ExtResource("3_huihk")]
+[node name="@CharacterBody3D@22947" parent="LevelManager" unique_id=2001899810 instance=ExtResource("3_huihk")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 3.5, 5, 0)
 TEX_SEED = 4.0
 TINT = Color(0.502, 0, 0.502, 1)
 
-[node name="@CharacterBody3D@22021" parent="LevelManager" unique_id=939960792 instance=ExtResource("3_huihk")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 11.5, 5, 0)
-TEX_SEED = 12.0
+[node name="@CharacterBody3D@22948" parent="LevelManager" unique_id=433157721 instance=ExtResource("3_huihk")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 12.5, 5, 0)
+TEX_SEED = 13.0
 TINT = Color(0.502, 0, 0.502, 1)
 
-[node name="@CharacterBody3D@22022" parent="LevelManager" unique_id=630737480 instance=ExtResource("3_huihk")]
+[node name="@CharacterBody3D@22949" parent="LevelManager" unique_id=1241812242 instance=ExtResource("3_huihk")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 3.5, 6, 0)
 TEX_SEED = 4.0
 TINT = Color(0.502, 0, 0.502, 1)
 
-[node name="@CharacterBody3D@22023" parent="LevelManager" unique_id=1728590960 instance=ExtResource("3_huihk")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 11.5, 6, 0)
-TEX_SEED = 12.0
+[node name="@CharacterBody3D@22950" parent="LevelManager" unique_id=1637585105 instance=ExtResource("3_huihk")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 12.5, 6, 0)
+TEX_SEED = 13.0
 TINT = Color(0.502, 0, 0.502, 1)
 
-[node name="@CharacterBody3D@22024" parent="LevelManager" unique_id=1131705238 instance=ExtResource("3_huihk")]
+[node name="@CharacterBody3D@22951" parent="LevelManager" unique_id=1798648354 instance=ExtResource("3_huihk")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 3.5, 7, 0)
 TEX_SEED = 4.0
 TINT = Color(0.502, 0, 0.502, 1)
 
-[node name="@CharacterBody3D@22025" parent="LevelManager" unique_id=804837231 instance=ExtResource("3_huihk")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 11.5, 7, 0)
-TEX_SEED = 12.0
+[node name="@CharacterBody3D@22952" parent="LevelManager" unique_id=945232060 instance=ExtResource("3_huihk")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 12.5, 7, 0)
+TEX_SEED = 13.0
+TINT = Color(0.502, 0, 0.502, 1)
+
+[node name="@CharacterBody3D@22953" parent="LevelManager" unique_id=1040126832 instance=ExtResource("3_huihk")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 3.5, 8, 0)
+TEX_SEED = 4.0
+TINT = Color(0.502, 0, 0.502, 1)
+
+[node name="@CharacterBody3D@22954" parent="LevelManager" unique_id=611707044 instance=ExtResource("3_huihk")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 12.5, 8, 0)
+TEX_SEED = 13.0
+TINT = Color(0.502, 0, 0.502, 1)
+
+[node name="@CharacterBody3D@22955" parent="LevelManager" unique_id=248965491 instance=ExtResource("3_huihk")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 3.5, 9, 0)
+TEX_SEED = 4.0
+TINT = Color(0.502, 0, 0.502, 1)
+
+[node name="@CharacterBody3D@22956" parent="LevelManager" unique_id=873470660 instance=ExtResource("3_huihk")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 12.5, 9, 0)
+TEX_SEED = 13.0
+TINT = Color(0.502, 0, 0.502, 1)
+
+[node name="@CharacterBody3D@22957" parent="LevelManager" unique_id=1440437010 instance=ExtResource("3_huihk")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 3.5, 10, 0)
+TEX_SEED = 4.0
+TINT = Color(0.502, 0, 0.502, 1)
+
+[node name="@CharacterBody3D@22958" parent="LevelManager" unique_id=1881217993 instance=ExtResource("3_huihk")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 12.5, 10, 0)
+TEX_SEED = 13.0
 TINT = Color(0.502, 0, 0.502, 1)
 
 [node name="NodeSpawner" type="Node3D" parent="." unique_id=1441461848 groups=["node_spawner"]]
@@ -349,7 +396,7 @@ script = ExtResource("2_l8v81")
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 2.9888577, 7.580269, 0)
 
 [node name="Points menu" parent="Game UI" unique_id=282033947 instance=ExtResource("11_gd4vy")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -3, 0, -6.125)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -3, -0.25199986, -6.125)
 
 [node name="PointsScore" type="Label3D" parent="Game UI" unique_id=1491302107]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.6250005, 5.625, -6.9875)
@@ -370,6 +417,8 @@ horizontal_alignment = 2
 vertical_alignment = 0
 autowrap_trim_flags = 0
 
+[node name="Lost UI" type="Node3D" parent="Game UI" unique_id=819467655]
+
 [node name="Ground" type="Node3D" parent="." unique_id=1977038359]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.625, 0)
 
@@ -388,6 +437,13 @@ shadow_blur = 0.0
 directional_shadow_fade_start = 1.0
 directional_shadow_max_distance = 40.0
 sky_mode = 1
+
+[node name="Moon" type="Node3D" parent="." unique_id=318409851]
+transform = Transform3D(1.75, 0, 0, 0, 1.75, 0, 0, 0, 1.75, 35, 17.5, -34)
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="Moon" unique_id=1903239676]
+transform = Transform3D(1, 0, 0, 0, -4.371139e-08, -1, 0, 1, -4.371139e-08, 0, 0, 0)
+mesh = SubResource("PlaneMesh_lhcdp")
 
 [connection signal="toggled" from="ui/Control/Panel/CheckBox" to="ui/Control/Panel/CheckBox" method="_on_toggled"]
 

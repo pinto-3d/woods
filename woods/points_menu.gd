@@ -9,6 +9,9 @@ func _ready() -> void:
 	lblPoints = $PointsScore
 	lblHighScore = $HighScore
 	
+	lblPoints.text = "0"
+	lblHighScore.text = "0"
+	
 	RoundManager.i.scoreUpdated.connect(update_score_display)
 	RoundManager.i.scoreUpdated.connect(update_high_score_display)
 	pass # Replace with function body.
