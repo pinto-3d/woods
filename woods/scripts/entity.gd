@@ -16,10 +16,12 @@ var GRAVITY: float = 10.0;
 var GRAVITY_DIRECTION: Vector3 = Vector3.DOWN;
 var hasLinearGravity: bool = true
 var LINEAR_GRAVITY_MAX: float = 3
+var current_linear_gravity_max: float = 3
+var FAST_FALL_MULTIPLIER: float = 2
 const MIN_VELOCITY: float = 0.01
 
 var THROW_VELOCITY: Vector2 = Vector2(3, 6)
-var THROW_Y_BOOST: float = 6
+var THROW_Y_BOOST: float = 4
 var POST_THROW_PREVENT_PICKUP_TIME: float = 0.25
 var postThrowPreventPickupTimer: float = 0
 
@@ -126,6 +128,9 @@ func _set_is_on_ground():
 		pass
 	pass
 
+var downTimer: float = 0
+var DOWN_PRESS_PRE_FAST_FALL: float = 0.5
+
 func _physics_process(delta: float) -> void:
 	if postThrowPreventPickupTimer > 0:
 		postThrowPreventPickupTimer -= delta
@@ -158,8 +163,17 @@ func _physics_process(delta: float) -> void:
 		if not is_on_floor():
 			velocity += GRAVITY_DIRECTION * GRAVITY * delta
 			if hasLinearGravity:
-				if velocity.y < -LINEAR_GRAVITY_MAX:
-					velocity.y = -LINEAR_GRAVITY_MAX
+				if Input.is_action_pressed("down"):
+					if downTimer > 0:
+						downTimer -= delta
+					else:
+						current_linear_gravity_max = LINEAR_GRAVITY_MAX * FAST_FALL_MULTIPLIER
+					pass
+				else:
+					downTimer = DOWN_PRESS_PRE_FAST_FALL
+					current_linear_gravity_max = LINEAR_GRAVITY_MAX
+				if velocity.y < -current_linear_gravity_max:
+					velocity.y = -current_linear_gravity_max
 					pass
 
 	move(delta)
@@ -193,33 +207,37 @@ func handle_collision(info: CollisionInfo):
 					if info.entity is ImmovableBlock:
 						if is_above_entity(info.entity):
 							GridManager.i.snap_entity_to_grid(self)
+							isMovable = true
 							self.velocity = Vector3.ZERO
 							#add_log_entry(LogEntry.InteractionType.Collision, 
 								#"snapped to grid above immovable block", info.entity)
 					else:
 						var highest = (info.entity as Entity).get_highest_held_entity().entity
 						if not highest.isHolding:
+							var selfpos = self.global_position
+							selfpos = GridManager.i.snap_entity_to_grid(self)
+							highest.pickup(self)
+							self.velocity = Vector3.ZERO
+							add_log_entry(LogEntry.InteractionType.Collision, 
+								"was picked up", info.entity)
 							if is_above_entity(highest):
-								highest.pickup(self)
-								self.velocity = Vector3.ZERO
-								add_log_entry(LogEntry.InteractionType.Collision, 
-									"was picked up", info.entity)
+								pass
 							else:
-								self.velocity = Vector3.ZERO
-								info.entity.velocity = Vector3.ZERO
-								var presnap_selfpos = self.global_position
-								var presnap_otherpos = info.entity.global_position
-								
-								
-								var selfpos = GridManager.i.snap_entity_to_grid(self)
-								var otherpos = GridManager.i.snap_entity_to_grid(info.entity)
-								if selfpos == otherpos:
-									add_log_entry(LogEntry.InteractionType.Collision, 
-										"almost picked up but instead snapped to grid. pos was the same after snap", info.entity)
-									pass
-								else:
-									add_log_entry(LogEntry.InteractionType.Collision, 
-										str("almost picked up but instead snapped to grid. \n.\tnormal:", info.normal,"\n.\tselfpos:",presnap_selfpos,"\n.\totherpos:",presnap_otherpos), info.entity)
+								pass
+								#self.velocity = Vector3.ZERO
+								#info.entity.velocity = Vector3.ZERO
+								#var presnap_selfpos = self.global_position
+								#var presnap_otherpos = info.entity.global_position
+								#
+								#selfpos = GridManager.i.snap_entity_to_grid(self)
+								#var otherpos = GridManager.i.snap_entity_to_grid(info.entity)
+								#if selfpos == otherpos:
+									#add_log_entry(LogEntry.InteractionType.Collision, 
+										#"almost picked up but instead snapped to grid. pos was the same after snap", info.entity)
+									#pass
+								#else:
+									#add_log_entry(LogEntry.InteractionType.Collision, 
+										#str("almost picked up but instead snapped to grid. \n.\tnormal:", info.normal,"\n.\tselfpos:",presnap_selfpos,"\n.\totherpos:",presnap_otherpos), info.entity)
 		#if normal.x != 0:
 			#if not isHeld:
 				#velocity.y = 0
@@ -391,7 +409,8 @@ func throw(dir: Vector2):
 		put_down(dir)
 		if dir.y < 0:
 			self.global_position = highestPos
-			self.velocity.y = THROW_Y_BOOST
+			if not isOnGround:
+				self.velocity.y = THROW_Y_BOOST
 			pass
 		postThrowPreventPickupTimer = POST_THROW_PREVENT_PICKUP_TIME
 

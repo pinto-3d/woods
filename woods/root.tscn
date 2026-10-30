@@ -14,6 +14,8 @@
 [ext_resource type="FontFile" uid="uid://b0fis5ukphet6" path="res://visitor1.ttf" id="12_qw60f"]
 [ext_resource type="Material" uid="uid://dbxnkgsw68j87" path="res://materials/ground_material.tres" id="13_eji0w"]
 [ext_resource type="Texture2D" uid="uid://cotyoauvh4rbq" path="res://textures/moon.png" id="14_qwhpj"]
+[ext_resource type="Texture2D" uid="uid://shremcur1ggy" path="res://textures/stars.png" id="15_qt76e"]
+[ext_resource type="Shader" uid="uid://cmp4nkg3fem87" path="res://stars.gdshader" id="16_sq7yr"]
 
 [sub_resource type="GDScript" id="GDScript_vyht1"]
 script/source = "extends Panel
@@ -120,6 +122,27 @@ texture_filter = 0
 
 [sub_resource type="PlaneMesh" id="PlaneMesh_lhcdp"]
 material = SubResource("StandardMaterial3D_fbn3k")
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_qt76e"]
+render_priority = 0
+shader = ExtResource("16_sq7yr")
+shader_parameter/albedo = Color(1, 1, 1, 1)
+shader_parameter/texture_albedo = ExtResource("15_qt76e")
+shader_parameter/alpha_scissor_threshold = 0.5
+shader_parameter/albedo_texture_size = Vector2i(256, 128)
+shader_parameter/point_size = 1.0
+shader_parameter/roughness = 1.0
+shader_parameter/metallic_texture_channel = Vector4(1, 0, 0, 0)
+shader_parameter/specular = 0.5
+shader_parameter/metallic = 0.0
+shader_parameter/uv1_scale = Vector3(1, 1, 1)
+shader_parameter/uv1_offset = Vector3(0, 0, 0)
+shader_parameter/uv2_scale = Vector3(1, 1, 1)
+shader_parameter/uv2_offset = Vector3(0, 0, 0)
+
+[sub_resource type="PlaneMesh" id="PlaneMesh_qwhpj"]
+material = SubResource("ShaderMaterial_qt76e")
+size = Vector2(256, 128)
 
 [node name="root" type="Node3D" unique_id=227208465]
 
@@ -444,6 +467,13 @@ transform = Transform3D(1.75, 0, 0, 0, 1.75, 0, 0, 0, 1.75, 35, 17.5, -34)
 [node name="MeshInstance3D" type="MeshInstance3D" parent="Moon" unique_id=1903239676]
 transform = Transform3D(1, 0, 0, 0, -4.371139e-08, -1, 0, 1, -4.371139e-08, 0, 0, 0)
 mesh = SubResource("PlaneMesh_lhcdp")
+
+[node name="Stars" type="Node3D" parent="." unique_id=440831162]
+transform = Transform3D(1.75, 0, 0, 0, 1.75, 0, 0, 0, 1.75, 6.335, 11.83, -34.63)
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="Stars" unique_id=963847154]
+transform = Transform3D(0.395, 0, 0, 0, -1.7265998e-08, -0.395, 0, 0.395, -1.7265998e-08, 0, 0, -27.108)
+mesh = SubResource("PlaneMesh_qwhpj")
 
 [connection signal="toggled" from="ui/Control/Panel/CheckBox" to="ui/Control/Panel/CheckBox" method="_on_toggled"]
 

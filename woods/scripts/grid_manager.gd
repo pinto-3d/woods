@@ -70,6 +70,9 @@ func snap_entity_to_grid(entity:Entity):
 	if entity:
 		var v3 = get_entity_round_global_pos(entity)
 		if v3:
+			if entity.global_position.y < v3.y:
+				v3.y = entity.global_position.y
+				pass
 			entity.global_position = v3
 			_entity_update(entity, entity.global_position)
 		return v3
