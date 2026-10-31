@@ -550,7 +550,7 @@ autowrap_trim_flags = 0
 [node name="Lost UI" type="Node3D" parent="Game UI" unique_id=819467655]
 
 [node name="Ceiling" type="StaticBody3D" parent="." unique_id=813045657]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 8.568001, 12.600001, 0)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 8.568001, 12.537002, 0)
 collision_layer = 4
 collision_mask = 2
 

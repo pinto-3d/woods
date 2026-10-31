@@ -7,7 +7,7 @@ const DECCELERATION_CROUCH = 40
 const MAX_SPEED = 4.0
 const MAX_CROUCH_SPEED = 20.0
 const JUMP_VELOCITY = 7.0
-const WALL_JUMP_VELOCITY: Vector2 = Vector2(5, 5)
+const WALL_JUMP_VELOCITY: Vector2 = Vector2(3.5, 5)
 
 var wallJumpCount: int = 0
 var WALL_JUMP_COUNT_MAX: int = 1;
@@ -63,6 +63,8 @@ func _process(delta: float) -> void:
 	pass
 
 func set_direction(dir: RelativeDirection):
+	if isLaunching:
+		return
 	var wasChanged: bool = direction != dir
 	direction = dir
 	if wasChanged:
