@@ -5,7 +5,8 @@ static var BasicBoxCollisionShape: BoxShape3D = load("res://basic_box_collision_
 
 enum State { FREE=0, DISABLE_INPUT=1, SPAWNING=2, DYING=3, DISABLE_COMPLETELY=4, DISABLE_PHYSICS = 5 }
 enum RelativeDirection {
-	LEFT = -1, 
+	LEFT = -1,
+	FRONT = 0,
 	RIGHT = 1
 }
 
@@ -56,7 +57,7 @@ var debugLabel3d: Label3D
 
 const MAX_COLLISIONS = 6
 
-var direction: RelativeDirection = RelativeDirection.RIGHT
+var direction: RelativeDirection = RelativeDirection.FRONT
 
 var isRegisteredToGrid: bool = false
 signal entityGridUpdate(entity: Entity, pos: Vector2)
@@ -390,6 +391,8 @@ func set_is_not_holding():
 
 func put_down(velocity: Vector2):
 	if heldEntity:
+		if velocity.y != 0:
+			GridManager.i.snap_entity_to_grid(heldEntity)
 		heldEntity.set_as_not_held()
 		heldEntity.velocity = Vector3(velocity.x, velocity.y, 0)
 	set_is_not_holding()
@@ -449,7 +452,8 @@ func erase():
 		holder.set_is_not_holding()
 		set_as_not_held()
 	if isHolding:
-		heldEntity.set_as_not_held()
+		if heldEntity:
+			heldEntity.set_as_not_held()
 		set_is_not_holding()
 	queue_free()
 	pass

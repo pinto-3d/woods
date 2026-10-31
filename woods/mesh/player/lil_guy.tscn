@@ -3,4 +3,4 @@
 [ext_resource type="PackedScene" uid="uid://blqwt2o1kmln5" path="res://mesh/lil guy.glb" id="1_wq0tc"]
 
 [node name="Armature" unique_id=815777656 instance=ExtResource("1_wq0tc")]
-transform = Transform3D(-1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0)
+transform = Transform3D(-1, 0, 0, 0, 1, -8.742278e-08, 0, 8.742278e-08, 1, 0, 0, 0)

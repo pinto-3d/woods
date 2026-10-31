@@ -7,18 +7,26 @@ var _oldIsHolding: bool = false
 var _isWalking: bool = true
 var isOnGround: bool = false
 
+var direction: Entity.RelativeDirection = Entity.RelativeDirection.FRONT
+
 var Rarm: BoneAttachment3D
 var Larm: BoneAttachment3D
 var Rleg: BoneAttachment3D
 var Lleg: BoneAttachment3D
 var torso: BoneAttachment3D
+var mat: ShaderMaterial
 
 var TIME_BT_STEPS: float = 0.15
 var stepTimer: float = 0
 var stepNum: int = 0
 var STEP_Y_OFFSET: float = 1/8
 
+var idleTimer: float = 0
+var IDLE_TIME: float = 1
+
 var BASE_TORSO_Y: float = 0.5
+
+var eyeOffset: Vector2i
 
 # Called when the node enters the scene tree for the first time.
 func _ready() -> void:
@@ -27,8 +35,36 @@ func _ready() -> void:
 	Rleg = $Rleg
 	Lleg = $Lleg
 	torso = $torso
+	
+	mat = ($Armature/GeneralSkeleton/head.mesh as ArrayMesh).surface_get_material(0)
 	pass # Replace with function body.
 
+func start():
+	set_eye_offset(Vector2i(0,0));
+	set_is_holding(false)
+	set_is_walking(false)
+	pass
+
+func set_eye_offset(offset: Vector2i):
+	eyeOffset = offset
+	mat.set("shader_parameter/face_offset", offset)
+	pass
+
+func set_direction(dir: Entity.RelativeDirection):
+	if direction == dir:
+		return
+	direction = dir
+	match direction:
+		Entity.RelativeDirection.LEFT:
+			set_eye_offset(Vector2i(1, eyeOffset.y));
+			pass
+		Entity.RelativeDirection.FRONT:
+			set_eye_offset(Vector2i(0, eyeOffset.y));
+			pass
+		Entity.RelativeDirection.RIGHT:
+			set_eye_offset(Vector2i(1, eyeOffset.y));
+			pass
+	pass
 
 # Called every frame. 'delta' is the elapsed time since the previous frame.
 func _process(delta: float) -> void:
@@ -43,7 +79,17 @@ func _process(delta: float) -> void:
 			stepTimer = TIME_BT_STEPS
 	else:
 		set_step(false)
-	pass
+	
+	if not _isWalking and isOnGround:
+		if idleTimer > 0:
+			idleTimer -= delta
+		else:
+			set_direction(Entity.RelativeDirection.FRONT)
+		pass
+	else:
+		idleTimer = IDLE_TIME
+		pass
+	
 	_oldIsHolding = _isHolding
 
 func set_is_holding(hold:bool):
@@ -55,10 +101,12 @@ func set_is_holding(hold:bool):
 		Larm.override_pose = true
 		Rarm.rotate_z(-PI)
 		Larm.rotate_z(PI)
+		set_eye_offset(Vector2i(1,1))
 		pass
 	else:
 		Rarm.override_pose = false
 		Larm.override_pose = false
+		set_eye_offset(Vector2i(1,0))
 		pass
 	pass
 

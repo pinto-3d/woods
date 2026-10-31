@@ -91,6 +91,7 @@ func _physics_process(delta):
 			pass
 
 func direction_updated():
+	anim.set_direction(direction)
 	match direction:
 		RelativeDirection.LEFT:
 			if armature:
