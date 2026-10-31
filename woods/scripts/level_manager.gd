@@ -31,7 +31,14 @@ var availableColors: Array[BlockColor] = [
 	BlockColor.RED,
 	BlockColor.BLUE,
 	BlockColor.YELLOW,
-	BlockColor.PINK
+	BlockColor.GREEN
+]
+
+var blockTextures: Array[Texture] = [
+	
+	
+	
+	
 ]
 
 static var i: LevelManager

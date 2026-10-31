@@ -56,16 +56,8 @@ func _physics_process(delta):
 					canUnDuck = len(crouchDetect.get_overlapping_bodies()) == 0
 
 			# Handle jump.
-			if isOnGround:
-				if Input.is_action_just_pressed("jump"):
-					jump()
-			else:
-				if wallOnLeft:
-					if Input.is_action_just_pressed("jump"):
-						_try_wall_jump(1)
-				if wallOnRight:
-					if Input.is_action_just_pressed("jump"):
-						_try_wall_jump(-1)
+			if Input.is_action_just_pressed("jump"):
+				try_jump()
 			
 			if Input.is_action_just_pressed("interact"):
 				if inputVector == Vector2.ZERO:
@@ -138,9 +130,24 @@ func place(pos: Vector2i):
 		heldEntity = null
 	pass
 
-
 func jump():
 	velocity.y = JUMP_VELOCITY
+	pass
+
+func try_jump():
+	if isOnGround:
+		jump()
+	else:
+		if direction == RelativeDirection.LEFT:
+			if wallOnLeft:
+				_try_wall_jump(1)
+			elif wallOnRight:
+				_try_wall_jump(-1)
+		elif direction == RelativeDirection.RIGHT:
+			if wallOnRight:
+				_try_wall_jump(-1)
+			elif wallOnLeft:
+				_try_wall_jump(1)
 
 func get_inputVector():
 	inputVector.x = Input.get_axis("left", "right")
