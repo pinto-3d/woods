@@ -37,7 +37,7 @@ var availableColors: Array[BlockColor] = [
 static var i: LevelManager
 
 var mode: Mode = Mode.Off
-@export var dimensions: Vector2 = Vector2(8, 12)
+@export var dimensions: Vector2 = Vector2(8, 15)
 var offset: Vector2 = Vector2(5, 0);
 
 var immovableBlockScene: PackedScene = load("res://entity/block/immovable_block.tscn")

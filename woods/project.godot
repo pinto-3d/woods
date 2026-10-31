@@ -91,6 +91,7 @@ debug_stop_spawning={
 
 3d_physics/layer_1="block"
 3d_physics/layer_2="player"
+3d_physics/layer_3="boundary"
 
 [physics]
 
