@@ -2,20 +2,20 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://glyok6xi40iq"
-path.s3tc="res://.godot/imported/cube_lil guy_lil guy_lil guy texture.png-ca4b103322557061362507456b1405ca.s3tc.ctex"
+uid="uid://copsb041qxl28"
+path.s3tc="res://.godot/imported/lil guy_template_cube.png-25d7f4a15b9232451b7a5c11e64c2d92.s3tc.ctex"
 metadata={
 "imported_formats": ["s3tc_bptc"],
 "vram_texture": true
 }
 generator_parameters={
-"md5": "e961defc970617dc90ff13ea7ecfcddc"
+"md5": "f50b9e426ef4984258f20fbf5b080968"
 }
 
 [deps]
 
-source_file="res://cube_lil guy_lil guy_lil guy texture.png"
-dest_files=["res://.godot/imported/cube_lil guy_lil guy_lil guy texture.png-ca4b103322557061362507456b1405ca.s3tc.ctex"]
+source_file="res://mesh/lil guy_template_cube.png"
+dest_files=["res://.godot/imported/lil guy_template_cube.png-25d7f4a15b9232451b7a5c11e64c2d92.s3tc.ctex"]
 
 [params]
 

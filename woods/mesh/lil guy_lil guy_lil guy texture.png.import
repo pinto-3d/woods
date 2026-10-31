@@ -2,23 +2,24 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://dva45676k4hh"
-path="res://.godot/imported/lil guy_lil guy_lil guy texture.png-7ecbdb2c3f9d54394f5c52679e707fe7.ctex"
+uid="uid://b258nbe2na1ju"
+path.s3tc="res://.godot/imported/lil guy_lil guy_lil guy texture.png-7ecbdb2c3f9d54394f5c52679e707fe7.s3tc.ctex"
 metadata={
-"vram_texture": false
+"imported_formats": ["s3tc_bptc"],
+"vram_texture": true
 }
 generator_parameters={
-"md5": "e961defc970617dc90ff13ea7ecfcddc"
+"md5": "61cd3b56118b038278307b2a7c80f443"
 }
 
 [deps]
 
 source_file="res://mesh/lil guy_lil guy_lil guy texture.png"
-dest_files=["res://.godot/imported/lil guy_lil guy_lil guy texture.png-7ecbdb2c3f9d54394f5c52679e707fe7.ctex"]
+dest_files=["res://.godot/imported/lil guy_lil guy_lil guy texture.png-7ecbdb2c3f9d54394f5c52679e707fe7.s3tc.ctex"]
 
 [params]
 
-compress/mode=0
+compress/mode=2
 compress/high_quality=false
 compress/lossy_quality=0.7
 compress/uastc_level=0
@@ -40,4 +41,4 @@ process/normal_map_invert_y=false
 process/hdr_as_srgb=false
 process/hdr_clamp_exposure=false
 process/size_limit=0
-detect_3d/compress_to=1
+detect_3d/compress_to=0

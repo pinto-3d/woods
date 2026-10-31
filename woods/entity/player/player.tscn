@@ -40,10 +40,10 @@ script = ExtResource("1_4pl66")
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.5, 0)
 script = ExtResource("3_bgq54")
 
-[node name="Armature" parent="Armature" index="0" unique_id=979918857]
+[node name="Armature" parent="Armature" index="0" unique_id=644552299]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.032, 0, 0)
 
-[node name="GeneralSkeleton" parent="Armature/Armature" index="0" unique_id=863167885]
+[node name="GeneralSkeleton" parent="Armature/Armature" index="0" unique_id=504676162]
 bones/0/position = Vector3(-0.032, 0.5, -0.125)
 
 [node name="Rarm" type="BoneAttachment3D" parent="Armature" unique_id=1853048620]

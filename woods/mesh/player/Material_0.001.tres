@@ -1,6 +1,6 @@
 [gd_resource type="StandardMaterial3D" format=3 uid="uid://dreq2imhs21fq"]
 
-[ext_resource type="Texture2D" uid="uid://bmy4jxqs0yipf" path="res://mesh/lil guy_lil guy texture.png" id="1_3ml02"]
+[ext_resource type="Texture2D" uid="uid://doaww16ejpf7y" path="res://mesh/lil guy_lil guy texture.png" id="1_3ml02"]
 
 [resource]
 resource_name = "Material_0.001"
