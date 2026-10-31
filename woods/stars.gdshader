@@ -35,9 +35,14 @@ void fragment() {
 	vec2 base_uv = UV;
 
 	vec4 albedo_tex = texture(texture_albedo, base_uv);
-	float sine = (float(int(TIME + (UV.y * 10.0)) % 4) + 2.0)/2.0;
-	vec3 additionalColor = vec3(1.0, 1.0, 1.0) * sine;
-	ALBEDO = albedo.rgb * albedo_tex.rgb * additionalColor;
+	vec2 val = UV;
+	if(int(TIME) % 5 > 5/2){
+		val = vec2(1.0) - val;
+	}
+	
+	float sinex = float(int(val.x * float(albedo_texture_size.x)) % 2);
+	float siney = float(int(val.y * float(albedo_texture_size.y)) % 2);
+	ALBEDO = albedo.rgb * albedo_tex.rgb;
 
 	float metallic_tex = dot(texture(texture_metallic, base_uv), metallic_texture_channel);
 	METALLIC = metallic_tex * metallic;
@@ -46,6 +51,5 @@ void fragment() {
 	vec4 roughness_texture_channel = vec4(1.0, 0.0, 0.0, 0.0);
 	float roughness_tex = dot(texture(texture_roughness, base_uv), roughness_texture_channel);
 	ROUGHNESS = roughness_tex * roughness;
-	ALPHA *= albedo.a * albedo_tex.a;
-	ALPHA_SCISSOR_THRESHOLD = alpha_scissor_threshold;
+	ALPHA *= albedo.a * albedo_tex.a * siney * sinex;
 }
