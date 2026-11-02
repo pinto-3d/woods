@@ -79,7 +79,8 @@ func snap_entity_to_grid(entity:Entity):
 	return null
 
 func register_entity(entity: Entity):
-	entity.entityGridUpdate.connect(_entity_update)
+	if not entity.entityGridUpdate.is_connected(_entity_update):
+		entity.entityGridUpdate.connect(_entity_update)
 	entity.isRegisteredToGrid = true
 	entity_registed.emit(entity)
 	pass

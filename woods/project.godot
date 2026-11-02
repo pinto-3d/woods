@@ -30,6 +30,7 @@ enabled=PackedStringArray("res://addons/anthonyec.camera_preview/plugin.cfg")
 node_spawner=""
 grid_manager=""
 player=""
+camera=""
 
 [input]
 

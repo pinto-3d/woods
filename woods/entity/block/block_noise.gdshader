@@ -8,6 +8,8 @@ uniform float seed = 1.0;
 uniform float resolution = 8.0;
 uniform vec3 tint;
 
+uniform vec2 uvMult;
+
 uniform float min_brightness = 0.0;
 uniform float max_brightness = 1.0;
 
@@ -20,6 +22,8 @@ float rand(vec2 co) {
 void vertex() {
     world_pos = (MODEL_MATRIX * vec4(VERTEX, 1.0)).xyz;
 	// Called for every vertex the material is visible on.
+	UV = UV * uvMult;
+	
 }
 
 

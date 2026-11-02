@@ -43,8 +43,12 @@ var isAffectedByGravity: bool = true
 var isMovable: bool = true;
 
 var isHoldable: bool = true;
-var isHeld: bool = false
-var isHolding: bool = false
+var isHeld: bool:
+	get:
+		return holder != null
+var isHolding: bool:
+	get:
+		return heldEntity != null
 var holder: Entity
 var holdPoint: Node3D
 var HOLD_POINT_Y_OFFSET: float = 1

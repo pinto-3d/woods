@@ -1,0 +1,15 @@
+[gd_resource type="ShaderMaterial" format=3 uid="uid://bh8o3qw53poah"]
+
+[ext_resource type="Shader" uid="uid://2tbjwpy6i5t0" path="res://entity/block/block_noise.gdshader" id="1_gdnh5"]
+
+[resource]
+resource_local_to_scene = true
+render_priority = 0
+shader = ExtResource("1_gdnh5")
+shader_parameter/pixel_size = 1.0
+shader_parameter/seed = 0.0
+shader_parameter/resolution = 14.0
+shader_parameter/tint = Vector3(0.885, 0.795, 0.73)
+shader_parameter/uvMult = Vector2(10, 1)
+shader_parameter/min_brightness = 0.0
+shader_parameter/max_brightness = 1.0

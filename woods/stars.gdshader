@@ -37,11 +37,12 @@ void fragment() {
 	vec4 albedo_tex = texture(texture_albedo, base_uv);
 	vec2 val = UV;
 	if(int(TIME) % 5 > 5/2){
-		val = vec2(1.0) - val;
+		val = vec2(2.0) - val;
 	}
 	
 	float sinex = float(int(val.x * float(albedo_texture_size.x)) % 2);
 	float siney = float(int(val.y * float(albedo_texture_size.y)) % 2);
+	
 	ALBEDO = albedo.rgb * albedo_tex.rgb;
 
 	float metallic_tex = dot(texture(texture_metallic, base_uv), metallic_texture_channel);

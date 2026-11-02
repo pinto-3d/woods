@@ -58,7 +58,7 @@ var BASE_TIME_BT_BLOCKS: float = 2
 var DECREASE_BT_BLOCKS_INC: float = 0.1
 var DECREASE_BT_BLOCKS_LOG: float = 2
 
-var BLOCK_SPAWN_Y: int = 12
+var BLOCK_SPAWN_Y: int = 11
 var DEATH_Y: int = 10
 
 var topLeft: Vector2: 
@@ -81,7 +81,6 @@ func _ready() -> void:
 	if LevelManager.i:
 		return
 	LevelManager.i = self
-	start_new_level()
 
 func decrease_time_bt_blocks(amt: int):
 	var mult: int = log(amt + 1)/log(DECREASE_BT_BLOCKS_LOG)
@@ -155,6 +154,10 @@ func get_player_start_position():
 	#while get_entity_at_grid_pos()
 	pass
 
+func on_lost():
+	set_mode(Mode.Off)
+	pass
+
 func spawn_block_from_current_pool():
 	var randrange: Array[int] = []
 	for i in range(0, dimensions.x):
@@ -167,6 +170,7 @@ func spawn_block_from_current_pool():
 		randrange.remove_at(randxIndex)
 		if randrange.size() == 0:
 			lost.emit()
+			on_lost()
 			return
 		randxIndex = randi_range(0, randrange.size()-1)
 		randSpawnPoint = Vector2i(randrange[randxIndex], BLOCK_SPAWN_Y)

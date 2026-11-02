@@ -20,7 +20,10 @@ func _ready() -> void:
 
 
 func start():
-	
+	if isHolding:
+		if heldEntity:
+			heldEntity.erase()
+		update_collider()
 	pass
 
 # Called every frame. 'delta' is the elapsed time since the previous frame.

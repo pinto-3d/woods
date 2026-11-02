@@ -24,13 +24,7 @@ func _ready() -> void:
 	RoundManager.i = self
 	
 	GridManager.i.match_made.connect(add_score)
-	
-	start()
 	pass # Replace with function body.
-
-func start():
-	roundStarted.emit()
-	pass
 
 # Called every frame. 'delta' is the elapsed time since the previous frame.
 func _process(delta: float) -> void:
@@ -46,4 +40,13 @@ func set_high_score(amt: int):
 	highScore = amt
 	isGettingHighscore = true
 	highscoreUpdated.emit(highScore)
+	pass
+
+func start_new_round():
+	reset_score()
+	pass
+
+func reset_score():
+	currentScore = 0
+	scoreUpdated.emit(currentScore)
 	pass

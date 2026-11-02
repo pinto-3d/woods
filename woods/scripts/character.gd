@@ -80,6 +80,9 @@ func _physics_process(delta: float) -> void:
 		prevWallJumpSide = 0
 	get_inputVector()
 	match state:
+		State.DISABLE_COMPLETELY:
+			velocity = Vector3.ZERO
+			pass
 		State.FREE:
 			if isLaunching:
 				launchTimer -= delta

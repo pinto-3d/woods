@@ -1,0 +1,48 @@
+[gd_scene format=3 uid="uid://b24jnguy1h548"]
+
+[ext_resource type="Script" uid="uid://bxdm07foejfdr" path="res://in_world_button.gd" id="1_wc4ly"]
+[ext_resource type="Shader" uid="uid://2tbjwpy6i5t0" path="res://entity/block/block_noise.gdshader" id="2_ir2os"]
+[ext_resource type="FontFile" uid="uid://b0fis5ukphet6" path="res://visitor1.ttf" id="3_rq2fj"]
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_lhcdp"]
+size = Vector3(5, 0.882, 1)
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_ke7w5"]
+resource_local_to_scene = true
+render_priority = 0
+shader = ExtResource("2_ir2os")
+shader_parameter/pixel_size = 1.0
+shader_parameter/seed = 0.0
+shader_parameter/resolution = 14.0
+shader_parameter/tint = Vector3(2.205, 0.6, 0.73)
+shader_parameter/uvMult = Vector2(10, 1)
+shader_parameter/min_brightness = 0.0
+shader_parameter/max_brightness = 1.0
+
+[sub_resource type="BoxMesh" id="BoxMesh_vwp6p"]
+material = SubResource("ShaderMaterial_ke7w5")
+size = Vector3(7, 0.875, 1)
+
+[node name="Start Button" type="StaticBody3D" unique_id=97483648]
+script = ExtResource("1_wc4ly")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="." unique_id=1778962794]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.058998108, 0)
+shape = SubResource("BoxShape3D_lhcdp")
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="." unique_id=144012189]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.058998108, 0)
+mesh = SubResource("BoxMesh_vwp6p")
+
+[node name="PointsTitle" type="Label3D" parent="." unique_id=2092750844]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.1260004, 0.5040016, 0.504)
+pixel_size = 0.125
+texture_filter = 0
+render_priority = 1
+modulate = Color(0, 0, 0, 1)
+outline_modulate = Color(1, 0.5411765, 0.6156863, 1)
+text = "RETRY"
+font = ExtResource("3_rq2fj")
+font_size = 10
+outline_size = 4
+vertical_alignment = 0

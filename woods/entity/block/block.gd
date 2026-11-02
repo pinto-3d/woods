@@ -5,7 +5,7 @@ class_name Block
 @export var TEX_SEED: float;
 @export var BRIGHTNESS_MIN_MAX: Vector2 = Vector2(0, 1)
 @export var TINT: Color
-@export var RESOLUTION: int = 8;
+var RESOLUTION: int = 16;
 
 var _tex_seed
 var _brightness_min_max
