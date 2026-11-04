@@ -200,7 +200,6 @@ class CollisionInfo:
 	pass
 
 func handle_collision(info: CollisionInfo):
-	
 	if isHeld:
 		pass
 	else:
@@ -210,17 +209,17 @@ func handle_collision(info: CollisionInfo):
 			if self is not Character:
 				if info.entity is Entity:
 					if info.entity is ImmovableBlock:
-						if is_above_entity(info.entity):
-							GridManager.i.snap_entity_to_grid(self)
-							isMovable = false
-							self.velocity = Vector3.ZERO
+						GridManager.i.snap_entity_to_grid(self)
+						isMovable = false
+						self.velocity = Vector3.ZERO
+						#if is_above_entity(info.entity):
 							#add_log_entry(LogEntry.InteractionType.Collision, 
 								#"snapped to grid above immovable block", info.entity)
 					else:
 						var highest = (info.entity as Entity).get_highest_held_entity().entity
 						if not highest.isHolding:
-							var selfpos = self.global_position
-							selfpos = GridManager.i.snap_entity_to_grid(self)
+							#var selfpos = self.global_position
+							#selfpos = GridManager.i.snap_entity_to_grid(self)
 							highest.pickup(self)
 							self.velocity = Vector3.ZERO
 							add_log_entry(LogEntry.InteractionType.Collision, 
@@ -267,43 +266,43 @@ func is_above_entity(entity: Entity):
 
 func move(delta: float):
 	var preCollisionVelocity: Vector3 = velocity
-		
-	var collided = move_and_slide()
-	if collided:
-		var collisionInfo: CollisionInfo = CollisionInfo.new()
-		var collisionCount: int = 1
-		for index in range(0, collisionCount):
-			var collision = get_last_slide_collision()
-			if not collision:
-				return
-			collisionInfo.collision = collision
-			collisionInfo.normal = collision.get_normal()
-			collisionInfo.position = collision.get_position()
-			collisionInfo.count = index
-			collisionInfo.travel = collision.get_travel()
-			collisionInfo.entity = collision.get_collider()
-			handle_collision(collisionInfo)
-			pass
-	else:
-		if isOnGround:
-			var downNormal = get_down_normal()
-			if downNormal:
-				if downNormal.y < 0 and downNormal.y != -1:
-					isOnSlant = true
-				else:
-					isOnSlant = false
-			else:
-				if isOnSlant:
-					pass
-				isOnSlant = false
-				
-				#slide_tick(delta, downNormals[chosen], preCollisionVelocity)
+	if isMovable:
+		var collided = move_and_slide()
+		if collided:
+			var collisionInfo: CollisionInfo = CollisionInfo.new()
+			var collisionCount: int = 1
+			for index in range(0, collisionCount):
+				var collision = get_last_slide_collision()
+				if not collision:
+					return
+				collisionInfo.collision = collision
+				collisionInfo.normal = collision.get_normal()
+				collisionInfo.position = collision.get_position()
+				collisionInfo.count = index
+				collisionInfo.travel = collision.get_travel()
+				collisionInfo.entity = collision.get_collider()
+				handle_collision(collisionInfo)
+				pass
 		else:
-			isOnSlant = false
-		
+			#if isOnGround:
+				#if self is Block and true:
+					#if global_position.x != round(global_position.x):
+						#GridManager.i.snap_entity_to_grid(self)
+						#pass
+			pass
+	
+	if not isHeld:
+		if abs(velocity.x) < MIN_SPEED and velocity.y == 0:
+			if isOnGround:
+				if abs(round(global_position.x) - global_position.x) < ROUND_DIST:
+					GridManager.i.snap_entity_to_grid(self)
+	
 	if isOnGroundOld and not isOnGround:
 		pass
 	isOnGroundOld = isOnGround
+
+var MIN_SPEED: float = 0.1
+var ROUND_DIST: float = 0.05
 
 var prevNormal = Vector3.ZERO
 
@@ -432,8 +431,9 @@ func set_is_not_holding():
 func put_down(position: Vector2, velocity: Vector2):
 	if heldEntity:
 		GridManager.i.snap_entity_to_grid_pos(heldEntity, position)
-		heldEntity.set_as_not_held()
-		heldEntity.velocity = Vector3(velocity.x, velocity.y, 0)
+		if heldEntity:
+			heldEntity.set_as_not_held()
+			heldEntity.velocity = Vector3(velocity.x, velocity.y, 0)
 	set_is_not_holding()
 	pass
 	
@@ -455,9 +455,10 @@ func throw(dir: Vector2):
 				return
 			pass
 		
-		
-		put_down(GridManager.i.position_to_grid(heldEntity.position), dir)
+		var putDownPos = GridManager.i.position_to_grid(heldEntity.position)
+		put_down(putDownPos, dir)
 		if dir.y < 0:
+			highestPos.y -= 0
 			self.global_position = highestPos
 			if not isOnGround:
 				self.velocity.y = THROW_Y_BOOST

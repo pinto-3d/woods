@@ -54,9 +54,10 @@ var timeSinceLevelStart: float = 0
 
 var blockTimer: float = 0.0
 var currentTimeBtBlocks: float = 2
-var BASE_TIME_BT_BLOCKS: float = 0.6
+var BASE_TIME_BT_BLOCKS: float = 2
 var DECREASE_BT_BLOCKS_INC: float = 0.1
 var DECREASE_BT_BLOCKS_LOG: float = 2
+var MIN_TIME_BT_BLOCKS: float = 0.1
 
 var BLOCK_SPAWN_Y: int = 11
 var DEATH_Y: int = 10
@@ -84,7 +85,7 @@ func _ready() -> void:
 
 func decrease_time_bt_blocks(amt: int):
 	var mult: int = log(amt + 1)/log(DECREASE_BT_BLOCKS_LOG)
-	currentTimeBtBlocks = BASE_TIME_BT_BLOCKS - (mult * DECREASE_BT_BLOCKS_INC)
+	currentTimeBtBlocks = max(BASE_TIME_BT_BLOCKS - (mult * DECREASE_BT_BLOCKS_INC), MIN_TIME_BT_BLOCKS)
 	pass
 
 func start_new_level():

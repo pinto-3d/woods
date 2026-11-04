@@ -57,6 +57,11 @@ func _physics_process(delta: float) -> void:
 		return
 	super._physics_process(delta)
 
+func _set_is_on_ground():
+	isOnGround = false;
+	isOnGround = is_on_floor()
+	pass
+
 func iteracted_with(entity: Entity):
 	super.iteracted_with(entity)
 	pass

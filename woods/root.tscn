@@ -287,6 +287,10 @@ layout_mode = 2
 size_flags_horizontal = 3
 size_flags_vertical = 3
 
+[node name="EraseButton" type="Button" parent="ui/Control/Panel/EntityDetails/VBoxContainer" unique_id=1926529555]
+layout_mode = 2
+text = "Erase"
+
 [node name="EntityName" type="Label" parent="ui/Control/Panel/EntityDetails/VBoxContainer" unique_id=622050330]
 layout_mode = 2
 label_settings = ExtResource("9_huihk")
@@ -681,6 +685,7 @@ vertical_alignment = 0
 [connection signal="toggled" from="ui/Control/Panel/CheckBox" to="ui/Control/Panel/CheckBox" method="_on_toggled"]
 [connection signal="pressed" from="ui/Control/Panel/ClearButton" to="ui/Control/Panel/ClearButton" method="_on_pressed"]
 [connection signal="toggled" from="ui/Control/Panel/ClearButton" to="ui/Control/Panel/ClearButton" method="_on_toggled"]
+[connection signal="pressed" from="ui/Control/Panel/EntityDetails/VBoxContainer/EraseButton" to="ui/Control/Panel/EntityDetails" method="_on_clear_button_pressed"]
 
 [editable path="Game UI/Points menu"]
 [editable path="Background/Warehouse/cabin"]
