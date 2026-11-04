@@ -19,7 +19,8 @@ func _process(delta: float) -> void:
 	pass
 
 func register_entity(entity: Entity):
-	entity.clicked.connect(set_target)
+	if not entity.clicked.is_connected(set_target):
+		entity.clicked.connect(set_target)
 	pass
 
 func set_target(entity: Entity):

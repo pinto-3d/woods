@@ -9,7 +9,7 @@ enum Mode {
 var TITLE_POS: Vector3 = Vector3(5.75, 37, 17.0)
 var GAME_POS: Vector3 = Vector3(5.75, 4.5, 17.0)
 
-var PAN_LERP: float = 1
+var PAN_LERP: float = 25
 var PAN_MIN_DIST: float = 0.05
 var targetPos: Vector3
 var isPanning: bool = false
@@ -36,7 +36,7 @@ func _process(delta: float) -> void:
 			pan_finished()
 			isPanning = false
 		else:
-			position = position.lerp(targetPos, PAN_LERP * delta)
+			position = position.move_toward(targetPos, PAN_LERP * delta)
 	pass
 
 func begin_round_started():

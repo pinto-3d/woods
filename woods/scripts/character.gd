@@ -63,8 +63,6 @@ func _process(delta: float) -> void:
 	pass
 
 func set_direction(dir: RelativeDirection):
-	if isLaunching:
-		return
 	var wasChanged: bool = direction != dir
 	direction = dir
 	if wasChanged:
@@ -157,6 +155,8 @@ func get_inputVector() -> Vector2:
 func _try_wall_jump(dir: int):
 	if prevWallJumpSide != -dir:
 		wall_jump(dir)
+	else:
+		print("cant wall jump. dir=",dir," and prev=",prevWallJumpSide)
 	pass
 
 func wall_jump(dir: int):

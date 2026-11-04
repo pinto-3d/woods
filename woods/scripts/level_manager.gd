@@ -54,7 +54,7 @@ var timeSinceLevelStart: float = 0
 
 var blockTimer: float = 0.0
 var currentTimeBtBlocks: float = 2
-var BASE_TIME_BT_BLOCKS: float = 2
+var BASE_TIME_BT_BLOCKS: float = 0.8
 var DECREASE_BT_BLOCKS_INC: float = 0.1
 var DECREASE_BT_BLOCKS_LOG: float = 2
 
@@ -120,8 +120,8 @@ func _physics_process(delta: float) -> void:
 
 func set_mode(mode: Mode):
 	self.mode = mode
-	match mode:
-		Mode.Off:
+	match mode:		
+		Mode.Off:	
 			
 			pass
 		Mode.SendingBlocks:
@@ -131,7 +131,10 @@ func set_mode(mode: Mode):
 
 func generate_level(dimensions: Vector2, pos:Vector2 = Vector2.ZERO):
 	for child in get_children():
-		child.queue_free()
+		if child is Player:
+			continue
+		if child is Entity:
+			GridManager.i.deregister_entity(child)
 		pass
 	GridManager.i.clear()
 	
@@ -165,7 +168,7 @@ func spawn_block_from_current_pool():
 		pass
 	
 	var randxIndex: int = randi_range(0, randrange.size()-1)
-	var randSpawnPoint: Vector2i = Vector2i(randrange[randxIndex], BLOCK_SPAWN_Y)
+	var randSpawnPoint: Vector2i = Vector2i(randrange[randxIndex], BLOCK_SPAWN_Y-1)
 	while GridManager.i.get_entity_at_grid_pos(randSpawnPoint):
 		randrange.remove_at(randxIndex)
 		if randrange.size() == 0:
@@ -173,8 +176,9 @@ func spawn_block_from_current_pool():
 			on_lost()
 			return
 		randxIndex = randi_range(0, randrange.size()-1)
-		randSpawnPoint = Vector2i(randrange[randxIndex], BLOCK_SPAWN_Y)
+		randSpawnPoint = Vector2i(randrange[randxIndex], BLOCK_SPAWN_Y-1)
 	
+	randSpawnPoint.y += 1
 	var pos: Vector2 = randSpawnPoint
 	
 	var chosenScene: PackedScene = basicBlockScene

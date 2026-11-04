@@ -18,7 +18,7 @@ var GRAVITY_DIRECTION: Vector3 = Vector3.DOWN;
 var hasLinearGravity: bool = true
 var LINEAR_GRAVITY_MAX: float = 3
 var current_linear_gravity_max: float = 3
-var FAST_FALL_MULTIPLIER: float = 2
+var FAST_FALL_MULTIPLIER: float = 4
 const MIN_VELOCITY: float = 0.01
 
 var THROW_VELOCITY: Vector2 = Vector2(3, 6)
@@ -212,7 +212,7 @@ func handle_collision(info: CollisionInfo):
 					if info.entity is ImmovableBlock:
 						if is_above_entity(info.entity):
 							GridManager.i.snap_entity_to_grid(self)
-							isMovable = true
+							isMovable = false
 							self.velocity = Vector3.ZERO
 							#add_log_entry(LogEntry.InteractionType.Collision, 
 								#"snapped to grid above immovable block", info.entity)
@@ -344,22 +344,49 @@ func get_lowest_held_entity() -> Entity:
 	return lowestEntity
 
 
-func set_is_holding(entity: Entity):
+func set_is_holding(entity: Entity) -> bool:
 	if entity.isHeld:
 		entity.holder.set_is_not_holding()
 		entity.set_as_not_held()
 	
-	var highest = get_highest_held_entity().entity
-		
-	highest.heldEntity = entity
-	highest.add_collision_exception_with(heldEntity)
-	highest.heldEntity.position = Vector3.ZERO
-	highest.heldEntity.set_as_held(self)
-	highest.heldEntity.reparent(holdPoint, false)
-	highest.isHolding = true
+	var otherHighest = entity.get_highest_held_entity().entity
+	var selfHighest = get_highest_held_entity().entity
+	var otherHighestGrid = GridManager.i.get_grid_pos_of_entity(otherHighest)
+	var baseEntityGrid = GridManager.i.get_grid_pos_of_entity(entity)
+	if not otherHighestGrid:
+		return false
+	if not baseEntityGrid:
+		return false
+	
+	
+	var diff = otherHighestGrid.y - baseEntityGrid.y
+	var selfGrid = GridManager.i.get_grid_pos_of_entity(self)
+	var newHighestGrid = selfGrid.y + diff
+	if newHighestGrid >= LevelManager.i.BLOCK_SPAWN_Y:
+		return false
+	
+	if baseEntityGrid.x != selfGrid.x:
+		var currentY: int = selfGrid.y + 1
+		while currentY < newHighestGrid:
+			if GridManager.i.get_entity_at_grid_pos(Vector2i(selfGrid.x, currentY)):
+				return false
+			currentY += 1
+	
+	selfHighest.heldEntity = entity
+	selfHighest.add_collision_exception_with(heldEntity)
+	selfHighest.heldEntity.position = Vector3.ZERO
+	selfHighest.heldEntity.set_as_held(self)
+	selfHighest.heldEntity.reparent(holdPoint, false)
+	selfHighest.isHolding = true
 	
 	var lowest = get_lowest_held_entity()
 	lowest.update_collider()
+	if self is ImmovableBlock:
+		entity.isMovable = false
+	else:
+		entity.isMovable = true
+	
+	return true
 	pass
 
 func update_collider():
@@ -393,10 +420,9 @@ func set_is_not_holding():
 	lowest.update_collider()
 	pass
 
-func put_down(velocity: Vector2):
+func put_down(position: Vector2, velocity: Vector2):
 	if heldEntity:
-		if velocity.y != 0:
-			GridManager.i.snap_entity_to_grid(heldEntity)
+		GridManager.i.snap_entity_to_grid_pos(heldEntity, position)
 		heldEntity.set_as_not_held()
 		heldEntity.velocity = Vector3(velocity.x, velocity.y, 0)
 	set_is_not_holding()
@@ -413,7 +439,13 @@ func throw(dir: Vector2):
 			dir.y = THROW_VELOCITY.y
 		var highestHolder: Entity = get_highest_held_entity().entity
 		var highestPos: Vector3 = highestHolder.holdPoint.global_position
-		put_down(dir)
+		if dir.y < 0:
+			if highestPos.y >= LevelManager.i.BLOCK_SPAWN_Y:
+				return
+			pass
+		
+		
+		put_down(GridManager.i.position_to_grid(heldEntity.position), dir)
 		if dir.y < 0:
 			self.global_position = highestPos
 			if not isOnGround:
@@ -424,20 +456,7 @@ func throw(dir: Vector2):
 func place(dir: Vector2i):
 	isHolding = false
 	if heldEntity:
-		heldEntity.was_thrown()
-		heldEntity.reparent(GridManager.i.root, true)
-		var v2 = GridManager.i.get_entity_round_global_pos(heldEntity)
-		heldEntity.global_position = Vector3(v2.x + dir.x, v2.y, 0)
-		if dir.y != 0:
-			dir.y *= -THROW_VELOCITY.y
-			if dir.y < 0:
-				var highestHolder: Entity = heldEntity
-				while highestHolder.heldEntity:
-					highestHolder = highestHolder.heldEntity
-				self.global_position = highestHolder.holdPoint.global_position
-			pass
-		self.remove_collision_exception_with(heldEntity)
-		heldEntity = null
+		put_down(dir, Vector2.ZERO)
 	pass
 
 func pickup(entity: Entity):
@@ -446,9 +465,10 @@ func pickup(entity: Entity):
 	if postThrowPreventPickupTimer > 0:
 		return
 	
-	set_is_holding(entity)
-	
-	print("pickup")
+	if set_is_holding(entity):
+		print("pickup")
+	else:
+		print("failed pickup")
 	pass
 
 func erase():

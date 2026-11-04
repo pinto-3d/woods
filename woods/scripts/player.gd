@@ -104,8 +104,8 @@ func _try_place(dir: Vector2i):
 	
 	var playerV2: Vector2i = GridManager.i.get_grid_pos_of_entity(self)
 	var posList: Array[Vector2i] = [
-		Vector2i(1,0),
-		Vector2i(1,1)
+		Vector2i(direction,0),
+		Vector2i(direction,1)
 	]
 	var placable: bool = true
 	var i: int = 0
@@ -114,24 +114,17 @@ func _try_place(dir: Vector2i):
 	while posEntity:
 		i += 1
 		if i < posList.size():
-			pos = playerV2 + posList[i]
+			pos = playerV2 + posList[i] 
 			posEntity = GridManager.i.get_entity_at_grid_pos(pos)
 		else:
 			placable = false
+			posEntity = null
 		pass
 	
 	if placable:
+		GridManager.i.snap_entity_to_grid(self)
 		place(pos)
 		
-func place(pos: Vector2i):
-	if heldEntity:
-		heldEntity.was_thrown()
-		self.remove_collision_exception_with(heldEntity)
-		GridManager.i.grid_to_position(pos)
-		heldEntity.global_position = Vector3(pos.x, pos.y, 0)
-		heldEntity.reparent(GridManager.i.root, true)
-		heldEntity = null
-	pass
 
 func jump():
 	velocity.y = JUMP_VELOCITY

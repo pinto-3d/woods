@@ -39,6 +39,13 @@ func _process(delta: float) -> void:
 	pass
 
 func clear():
+	for key in dictEntity2Grid.keys():
+		if key is not Player:
+			deregister_entity(key)
+	for val in dictGrid2Entity.values():
+		if val is not Player:
+			deregister_entity(val)
+	
 	dictGrid2Entity.clear()
 	dictEntity2Grid.clear()
 	pass
@@ -78,6 +85,15 @@ func snap_entity_to_grid(entity:Entity):
 		return v3
 	return null
 
+func snap_entity_to_grid_pos(entity:Entity, position:Vector2i):
+	if entity:
+		var v3 = grid_to_position(position)
+		if v3:
+			entity.global_position = v3
+			_entity_update(entity, entity.global_position)
+		return v3
+	return null
+
 func register_entity(entity: Entity):
 	if not entity.entityGridUpdate.is_connected(_entity_update):
 		entity.entityGridUpdate.connect(_entity_update)
@@ -86,6 +102,8 @@ func register_entity(entity: Entity):
 	pass
 
 func deregister_entity(entity: Entity):
+	if not entity.isRegisteredToGrid:
+		return
 	entity.entityGridUpdate.disconnect(_entity_update)
 	var v2: Vector2i = dictEntity2Grid[entity]
 	dictGrid2Entity.erase(v2)
@@ -163,8 +181,8 @@ func _entity_update(entity: Entity, pos):
 	var prevPos = null
 	if dictEntity2Grid.has(entity):
 		prevPos = dictEntity2Grid[entity]
-		if dictGrid2Entity.has(dictEntity2Grid[entity]):
-			if dictGrid2Entity[dictEntity2Grid[entity]] == entity:
+		if dictGrid2Entity.has(prevPos):
+			if dictGrid2Entity[prevPos] == entity:
 				dictGrid2Entity.erase(dictEntity2Grid[entity])
 	dictEntity2Grid[entity] = pos
 	dictGrid2Entity[pos] = entity

@@ -1,6 +1,7 @@
 [gd_scene format=3 uid="uid://bugyqet37rfxl"]
 
 [ext_resource type="PackedScene" uid="uid://7leje722w1w6" path="res://entity/player/player.tscn" id="1_pyidc"]
+[ext_resource type="Script" uid="uid://bslrl2tcux5bf" path="res://debug_clear_entities_button.gd" id="2_0dnjj"]
 [ext_resource type="Script" uid="uid://chgaug0vb25la" path="res://scripts/game_manager.gd" id="2_l8v81"]
 [ext_resource type="Script" uid="uid://joq0fup114d2" path="res://scripts/level_manager.gd" id="2_vvh5c"]
 [ext_resource type="PackedScene" uid="uid://c8uug5uucmxwd" path="res://entity/block/immovable_block.tscn" id="3_huihk"]
@@ -21,6 +22,7 @@
 [ext_resource type="PackedScene" uid="uid://dsnyt5mhf17aw" path="res://mesh/logo.glb" id="18_blcw0"]
 [ext_resource type="PackedScene" uid="uid://dgyk60o7hi2b5" path="res://mesh/cabin.glb" id="19_ab83r"]
 [ext_resource type="Script" uid="uid://duirg0mu1tqp0" path="res://title_screen.gd" id="19_po8fv"]
+[ext_resource type="Script" uid="uid://ijgq6k85ewy4" path="res://lamp_light.gd" id="20_1xb4a"]
 [ext_resource type="Shader" uid="uid://2tbjwpy6i5t0" path="res://entity/block/block_noise.gdshader" id="20_3dlgs"]
 [ext_resource type="Script" uid="uid://bxdm07foejfdr" path="res://in_world_button.gd" id="20_vte5o"]
 [ext_resource type="Material" uid="uid://bh8o3qw53poah" path="res://materials/menu_button shader.tres" id="22_ynlg5"]
@@ -255,6 +257,19 @@ grow_vertical = 0
 button_pressed = true
 text = "Block Spawning"
 script = ExtResource("7_vyht1")
+
+[node name="ClearButton" type="Button" parent="ui/Control/Panel" unique_id=416277077]
+layout_mode = 1
+anchors_preset = 2
+anchor_top = 1.0
+anchor_bottom = 1.0
+offset_left = -1.0
+offset_top = -66.0
+offset_right = 148.0
+offset_bottom = -35.0
+grow_vertical = 0
+text = "Clear Entites"
+script = ExtResource("2_0dnjj")
 
 [node name="EntityDetails" type="ScrollContainer" parent="ui/Control/Panel" unique_id=198819918]
 layout_mode = 1
@@ -555,22 +570,11 @@ mesh = SubResource("PlaneMesh_4pl66")
 [node name="WorldEnvironment" type="WorldEnvironment" parent="." unique_id=368699391]
 environment = SubResource("Environment_eji0w")
 
-[node name="DirectionalLight3D" type="AreaLight3D" parent="." unique_id=128644713]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 4.977, 5.807, 16.521)
-light_color = Color(0, 0.7647059, 1, 1)
-light_energy = 16.0
-light_specular = 7.505
-shadow_enabled = true
-shadow_opacity = 0.99
-shadow_blur = 0.0
-area_range = 50.292
-area_size = Vector2(20, 20)
-
 [node name="Background" type="Node3D" parent="." unique_id=389445429]
 transform = Transform3D(16.335, 0, 0, 0, 16.335, 0, 0, 0, 16.335, 143.514, 0, -770.80505)
 
 [node name="Moon" type="Node3D" parent="Background" unique_id=318409851]
-transform = Transform3D(1.75, 0, 0, 0, 1.75, 0, 0, 0, 1.75, 35, 17.5, -34)
+transform = Transform3D(1.75, 0, 0, 0, 1.75, 0, 0, 0, 1.75, 17.459507, 11.68788, -34.000008)
 
 [node name="MeshInstance3D" type="MeshInstance3D" parent="Background/Moon" unique_id=1903239676]
 transform = Transform3D(1, 0, 0, 0, -4.371139e-08, -1, 0, 1, -4.371139e-08, 0, 0, 0)
@@ -591,6 +595,19 @@ mesh = SubResource("PlaneMesh_sq7yr")
 
 [node name="cabin" parent="Background/Warehouse" unique_id=1481474266 instance=ExtResource("19_ab83r")]
 transform = Transform3D(0.061218247, 0, 0, 0, 0.061218247, 0, 0, 0, 0.061218247, -8.265321, -0.030853996, 47.187332)
+
+[node name="lamp light" parent="Background/Warehouse/cabin" index="0" unique_id=907719603]
+script = ExtResource("20_1xb4a")
+
+[node name="DirectionalLight3D" type="SpotLight3D" parent="Background/Warehouse/cabin/lamp light" index="0" unique_id=1342556237]
+transform = Transform3D(16, 0, 0, 0, -3.934025e-07, 9, 0, -16, -6.993822e-07, 0.60284424, -28.5307, -0.3219223)
+light_color = Color(0.6111935, 0.73284924, 0.67932254, 1)
+light_energy = 16.0
+light_specular = 7.505
+shadow_opacity = 0.99
+shadow_blur = 0.0
+spot_range = 11.718
+spot_angle = 74.29222
 
 [node name="LoseScreen" type="Node3D" parent="." unique_id=2087991126]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 7.9999847, 8.374008, 3)
@@ -662,5 +679,8 @@ outline_size = 4
 vertical_alignment = 0
 
 [connection signal="toggled" from="ui/Control/Panel/CheckBox" to="ui/Control/Panel/CheckBox" method="_on_toggled"]
+[connection signal="pressed" from="ui/Control/Panel/ClearButton" to="ui/Control/Panel/ClearButton" method="_on_pressed"]
+[connection signal="toggled" from="ui/Control/Panel/ClearButton" to="ui/Control/Panel/ClearButton" method="_on_toggled"]
 
 [editable path="Game UI/Points menu"]
+[editable path="Background/Warehouse/cabin"]
