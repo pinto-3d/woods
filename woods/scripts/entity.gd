@@ -344,12 +344,15 @@ func get_lowest_held_entity() -> Entity:
 	return lowestEntity
 
 
-func set_is_holding(entity: Entity) -> bool:
+func set_is_holding(entity: Entity, onlyThisOne: bool = false) -> bool:
 	if entity.isHeld:
 		entity.holder.set_is_not_holding()
 		entity.set_as_not_held()
 	
-	var otherHighest = entity.get_highest_held_entity().entity
+	var otherHighest = entity
+	
+	if not onlyThisOne:
+		otherHighest = entity.get_highest_held_entity().entity
 	var selfHighest = get_highest_held_entity().entity
 	var otherHighestGrid = GridManager.i.get_grid_pos_of_entity(otherHighest)
 	var baseEntityGrid = GridManager.i.get_grid_pos_of_entity(entity)
@@ -358,9 +361,10 @@ func set_is_holding(entity: Entity) -> bool:
 	if not baseEntityGrid:
 		return false
 	
-	
 	var diff = otherHighestGrid.y - baseEntityGrid.y
 	var selfGrid = GridManager.i.get_grid_pos_of_entity(self)
+	if not selfGrid:
+		return false
 	var newHighestGrid = selfGrid.y + diff
 	if newHighestGrid >= LevelManager.i.BLOCK_SPAWN_Y:
 		return false
@@ -371,6 +375,11 @@ func set_is_holding(entity: Entity) -> bool:
 			if GridManager.i.get_entity_at_grid_pos(Vector2i(selfGrid.x, currentY)):
 				return false
 			currentY += 1
+	
+	if onlyThisOne:
+		if entity.heldEntity:
+			entity.heldEntity.set_as_not_held()
+			entity.set_is_not_holding()
 	
 	selfHighest.heldEntity = entity
 	selfHighest.add_collision_exception_with(heldEntity)
@@ -442,6 +451,8 @@ func throw(dir: Vector2):
 		if dir.y < 0:
 			if highestPos.y >= LevelManager.i.BLOCK_SPAWN_Y:
 				return
+			if GridManager.i.get_entity_at_grid_pos(GridManager.i.position_to_grid(highestPos)):
+				return
 			pass
 		
 		
@@ -466,6 +477,18 @@ func pickup(entity: Entity):
 		return
 	
 	if set_is_holding(entity):
+		print("pickup")
+	else:
+		print("failed pickup")
+	pass
+
+func pickup_single(entity: Entity):
+	if not holdPoint:
+		return
+	if postThrowPreventPickupTimer > 0:
+		return
+	
+	if set_is_holding(entity, true):
 		print("pickup")
 	else:
 		print("failed pickup")

@@ -99,10 +99,15 @@ func direction_updated():
 	pass
 	
 func _try_place(dir: Vector2i):
-	if not heldEntity:
-		return
 	
 	var playerV2: Vector2i = GridManager.i.get_grid_pos_of_entity(self)
+	
+	if not heldEntity:
+		var entity = GridManager.i.get_entity_at_grid_pos(playerV2 + dir)
+		if entity:
+			pickup_single(entity)
+		return
+	
 	var posList: Array[Vector2i] = [
 		Vector2i(direction,0),
 		Vector2i(direction,1)

@@ -54,7 +54,7 @@ var timeSinceLevelStart: float = 0
 
 var blockTimer: float = 0.0
 var currentTimeBtBlocks: float = 2
-var BASE_TIME_BT_BLOCKS: float = 0.8
+var BASE_TIME_BT_BLOCKS: float = 0.6
 var DECREASE_BT_BLOCKS_INC: float = 0.1
 var DECREASE_BT_BLOCKS_LOG: float = 2
 
@@ -169,11 +169,24 @@ func spawn_block_from_current_pool():
 	
 	var randxIndex: int = randi_range(0, randrange.size()-1)
 	var randSpawnPoint: Vector2i = Vector2i(randrange[randxIndex], BLOCK_SPAWN_Y-1)
-	while GridManager.i.get_entity_at_grid_pos(randSpawnPoint):
+	var isPosAvailable: bool = false
+	var allPosResting: bool = true
+	while not isPosAvailable:
+		var entity:Entity = GridManager.i.get_entity_at_grid_pos(randSpawnPoint)
+		if entity:
+			entity = entity.get_lowest_held_entity()
+			if entity:
+				if entity.isMovable:
+					allPosResting = false
+					pass
+		else:
+			isPosAvailable = true
+			break
 		randrange.remove_at(randxIndex)
-		if randrange.size() == 0:
-			lost.emit()
-			on_lost()
+		if randrange.size() <= 1:
+			if allPosResting:
+				lost.emit()
+				on_lost()
 			return
 		randxIndex = randi_range(0, randrange.size()-1)
 		randSpawnPoint = Vector2i(randrange[randxIndex], BLOCK_SPAWN_Y-1)
