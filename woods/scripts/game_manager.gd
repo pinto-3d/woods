@@ -18,7 +18,7 @@ var loseScreen: LoseScreen
 
 var player: Player
 
-var isDebug: bool = true
+var isDebug: bool = false
 var showDebugGrid: bool = false
 signal begin_round_started();
 

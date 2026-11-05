@@ -428,14 +428,18 @@ func set_is_not_holding():
 	lowest.update_collider()
 	pass
 
-func put_down(position: Vector2, velocity: Vector2):
+func put_down(pos: Vector2, velocity: Vector2) -> bool:
 	if heldEntity:
-		GridManager.i.snap_entity_to_grid_pos(heldEntity, position)
+		if pos.x < LevelManager.i.topLeft.x or pos.x >= LevelManager.i.topRight.x:
+			return false
+			pass
+		
+		GridManager.i.snap_entity_to_grid_pos(heldEntity, pos)
 		if heldEntity:
 			heldEntity.set_as_not_held()
 			heldEntity.velocity = Vector3(velocity.x, velocity.y, 0)
 	set_is_not_holding()
-	pass
+	return true
 	
 	
 func throw(dir: Vector2):
@@ -455,7 +459,7 @@ func throw(dir: Vector2):
 				return
 			pass
 		
-		var putDownPos = GridManager.i.position_to_grid(heldEntity.position)
+		var putDownPos = GridManager.i.position_to_grid(heldEntity.global_position)
 		put_down(putDownPos, dir)
 		if dir.y < 0:
 			highestPos.y -= 0

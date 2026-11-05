@@ -88,7 +88,7 @@ func snap_entity_to_grid(entity:Entity):
 func snap_entity_to_grid_pos(entity:Entity, position:Vector2i):
 	if entity:
 		var v3 = grid_to_position(position)
-		if v3:
+		if v3 != null:
 			entity.global_position = v3
 			_entity_update(entity, entity.global_position)
 		return v3
